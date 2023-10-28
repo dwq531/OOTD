@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-
+import json
+import controllers
+import http.client
 # Create your views here.
 def login(request):
     """
@@ -8,6 +10,19 @@ def login(request):
     """
     if request.method != "PATCH":
         return JsonResponse({"message": "Method not allowed"}, status=405)
+    
+    try:
+        content = json.loads(request.body)
+        code = content.get("code")
+        data = controllers.get_openid(code)
+
+        
+        
+        
+    except json.JSONDecodeError:
+        return JsonResponse({"message": "bad arguments"}, status=400)
+    except:
+        return JsonResponse({"message": "bad arguments"}, status=400)
     return HttpResponse('登录成功')
 
 
