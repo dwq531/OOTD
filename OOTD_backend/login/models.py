@@ -5,8 +5,8 @@ class User(models.Model):
     """
     用户
     """
-    openid=models.CharField(max_length=32,verbose_name="标识id")
-    nickname=models.CharField(max_length=32,verbose_name="用户昵称")
+    openid=models.CharField(max_length=32,default='',verbose_name="标识id")
+    nickname=models.CharField(max_length=32,default="anonymous",verbose_name="用户昵称")
     age=models.IntegerField(default=18,verbose_name="年龄")
     addr=models.CharField(max_length=127,default='none',verbose_name="所处地")
     gender=models.CharField(max_length=1,choices=(
