@@ -6,7 +6,7 @@ Page({
   data: {
     // motto: '点击头像立即登录',
     userInfo: {},
-    hasUserInfo: false,
+    hasUserInfo: app.isNewUser,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     canIUseGetUserProfile: false,
     // canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false

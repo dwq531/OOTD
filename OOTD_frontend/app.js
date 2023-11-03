@@ -11,7 +11,7 @@ App({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         wx.request({
-          url: 'http://127.0.0.1:8000/api/user/login',
+          url: 'http://127.0.0.1:8000/api/user/login/',
           method: 'PATCH',
           data: {
             code : res.code
@@ -22,6 +22,8 @@ App({
               console.log('后端返回: ',res.data);
               // TODO
               // 处理后端返回的数据
+              const isNewUser = res.data.new;
+              
             }
             else{
               console.error('请求失败，错误状态码：', res.statusCode);
