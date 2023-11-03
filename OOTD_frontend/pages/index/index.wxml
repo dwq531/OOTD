@@ -6,10 +6,19 @@
         <open-data type="userAvatarUrl"></open-data>
       </view>
       <open-data type="userNickName"></open-data>
+      <view class='content'>
+        <text>您已授权信息</text>
+        <text>点击头像立即登录</text>
+      </view>
     </block>
+    
     <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+      <view class='content'>
+        <view>申请获取以下权限</view>
+        <text>获得你的公开信息(昵称，头像等)</text>
+      </view>
+      <button class='bottom' type='primary' wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 授权登录 </button>
+      <button class='bottom' type='primary' wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 授权登录 </button>
       <view wx:else> 请使用1.4.4及以上版本基础库 </view>
     </block>
     <block wx:else>
