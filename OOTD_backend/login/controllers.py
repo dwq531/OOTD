@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from .models import User
 import json
-import http.client
+import requests
 
 
 def get_user(openid):
@@ -38,20 +38,19 @@ def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', av
 
 # 给微信API发送code2session请求
 def get_openid(code):
+    try:
 
-    conn = http.client.HTTPSConnection(
-        "https://api.weixin.qq.com")
-    headers = {'Content-type': 'application/json'}
-    data = {"appid": "wxe695d8ed64cfbc63", "appSecret": "6a4d7088e79a482b8efaf77bedc14625",
-            "js_code": code, "grant_type": "authorization_code"}
-    payload = json.dumps(data)
-    conn.request("GET", "/sns/jscode2session", payload, headers)
-    response = conn.getresponse()
-    json_res = response.json()
-    conn.close()
-    if(json_res.get('openid')):
-        return json_res
-    else:
-        return False
-    
+        response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=wxe695d8ed64cfbc63&secret=6a4d7088e79a482b8efaf77bedc14625&js_code="
+                                +code+
+                                "&grant_type=authorization_code")
+        dic_res = json.loads(response.text)
+        print(dic_res)
+        if(dic_res.get('openid')):
+            return dic_res
+        else:
+            return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+        
  

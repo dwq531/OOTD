@@ -17,12 +17,13 @@ def login(request):
         data = controllers.get_openid(code)
         if data:
             openid = data['openid']
-            user, gflag = controllers.get_user(openid)
-            if not gflag:  # 新用户，不在用户列表里
+            user, isOld = controllers.get_user(openid)
+            if not isOld:  # 新用户，不在用户列表里
                 user,cflag = controllers.create_user(openid)
             jwt = generate_jwt({"openid": openid})
             return JsonResponse({
                 'jwt': jwt,
+                'new': not isOld,
                 'nickname': user.nickname,
                 'age': user.age,
                 'addr': user.addr,
@@ -36,12 +37,9 @@ def login(request):
             )
         else:
             return JsonResponse({"message": "Invalid credentials"}, status=401)
-
-    except json.JSONDecodeError:
-        return JsonResponse({"message": "bad arguments"}, status=400)
     except:
         return JsonResponse({"message": "bad arguments"}, status=400)
-    return HttpResponse('登录成功')
+
 
 
 def logout(request):
