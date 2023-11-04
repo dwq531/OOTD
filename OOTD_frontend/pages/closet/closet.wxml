@@ -1,0 +1,56 @@
+<!--主盒子-->
+<view class="container">
+  <view class="head">
+    <view class="top">
+      <image src="/static/weather/{{weatherCode}}-fill.svg" alt="QWeather Icons" />
+      <text>{{weatherChar}} {{temprature}}℃</text>
+    </view>
+    <view class="outfit">
+      <text id="outfit_text">今日穿搭</text>
+      <scroll-view scroll-x>
+        <block wx:if="{{outfitItems}}">
+          <block wx:for="{{outfitItems}}" wx:key="*this">
+            <view class="outfit_item">
+              <block wx:if="{{item.image}}">
+                <image src="{{item.image}}">
+                </image>
+              </block>
+              <block wx:else>
+                <image src=""></image>
+              </block>
+              <text>{{item}}</text>
+            </view>
+          </block>
+        </block>
+      </scroll-view>
+    </view>
+
+  </view>
+  <view class="closet">
+    <view class="nav_left">
+      <block wx:for="{{navLeftItems}}" wx:key="*this">
+        <!--当前项的id等于item项的id，那个就是当前状态-->
+        <!--用data-index记录这个数据在数组的下标位置，使用data-id设置每个item的id值，供打开2级页面使用-->
+        <view class="nav_left_items{{curIndex == index ? 'active' : ''}}" bindtap="switchRightTab" data-index="{{index}}"> {{item}}</view>
+      </block>
+    </view>
+    <scroll-view scroll-y class="nav_right">
+      <block wx:if="{{navRightItems[curIndex]}}">
+        <block wx:for="{{navRightItems[curIndex]}}" wx:key="*this">
+          <view class="nav_right_items">
+            <block wx:if="{{item.image}}">
+              <image src="{{item.image}}">
+              </image>
+            </block>
+            <block wx:else>
+              <image src=""></image>
+            </block>
+            <text>{{item}}</text>
+          </view>
+        </block>
+      </block>
+    </scroll-view>
+  </view>
+
+
+</view>

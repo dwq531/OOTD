@@ -13,6 +13,9 @@ App({
         wx.request({
           url: 'http://127.0.0.1:8000/api/user/login',
           method: 'PATCH',
+          header: {
+            'Content-Type': 'application/json' // 设置请求头为JSON格式
+          },
           data: {
             code : res.code
           },
