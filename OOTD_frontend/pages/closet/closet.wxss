@@ -12,16 +12,9 @@ page {
   color: #939393;
 }
 
-.head {
-  position: absolute;
-  top:0;
-  width: 100%;
-  height: 30%;
-}
-
 .closet {
   position: absolute;
-  top:30%;
+  top:20%;
   width: 100%;
   height: 60%;
   min-height:358px;
@@ -99,8 +92,11 @@ page {
   text-overflow: ellipsis;
 }
 .top {
+  position:absolute;
+  top:0;
+  left:0;
   padding:10px;
-  height:30%;
+  height:10%;
   width:100%;
   background: linear-gradient(to right,rgb(170,196,233),rgb(245,205,206));
 }
@@ -115,7 +111,10 @@ page {
 
 }
 .outfit {
-  height:60%;
+  position:absolute;
+  top:0;
+  left:0;
+  height:20%;
   width:100%;
   background-color:white;
   display: block;
@@ -150,7 +149,7 @@ page {
 
 .top image {
   position: absolute;
-  top:20%;
+  top:40%;
   left:10px;
   transform: translate(0,-50%);
   width:50px;
@@ -158,11 +157,24 @@ page {
 }
 .top text {
   position: absolute;
-  top:15%;
+  top:30%;
   left:60px;
   transform: translate(0,-50%);
   margin:10px;
   font-size:30px;
   color:white;
   text-align: center;
+}
+movable-area {
+  position:absolute;
+  top:10%;
+  left:0;
+  height:90%;
+  width:100%;
+}
+movable-view {
+  z-index:99999;
+  height: 80px;
+  width:80px;
+  border:solid 5px #939393;
 }
