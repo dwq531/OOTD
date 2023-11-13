@@ -3,6 +3,9 @@
   <view class="top">
     <image src="/static/weather/{{weatherCode}}-fill.svg" alt="QWeather Icons" />
     <text>{{weatherChar}} {{temprature}}℃</text>
+    <button id="recommendBut">推荐穿搭</button>
+    <button id="addBut">添加衣服</button>
+    <button id="scoreBut">评分</button>
   </view>
   <movable-area>
     <movable-view x="{{x}}" y="{{y}}" direction="all" damping="{{5000}}" friction="{{1}}" hidden="{{hidden}}">
@@ -14,7 +17,7 @@
     </movable-view>
     <view class="outfit">
       <text id="outfit_text">今日穿搭</text>
-      <scroll-view scroll-x bindscroll="onScrollx">
+      <scroll-view scroll-x>
         <block wx:if="{{outfitItems}}">
           <block wx:for="{{outfitItems}}" id="oufit_{{index}}" wx:key="*this">
             <view class="outfit_item">
@@ -23,9 +26,10 @@
                 </image>
               </block>
               <block wx:else>
-                <image src=""></image>
+                <image src="/static/default/noimage.png"></image>
               </block>
               <text>{{item.name}}</text>
+              <button id="deleteBut" bindtap="deleteOutfit" data-id="{{index}}">-</button>
             </view>
           </block>
         </block>
@@ -43,14 +47,14 @@
       </view>
       <scroll-view scroll-y="{{scrollable}}" class="nav_right" bindscroll="onScrolly">
         <block wx:if="{{clothes[curIndex]}}">
-          <block wx:for="{{clothes[curIndex]}}" wx:key="*this">
+          <block wx:for="{{clothes[curIndex]}}" >
             <view class="nav_right_items" id="cloth_{{index}}" data-index="{{index}}" data-url="{{item}}" bindlongpress="_longtap" bindtouchstart='touchs' bindtouchend='touchend' bindtouchmove='touchm'>
               <block wx:if="{{item.image}}">
                 <image src="{{item.image}}">
                 </image>
               </block>
               <block wx:else>
-                <image src=""></image>
+                <image src="/static/default/noimage.png"></image>
               </block>
               <text>{{item}}</text>
 
@@ -60,5 +64,4 @@
       </scroll-view>
     </view>
   </movable-area>
-
 </view>

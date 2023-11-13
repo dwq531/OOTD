@@ -24,7 +24,6 @@ Page({
       y: 0,
       scrollable: true,
       scrollTop:0,
-      scrollLeft:0
   },
   onLoad: function() {
       // 加载的使用进行网络访问，把需要的数据设置到data数据对象
@@ -59,7 +58,7 @@ Page({
   _longtap: function(e){
     const img = e.currentTarget.dataset.img;
     const url = e.currentTarget.dataset.url;
-    console.log(url)
+    //console.log(url)
     if(img)
     {
       this.setData({
@@ -68,7 +67,7 @@ Page({
     }
       this.setData({
         x: e.currentTarget.offsetLeft+90,
-        y: e.currentTarget.offsetTop+110-this.data.scrollTop,
+        y: e.currentTarget.offsetTop+90-this.data.scrollTop,
         hidden: false,
         flag: true,
         scrollable:false,
@@ -87,7 +86,7 @@ Page({
       const y = e.touches[0].pageY
       this.setData({
         x: x-40,
-        y: y-100
+        y: y-150
       })
     }
   },
@@ -132,11 +131,11 @@ Page({
       scrollTop:d
     })
   },
-  onScrollx: function(e){
-    const d = e.detail.scrollLeft
-    //console.log(d)
+  deleteOutfit:function(e){
+    const index = e.currentTarget.dataset.id;
+    this.data.outfitItems.splice(index,1);
     this.setData({
-      scrollLeft:d
+      outfitItems:this.data.outfitItems
     })
   }
 })
