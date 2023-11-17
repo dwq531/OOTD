@@ -22,6 +22,7 @@ def login(request):
             user, isOld = controllers.get_user(openid)
             if not isOld:  # 新用户，不在用户列表里
                 user,cflag = controllers.create_user(openid)
+                user.save_image_from_url()
             jwt = generate_jwt({"openid": openid})
             return JsonResponse({
                 'jwt': jwt,
@@ -32,8 +33,8 @@ def login(request):
                 'gender': user.gender,
                 'phone': user.phone,
                 'intro': user.intro,
-                'avatarUrl': user.avatarUrl,    
-                'updated': user.updated,      
+                'avatarUrl': user.avatarUrl,
+                'updated': user.updated,
                 'message': 'ok'
             }, status = 200)
         else:
@@ -89,13 +90,17 @@ def edit_info(request):
     try:
         user = request.user
         
-        #TODO: 检查参数正确性
+        # TODO: 检查参数正确性
         if False:
             return JsonResponse({"message": "Invalid argument"}, status=400)
         
         
         if (request.avatarUrl):
             user.avatarUrl = request.avatarUrl
+            user.save_img_from_url()
+            if user.avatar is None:
+                return JsonResponse({"message": "Invalid argument"}, status=400)
+        
         if (request.nickname):
             user.nickname = request.nickname
         if (request.gender):
@@ -114,7 +119,6 @@ def edit_info(request):
 
 '''
 openid 感觉没必要返回给用户，jwt 已经完成了
-（话说用这么多助教的代码没问题吗...）
 '''
 
 
