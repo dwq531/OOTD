@@ -1,0 +1,50 @@
+<!--pages/personalCenter.wxml-->
+<view class="container">
+  <view class="headbar">
+    <view class="gradientRect"></view>
+    <view class="userinfo">
+    
+      <image class="userinfo-avatar" src="{{app.globalData.avatarUrl}}" mode="aspectFill"></image>
+      <text class="userinfo-nickname">{{app.globalData.nickname}}</text>
+      <text class="userinfo-gender">{{app.globalData.gender}}</text>
+      <text class="userinfo-age">{{app.globalData.age}}</text>
+      <text class="userinfo-addr">{{app.globalData.addr}}</text>
+    
+      <view class="collection-container">
+        <view class='userinfo-likes'>
+          <text class="label">收藏</text>
+          <text class="info">{{ 9 }}</text>
+        </view>
+        <view class='userinfo-following'>
+          <text class="label">关注</text>
+          <text class="info">{{ 9 }}</text>
+        </view>
+        <view class='userinfo-posts'>
+          <text class="label">帖子</text>
+          <text class="info">{{ 9 }}</text>
+        </view>
+        <view class='userinfo-followers'>
+          <text class="label">粉丝</text>
+          <text class="info">{{ 9 }}</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
+  
+  <view class="user_frequency">
+      <picker mode="selector" range="{{months}}" 
+      value="{{0}}"bindchange="onPickerChange">
+      <view class="picker">{{selectedMonth}}</view>
+      </picker>
+    <text class="outfitTitle">穿搭频次统计</text>
+  </view>
+  <view class="chart">
+  <text class="title">统计图统计图统计图</text>
+  </view>
+  <view class="line"></view>
+  <view class="user_wordle">
+    <text class="title">词云图词云图词云图</text>
+  </view>
+  <view class="bottom_bar"></view>
+</view>
