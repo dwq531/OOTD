@@ -23,7 +23,25 @@ App({
               // TODO
               // 处理后端返回的数据
               const isNewUser = res.data.new;
-              
+              this.globalData.isNewUser = isNewUser;
+              const jwt = res.data.jwt;
+              this.globalData.jwt = jwt;
+              const nickname = res.data.nickname;
+              this.globalData.nickname = nickname;
+              const age = res.data.age;
+              this.globalData.age = age;
+              const addr = res.data.addr;
+              this.globalData.addr = adde;
+              const gender = res.data.gender;
+              this.globalData.gender = gender;
+              const phone = res.data.phone;
+              this.globalData.phone = phone;
+              const intro = res.data.intro;
+              this.globalData.intro = intro;
+              const avatarUrl = res.data.avatarUrl;
+              this.globalData.avatarUrl = avatarUrl;
+              const updated = res.data.updated;
+              this.globalData.updated = updated;
             }
             else{
               console.error('请求失败，错误状态码：', res.statusCode);
@@ -38,6 +56,16 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    isNewUser: true,
+    jwt: null,
+    nickname: null,
+    age: null,
+    addr: null,
+    gender: null,
+    phone: null,
+    intro: null,
+    avatarUrl: null,
+    updated: null,
   }
 })
