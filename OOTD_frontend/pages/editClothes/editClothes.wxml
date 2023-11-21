@@ -1,0 +1,22 @@
+<view class="container">
+  <view class="image">
+    <block wx:if="{{imgPath}}">
+      <image mode="heightFix" src="{{imgPath}}" class='item_img'></image>
+    </block>
+    <block wx:else>
+      <image mode="heightFix" src="/static/default/noimage.png"></image>
+    </block>
+    <button id="addImgBut" plain="true">
+      <image src="/static/default/addImg.png" bindtap="uploadImg"></image>
+    </button>
+  </view>
+  <view class="name">
+    <text>名称</text>
+    <input id="name_input" type="text"></input>
+  </view>
+  <view class="category">
+    <text>种类</text>
+    <picker mode="selector" id="category_picker" range="{{category}}" value="{{index}}" bindchange="pickerChange">{{chosenCategory}}</picker>
+  </view>
+  <button id="saveBut">保存</button>
+</view>

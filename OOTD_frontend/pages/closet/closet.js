@@ -15,6 +15,7 @@ Page({
       weatherCode:100,
       temprature:15,
       score:0,
+      dialogShow:true,
       // 长按拖拽
       movingImg: '',
       movingUrl:"none",
@@ -24,6 +25,7 @@ Page({
       y: 0,
       scrollable: true,
       scrollTop:0,
+
   },
   onLoad: function() {
       // 加载的使用进行网络访问，把需要的数据设置到data数据对象
@@ -55,7 +57,7 @@ Page({
           curIndex: index
       })
   },
-  _longtap: function(e){
+  longtap: function(e){
     const img = e.currentTarget.dataset.img;
     const url = e.currentTarget.dataset.url;
     //console.log(url)
@@ -136,6 +138,35 @@ Page({
     this.data.outfitItems.splice(index,1);
     this.setData({
       outfitItems:this.data.outfitItems
+    })
+  },
+  shorttap: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const index = e.currentTarget.dataset.index;
+    //console.log(index)
+    wx.navigateTo({
+      url:"/pages/editClothes/editClothes?url="+url+"&index="+index,
+    })
+  },
+  addClothes: function(e){
+    wx.navigateTo({
+      url:"/pages/editClothes/editClothes?url=0&index=-1",
+    })
+  },
+  evaluate:function(e){
+    //wx.request
+    this.setData({
+      dialogShow:false
+    })
+  },
+  changeOutfit:function(e){
+    this.setData({
+      dialogShow:true
+    })
+  },
+  cancel:function(e){
+    this.setData({
+      dialogShow:true
     })
   }
 })

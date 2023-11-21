@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/logs/logs",
-    "pages/closet/closet"
+    "pages/closet/closet",
+    "pages/editClothes/editClothes"
   ],
   "window":{
     "backgroundTextStyle":"light",
