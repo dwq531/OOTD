@@ -162,15 +162,21 @@ page {
 
 .top text {
   position: absolute;
-  top: 25px;
-  left: 60px;
+ 
   transform: translate(0, -50%);
   margin: 10px;
   font-size: 30px;
   color: white;
   text-align: center;
 }
-
+.weatherText{
+  top: 25px;
+  left: 60px;
+}
+.scoreText{
+  top: 25px;
+  right: 20px;
+}
 movable-area {
   position: absolute;
   top: 20%;

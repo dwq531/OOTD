@@ -2,7 +2,8 @@
 <view class="container">
   <view class="top">
     <image src="/static/weather/{{weatherCode}}-fill.svg" alt="QWeather Icons" />
-    <text>{{weatherChar}} {{temprature}}℃</text>
+    <text class="weatherText">{{weatherChar}} {{temprature}}℃</text>
+    <text wx:if="{{score!=0}}" class="scoreText">{{score}}分</text>
     <button id="recommendBut">推荐穿搭</button>
     <button id="addBut" bindtap="addClothes" >添加衣服</button>
     <button id="scoreBut" bindtap="evaluate">评分</button>

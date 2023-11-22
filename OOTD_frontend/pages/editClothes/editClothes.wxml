@@ -18,5 +18,6 @@
     <text>种类</text>
     <picker mode="selector" id="category_picker" range="{{category}}" value="{{index}}" bindchange="pickerChange">{{chosenCategory}}</picker>
   </view>
-  <button id="saveBut">保存</button>
+  <button id="deleteBut" wx:if="{{index!=-1}}" bindtap="deleteClothes">删除</button>
+  <button id="saveBut" bindtap="saveClothes">保存</button>
 </view>

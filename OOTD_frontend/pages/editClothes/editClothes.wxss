@@ -70,6 +70,13 @@ picker {
   color:white;
   background-color: rgb(170, 196, 233);
 }
+#deleteBut {
+  position:absolute;
+  bottom:80px;
+  width:90%;
+  color:white;
+  background-color: rgb(255, 104, 104);
+}
 
 #addImgBut {
   z-index: 20;

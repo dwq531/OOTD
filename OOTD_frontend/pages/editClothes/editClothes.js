@@ -32,5 +32,25 @@ Page({
         })
       }
     })
+  },
+  deleteClothes:function(e){
+    wx.showModal({
+      title: '删除衣服',
+      content: '您确认要删除这件衣服吗？操作不可撤销！',
+      complete: (res) => {
+        if (res.confirm) {
+          // 更新后端数据
+          wx.navigateBack({
+            delta:1
+          })
+        }
+      }
+    })
+  },
+  saveClothes:function(e){
+    // 更新后端
+    wx.navigateBack({
+      delta:1
+    })
   }
 })
