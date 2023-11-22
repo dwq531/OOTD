@@ -26,6 +26,7 @@ def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', av
             addr=addr,
             gender=gender,
             avatarUrl=avatarUrl,
+            avatar=None,
             phone=phone,
             intro=intro,
             updated=now
