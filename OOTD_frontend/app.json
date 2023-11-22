@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/logs/logs",
-    "pages/personalCenter/personalCenter"
+    "pages/personalCenter/personalCenter",
+    "pages/informationEditor/informationEditor"
   ],
   "window":{
     "backgroundTextStyle":"light",
