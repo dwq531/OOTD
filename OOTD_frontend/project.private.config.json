@@ -16,7 +16,9 @@
           "scene": null,
           "partialCompile": {
             "enabled": true,
-            "pages": []
+            "pages": [
+              "pages/editClothes/editClothes"
+            ]
           }
         }
       ]
