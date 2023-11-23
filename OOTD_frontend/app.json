@@ -1,12 +1,14 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/personalCenter/personalCenter",
+    "pages/informationEditor/informationEditor"
   ],
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "Outfit Of ToDay",
     "navigationBarTextStyle":"black"
   },
   "style": "v2",
