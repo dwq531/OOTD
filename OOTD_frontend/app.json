@@ -3,12 +3,14 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/closet/closet",
-    "pages/editClothes/editClothes"
+    "pages/editClothes/editClothes",
+    "pages/personalCenter/personalCenter",
+    "pages/informationEditor/informationEditor"
   ],
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "Outfit Of ToDay",
     "navigationBarTextStyle":"black"
   },
   "style": "v2",
