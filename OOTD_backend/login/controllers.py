@@ -40,8 +40,9 @@ def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', av
 # 给微信API发送code2session请求
 def get_openid(code):
     try:
-
-        response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=wxe695d8ed64cfbc63&secret=6a4d7088e79a482b8efaf77bedc14625&js_code="
+        appid = "wx24a962d844d52f39"
+        secret = "860e17832055fb71d2eb13f2ec244c88"
+        response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + appid + "&secret=" +  secret + "&js_code="
                                 +code+
                                 "&grant_type=authorization_code")
         dic_res = json.loads(response.text)
