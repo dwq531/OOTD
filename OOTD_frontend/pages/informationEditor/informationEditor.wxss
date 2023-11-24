@@ -16,6 +16,8 @@ Page {
   margin-bottom: 13px;
   display: flex;
   justify-content: space-between; /* 使子元素沿着主轴方向（水平方向）均匀分布 */
+  background-color: white;
+  height:50px;
 }
 .label {
   order: -1;
@@ -62,4 +64,24 @@ Page {
   right:10px;
   margin-right: 15px;
   padding-left:10px;
+}
+text, input , picker{
+  margin-top:10px;
+}
+#saveBut {
+  position:absolute;
+  bottom:30px;
+  width:90%;
+  color:white;
+  background-color: rgb(170, 196, 233);
+}
+
+.avatar {
+  height:100px;
+}
+.avatar text{
+  margin-top:30px;
+}
+.avatar view{
+  margin-top:25px;
 }

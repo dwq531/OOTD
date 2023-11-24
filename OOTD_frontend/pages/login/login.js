@@ -6,7 +6,7 @@ Page({
   data: {
     // motto: '点击头像立即登录',
     userInfo: {},
-    hasUserInfo: false,
+    hasUserInfo: !app.globalData.isNewUser,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     canIUseGetUserProfile: false,
     // canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
@@ -14,14 +14,16 @@ Page({
   },
   // 事件处理函数
   bindViewTap() {
-    wx.navigateTo({
-      url: '../logs/logs'
+    wx.switchTab({
+      url: '/pages/closet/closet'
     })
   },
   onLoad() {
     if (wx.getUserProfile) {
       this.setData({
-        canIUseGetUserProfile: true
+        canIUseGetUserProfile: true,
+        // 更新 hasUserInfo 的值为全局数据中的 isNewUser
+        hasUserInfo: !app.globalData.isNewUser,
       })
     }
   },
@@ -36,8 +38,8 @@ Page({
           hasUserInfo: true,
           canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
         })
-        wx.navigateTo({
-          url: '../logs/logs'
+        wx.switchTab({
+          url: '/pages/closet/closet'
         })
       }
     })

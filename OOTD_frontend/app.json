@@ -1,7 +1,9 @@
 {
   "pages":[
-    "pages/index/index",
+    "pages/login/login",
     "pages/logs/logs",
+    "pages/closet/closet",
+    "pages/editClothes/editClothes",
     "pages/personalCenter/personalCenter",
     "pages/informationEditor/informationEditor"
   ],
@@ -12,5 +14,31 @@
     "navigationBarTextStyle":"black"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "tabBar": {
+    "color": "#707070", 
+    "selectedColor": "#3f81c1",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/closet/closet",
+        "iconPath": "/static/navBar/closet.png",
+        "selectedIconPath": "/static/navBar/closet-active.png",
+        "text": "我的衣柜"
+      },
+      {
+        "pagePath": "pages/personalCenter/personalCenter",
+        "iconPath": "/static/navBar/myinfo.png",
+        "selectedIconPath": "/static/navBar/myinfo-active.png",
+        "text": "个人中心"
+      },
+      {
+        "pagePath": "pages/logs/logs",
+        "iconPath": "/static/navBar/send.png",
+        "selectedIconPath": "/static/navBar/send-active.png",
+        "text": "发帖"
+      }
+    ]
+  }
+
 }

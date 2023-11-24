@@ -2,7 +2,7 @@
 <view class="container">
   <view class="headbar">
     <view class="gradientRect"></view>
-    <view class="userinfo">
+    <view class="userinfo" bindtap="editProfile">
     
       <image class="userinfo-avatar" src="{{app.globalData.avatarUrl}}" mode="aspectFill"></image>
       <text class="userinfo-nickname">{{app.globalData.nickname}}</text>
