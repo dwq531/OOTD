@@ -1,0 +1,43 @@
+<view class="container">
+  <view  class="avatar">
+    <text class="label">头像</text>
+    <!-- view 元素，用于包裹图片和按钮 -->
+    <view class="image">
+      <!-- 使用 wx:if 条件判断，如果 imgPath 存在，则显示图片，否则显示默认图片 -->
+      <block wx:if="{{userInfo.avatarUrl}}">
+        <!-- image 元素，显示图片，mode="heightFix" 表示保持高度缩放以适应宽度 -->
+        <image mode="heightFix" src="{{userInfo.avatarUrl}}" class='item_img'></image>
+      </block>
+      <!-- 使用 wx:else 判断，如果 imgPath 不存在，则显示默认图片 -->
+      <block wx:else>
+        <image mode="heightFix" src="/static/default/noimage.png"></image>
+      </block>
+    </view>
+    <!-- button 元素，用于上传图片，点击按钮触发 uploadImg 函数 -->
+    <button id="addImgBut" plain="true">
+        <!-- image 元素，显示添加图片的图标 -->
+        <image src="/static/default/addImg.png" bindtap="uploadImg"></image>
+    </button>
+  </view>
+  <view  class="nickname">
+    <text class="label">昵称</text>
+    <input id="nickname_input" type="text" value="{{userInfo.nickname}}"></input>
+  </view>
+  <view  class="tel">
+    <text class="label">手机号</text>
+    <input id="tel_input" type="text" value="{{userInfo.phone}}"></input>
+  </view>
+  <view  class="addr">
+    <text class="label">地点</text>
+    <input id="addr_input" type="text" value="{{userInfo.addr}}"></input>
+  </view>
+  <view  class="birth">
+    <text class="label">生日</text>
+    <input id="birth_input" type="text" value="{{userInfo.birth}}"></input>
+  </view>
+  <view  class="gender">
+    <text class="label">性别</text>
+    <picker mode="selector" id="gender_input" range="{{category}}" value="{{index}}" bindchange="pickerChange">{{chosenCategory}}</picker>
+  </view>
+  <button id="saveBut">保存</button>
+</view>
