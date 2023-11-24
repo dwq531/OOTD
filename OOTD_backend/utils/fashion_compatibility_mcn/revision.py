@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
    
     print("="*80)
-    path = ["../data/images/up/up2.jpg","../data/images/bottom/bottom1.jpg","../data/images/shoes/shoes1.jpg","bag_mean","../data/images/accessory/hat2.jpg"]
+    path = ["../data/images/up/up1.jpg","../data/images/bottom/bottom1.jpg","../data/images/shoes/shoes1.jpg","bag_mean","../data/images/accessory/hat1.jpg"]
     x = loadimg_from_path(path).to(device)
     select = [i for i, l in enumerate(path) if 'mean' not in l]
     print("Step 1: show images in an outfit...")

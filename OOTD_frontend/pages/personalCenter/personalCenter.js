@@ -21,5 +21,10 @@ Page({
       selectedMonth: selectedMonth
     });
   },
+  editProfile:function(e){
+    wx.navigateTo({
+      url: '/pages/informationEditor/informationEditor',
+    })
+  }
 
 });

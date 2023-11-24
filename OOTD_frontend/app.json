@@ -27,6 +27,12 @@
         "text": "我的衣柜"
       },
       {
+        "pagePath": "pages/personalCenter/personalCenter",
+        "iconPath": "/static/navBar/myinfo.png",
+        "selectedIconPath": "/static/navBar/myinfo-active.png",
+        "text": "个人中心"
+      },
+      {
         "pagePath": "pages/logs/logs",
         "iconPath": "/static/navBar/send.png",
         "selectedIconPath": "/static/navBar/send-active.png",
