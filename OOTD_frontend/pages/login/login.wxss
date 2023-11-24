@@ -18,10 +18,20 @@
   margin-top: 200px;
 }
 
+.title {
+  font-size: 70rpx;
+  font-weight: bold;
+  background: linear-gradient(45deg, #f5cdce, #aac4e9); /* 渐变色，可根据需求调整颜色 */
+  -webkit-background-clip: text; /* 使文字只显示在背景的区域 */
+  color: transparent; /* 将文字设为透明，只显示背景色 */
+  margin-bottom: 20rpx;
+  text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.2); /* 添加文字阴影效果 */
+}
 
 .content {
   margin-left: 50rpx;
   margin-bottom: 90rpx;
+  margin-top: 200rpx;
 }
 
 .content text {
