@@ -3,7 +3,8 @@ from django.utils import timezone
 from .models import User
 import json
 import requests
-
+import os
+from configparser import ConfigParser
 
 def get_user(openid):
     try:
@@ -40,8 +41,19 @@ def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', av
 # 给微信API发送code2session请求
 def get_openid(code):
     try:
-        appid = "wx24a962d844d52f39"
-        secret = "860e17832055fb71d2eb13f2ec244c88"
+        # 获取配置文件的路径
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config/settings.ini')
+        # 以 utf-8 编码打开文件
+        with open(config_path, 'r', encoding='utf-8') as file:
+            config_text = file.read()
+
+        # 创建 ConfigParser 并加载配置
+        config = ConfigParser()
+        config.read_string(config_text)
+        # 获取值
+        appid = config.get('WECHAT', 'APPID')
+        secret = config.get('WECHAT', 'SECRET')
+        
         response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + appid + "&secret=" +  secret + "&js_code="
                                 +code+
                                 "&grant_type=authorization_code")
