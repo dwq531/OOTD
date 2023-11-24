@@ -10,10 +10,16 @@
       "list": [
         {
           "name": "",
-          "pathName": "pages/informationEditor/informationEditor",
+          "pathName": "pages/closet/closet",
           "query": "",
           "launchMode": "default",
-          "scene": null
+          "scene": null,
+          "partialCompile": {
+            "enabled": true,
+            "pages": [
+              "pages/editClothes/editClothes"
+            ]
+          }
         }
       ]
     }
