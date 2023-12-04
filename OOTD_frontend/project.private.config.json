@@ -10,12 +10,25 @@
       "list": [
         {
           "name": "",
-          "pathName": "pages/closet/closet",
+          "pathName": "pages/posting/posting",
           "query": "",
           "launchMode": "default",
           "scene": null,
           "partialCompile": {
             "enabled": true,
+            "pages": [
+              "pages/closet/closet"
+            ]
+          }
+        },
+        {
+          "name": "",
+          "pathName": "pages/closet/closet",
+          "query": "",
+          "launchMode": "default",
+          "scene": null,
+          "partialCompile": {
+            "enabled": false,
             "pages": [
               "pages/editClothes/editClothes"
             ]
