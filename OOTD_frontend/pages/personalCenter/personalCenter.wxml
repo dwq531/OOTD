@@ -4,7 +4,7 @@
     <view class="gradientRect"></view>
     <view class="userinfo" bindtap="editProfile">
     
-      <image class="userinfo-avatar" src="{{app.globalData.avatarUrl}}" mode="aspectFill"></image>
+      <image class="userinfo-avatar" src="http://127.0.0.1:8000/media/images/avatars/o3iSx6yd6nPHuhpYRGHqw3k3_Ls0_avatar_aLESQu5.jpg" mode="aspectFill"></image>
       <text class="userinfo-nickname">{{app.globalData.nickname}}</text>
       <text class="userinfo-gender">{{app.globalData.gender}}</text>
       <text class="userinfo-age">{{app.globalData.age}}</text>

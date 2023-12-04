@@ -28,21 +28,46 @@ Page({
     }
   },
   getUserProfile(e) {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log(res)
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true,
-          canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
-        })
-        wx.switchTab({
-          url: '/pages/closet/closet'
-        })
-      }
-    })
+    if(!app.globalData.login)
+    {
+      return;
+    }
+    else if( app.globalData.isNewUser)
+    {// 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
+      wx.getUserProfile({
+        desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        success: (res) => {
+          app.globalData.nickname = res.userInfo.nickName
+          app.globalData.avatarUrl = res.userInfo.avatarUrl
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true,
+            canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
+          })
+          wx.request({
+            url: 'http://127.0.0.1:8000/api/user/edit_info',
+            method: 'PATCH',
+            header: {
+              'Authorization':app.globalData.jwt,
+              'Content-Type': 'application/json' // 设置请求头为JSON格式
+            },
+            data: {
+              'avatarUrl' : app.globalData.avatarUrl,
+              'nickname':app.globalData.nickname
+            },
+          })
+          wx.switchTab({
+            url: '/pages/closet/closet'
+          })
+        }
+      })
+    }
+    else
+    {
+      wx.switchTab({
+        url: '/pages/closet/closet'
+      })
+    }
   },
   getUserInfo(e) {
     // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
