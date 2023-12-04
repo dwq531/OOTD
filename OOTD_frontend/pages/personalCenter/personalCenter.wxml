@@ -3,14 +3,18 @@
   <view class="headbar">
     <view class="gradientRect"></view>
     <view class="userinfo" bindtap="editProfile">
-    
-      <image class="userinfo-avatar" src="{{app.globalData.avatarUrl}}" mode="aspectFill"></image>
-      <text class="userinfo-nickname">{{app.globalData.nickname}}</text>
-      <text class="userinfo-gender">{{app.globalData.gender}}</text>
-      <text class="userinfo-age">{{app.globalData.age}}</text>
-      <text class="userinfo-addr">{{app.globalData.addr}}</text>
-    
-      <view class="collection-container">
+      <view class="container1">
+        <view class="container11">
+          <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+        </view>
+        <view class="container12">
+          <view><text class="nickname">{{nickname}}</text></view>
+          <view><text class="gender">{{gender}}</text></view>
+          <view><text class="age">{{age}}</text></view>
+          <view><text class="addr">{{addr}}</text></view>
+        </view>
+      </view>
+      <view class="container2">
         <view class='userinfo-likes'>
           <text class="label">收藏</text>
           <text class="info">{{ 9 }}</text>
