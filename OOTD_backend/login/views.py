@@ -22,7 +22,7 @@ def login(request):
             user, isOld = controllers.get_user(openid)
             if not isOld:  # 新用户，不在用户列表里
                 user,cflag = controllers.create_user(openid)
-                user.save_image_from_url()
+                #user.save_image_from_url()
             jwt = generate_jwt({"openid": openid})
             return JsonResponse({
                 'jwt': jwt,
@@ -89,32 +89,34 @@ def edit_info(request):
         
     try:
         user = request.user
-        
+        content = json.loads(request.body)
+        print(content)
         # TODO: 检查参数正确性
         if False:
             return JsonResponse({"message": "Invalid argument"}, status=400)
         
         
-        if (request.avatarUrl):
-            user.avatarUrl = request.avatarUrl
-            user.save_img_from_url()
+        if (content.get('avatarUrl')):
+            user.avatarUrl = content['avatarUrl']
+            user.save_image_from_url()
             if user.avatar is None:
                 return JsonResponse({"message": "Invalid argument"}, status=400)
         
-        if (request.nickname):
-            user.nickname = request.nickname
-        if (request.gender):
-            user.gender = request.gender
-        if (request.phone):
-            user.phone = request.phone
-        if (request.intro):
-            user.intro = request.intro
-        
+        if (content.get('nickname')):
+            user.nickname = content['nickname']
+        if (content.get('gender')):
+            user.gender = content['gender']
+        if (content.get('phone')):
+            user.phone = content['phone']
+        if (content.get('intro')):
+            user.intro = content['intro']
+        user.save()
         user.updated = timezone.now()
         
         return JsonResponse({"updated": user.updated, "message": "ok"}, status=200)
         
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({"message": "Internal Server Error"}, status=500)
 
 '''
