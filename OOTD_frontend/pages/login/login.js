@@ -55,6 +55,9 @@ Page({
               'avatarUrl' : app.globalData.avatarUrl,
               'nickname':app.globalData.nickname
             },
+            success:(res)=>{
+              app.globalData.avatarUrl = res.data.avatarUrl
+            }
           })
           wx.switchTab({
             url: '/pages/closet/closet'

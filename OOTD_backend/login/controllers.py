@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from .models import User
+from .models import User,Gender
 import json
 import requests
 
@@ -16,7 +16,7 @@ def get_user(openid):
         return "errors", False
 
 
-def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', avatarUrl='', phone='', intro="该用户未填写个人简介"):
+def create_user(openid, nickname="匿名用户", age=18, addr="北京", gender=Gender.FEMALE, avatarUrl='', phone='', intro="该用户未填写个人简介"):
     try:
         now = timezone.now()
         u = User.objects.create(
