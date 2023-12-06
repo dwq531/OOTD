@@ -76,11 +76,6 @@ def user(request):
 
 
 @login_required
-def addr(request):
-    return JsonResponse({"message": "Not Implemented"}, status=501)
-
-
-@login_required
 def edit_info(request):
     """
     修改用户信息
@@ -120,6 +115,16 @@ def edit_info(request):
                 return JsonResponse({"message": "Invalid intro"}, status=400)
             else:
                 user.intro = content['intro']
+        if (content.get('addr')):
+            if len(content['addr'])>127:
+                return JsonResponse({"message": "Invalid addr"}, status=400)
+            else:
+                user.addr = content['addr']
+        if (content.get('age')):
+            if content['age']<0 or content['age']>100:
+                return JsonResponse({"message": "Invalid age"}, status=400)
+            else:
+                user.age = content['age']
         user.save()
         user.updated = timezone.now()
         
