@@ -3,6 +3,7 @@ from utils.jwt import login_required
 from django.http import JsonResponse
 from .models import Post, Comment
 from .forms import PostForm, CommentForm, LikeForm, FavoriteForm
+from .serializers import PostSerializer, CommentSerializer, ImageSerializer
 
 
 '''
@@ -26,7 +27,8 @@ def create_post(request):
     
     elif request.method == 'GET':   # 用户获取空表单
         form = PostForm()
-        return JsonResponse({'form': form}, status=200)
+        serializer = PostSerializer(form.instance)
+        return JsonResponse({'form': serializer.data}, status=200)
     
     else:
         return JsonResponse({"message": "Method not allowed"}, status=405)
@@ -71,9 +73,12 @@ def post_detail(request, post_id):
             else:
                 post.favorites.remove(request.user)
 
+    post_serializer = PostSerializer(post)
+    comment_serializer = CommentSerializer(comment_form)
+
     return JsonResponse(
-        {'post': post, 'comment_form': comment_form, 
-         'liked_form': like_form, 'favorite_form': favorite_form},
+        {'post': post_serializer.data, 'comment_form': comment_serializer.data, 
+         'liked_form': like_form.is_liked, 'favorite_form': favorite_form.is_favorite},
         status=200)
 
 
@@ -95,5 +100,7 @@ def user_posts(request, post_type):
         posts = user.favorite_posts.all()
     else:
         posts = []
+        
+    serializer = PostSerializer(posts, many=True)
     
-    return JsonResponse({'posts': posts, 'post_type': post_type}, status=200)
+    return JsonResponse({'posts': serializer.data, 'post_type': post_type}, status=200)
