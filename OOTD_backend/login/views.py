@@ -3,7 +3,8 @@ from utils.jwt import encrypt_password, generate_jwt, login_required
 import json
 from login import controllers
 from django.utils import timezone
-
+from login.models import Gender
+import re
 
 
 def login(request):
@@ -30,7 +31,7 @@ def login(request):
                 'nickname': user.nickname,
                 'age': user.age,
                 'addr': user.addr,
-                'gender': user.gender,
+                'gender': Gender(user.gender).label,
                 'phone': user.phone,
                 'intro': user.intro,
                 'avatarUrl': user.avatarUrl,
@@ -63,7 +64,7 @@ def user(request):
             'nickname': user.nickname,
             'age': user.age,
             'addr': user.addr,
-            'gender': user.gender,
+            'gender': Gender(user.gender).label,
             'phone': user.phone,
             'intro': user.intro,
             'avatarUrl': user.avatarUrl,
@@ -72,11 +73,6 @@ def user(request):
         }, status=200)
     except:
         return JsonResponse({"message": "Internal Server Error"}, status=500)
-
-
-@login_required
-def addr(request):
-    return JsonResponse({"message": "Not Implemented"}, status=501)
 
 
 @login_required
@@ -89,31 +85,50 @@ def edit_info(request):
         
     try:
         user = request.user
-        content = json.loads(request.body)
-        print(content)
-        # TODO: 检查参数正确性
-        if False:
-            return JsonResponse({"message": "Invalid argument"}, status=400)
-        
-        
+        content = json.loads(request.body)        
         if (content.get('avatarUrl')):
             user.avatarUrl = content['avatarUrl']
             user.save_image_from_url()
             if user.avatar is None:
-                return JsonResponse({"message": "Invalid argument"}, status=400)
+                return JsonResponse({"message": "Invalid avatarUrl"}, status=400)
         
         if (content.get('nickname')):
-            user.nickname = content['nickname']
+            if len(content['nickname'])>32:
+                return JsonResponse({"message": "Invalid nickname"}, status=400)
+            else:
+                user.nickname = content['nickname']
         if (content.get('gender')):
-            user.gender = content['gender']
+            if content['gender']=='女':
+                user.gender = Gender.FEMALE
+            elif content['gender']=='男':
+                user.gender = Gender.MALE
+            else:
+                return JsonResponse({"message": "Invalid gender"}, status=400)
         if (content.get('phone')):
-            user.phone = content['phone']
+            pattern = r'^\d{10}$'  # 例如：123-456-7890
+            if re.match(pattern, content['phone']):
+                user.phone = content['phone']
+            else:
+                return JsonResponse({"message": "Invalid phone"}, status=400)
         if (content.get('intro')):
-            user.intro = content['intro']
+            if len(content['intro'])>255:
+                return JsonResponse({"message": "Invalid intro"}, status=400)
+            else:
+                user.intro = content['intro']
+        if (content.get('addr')):
+            if len(content['addr'])>127:
+                return JsonResponse({"message": "Invalid addr"}, status=400)
+            else:
+                user.addr = content['addr']
+        if (content.get('age')):
+            if content['age']<0 or content['age']>100:
+                return JsonResponse({"message": "Invalid age"}, status=400)
+            else:
+                user.age = content['age']
         user.save()
         user.updated = timezone.now()
         
-        return JsonResponse({"updated": user.updated, "message": "ok"}, status=200)
+        return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated, "message": "ok"}, status=200)
         
     except Exception as e:
         print(e)
