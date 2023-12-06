@@ -3,8 +3,10 @@ Page({
   data:{
     url:'',
     index:'',
-    chosenCategory:"请选择",
-    category: ["上衣","下装","连衣裙","外套","帽子","鞋子"],
+    chosenCategory:"上衣",
+    chosenDetail:"请选择",
+    category: ["上衣","下装","鞋子","包","饰品"],
+    detail:["T恤","衬衫","卫衣","毛衣","吊带","POLO衫","连衣裙","风衣","马甲","夹克","皮衣","冲锋衣","防晒衣","羽绒服","正装外套","其他"],
     imgPath:''
   },
   onLoad: function (options) {
@@ -13,9 +15,27 @@ Page({
       index:options.index
     })
   },
-  pickerChange: function(e) {
+  categoryChange: function(e) {
+    const type = this.data.category[e.detail.value]
+    if(type == "上衣")
+      this.data.detail = ["T恤","衬衫","卫衣","毛衣","吊带","POLO衫","连衣裙","风衣","马甲","夹克","皮衣","冲锋衣","防晒衣","羽绒服","正装外套","其他"]
+    else if(type == "下装")
+      this.data.detail = ["牛仔裤","裙裤","运动裤","背带裤","休闲裤","棉裤","正装裤","半身裙","其他"]
+    else if(type == "鞋子")
+      this.data.detail = ["运动鞋","凉鞋","板鞋","帆布鞋","靴子","其他"]
+    else if(type == "包")
+      this.data.detail = ["手提包","腰包","挎包","背包"]
+    else if(type == "饰品")
+      this.data.detail = ["项链","帽子","围巾","耳环","头饰"]
     this.setData({
-      chosenCategory:this.data.category[e.detail.value]
+      chosenCategory:type,
+      detail:this.data.detail,
+      chosenDetail:"请选择"
+    })
+  },
+  detailChange:function(e){
+    this.setData({
+      chosenDetail:this.data.detail[e.detail.value]
     })
   },
   uploadImg: function(e) {
