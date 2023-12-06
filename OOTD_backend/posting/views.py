@@ -44,13 +44,12 @@ def post_detail(request, post_id):
     # 获取贴文详情
     post = get_object_or_404(Post, pk=post_id)
     
-    comment_form = CommentForm()
+    comment_form = CommentForm(request.POST or None)
     like_form = LikeForm(request.POST or None)
     favorite_form = FavoriteForm(request.POST or None)
 
     if request.method == 'POST':
         # 评论操作
-        comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.post = post
