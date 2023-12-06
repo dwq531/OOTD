@@ -2,39 +2,46 @@
 const app = getApp()
 Page({
   data:{
-    url:'',
-    index:'',
-    chosenCategory:"请选择",
-    category: ["男","女","其他"],
-    imgPath:'',
-    userInfo:{}
+    url:"",
+    index:"",
+    gender:"请选择",//gender
+    category: ["男","女"],
+    avatarUrl:"",
+    nickname:"",
+    phone:"",
+    addr:"",
+    age:"",
+    avatarUrl_changed:false,
   },
   // 页面加载时执行的函数
   onLoad: function (options) {
     this.getUserInfo();
-    this.setData({
-      url:options.url,
-      index:options.url,
-    })
+    //console.log("phone: "+ this.data.nickname);
+    //console.log("nickname:",this.data.nickname);
   },
   pickerChange: function(e) {
     this.setData({
-      chosenCategory:this.data.category[e.detail.value]
+     gender:this.data.category[e.detail.value],
     })
   },
   getUserInfo: function () {
     // 在这里调用后端 API 获取用户信息
     wx.request({
       method: 'GET',
-      url: 'https://127.0.0.1:8000/api/user/user',
+      url: 'http://127.0.0.1:8000/api/user/user',
       header: {
-        'Authorization': 'jwt ' + wx.getStorageSync('jwt'), // 添加 JWT Token
+        'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
       success: (res) => {
         if (res.statusCode === 200) {
           // 更新页面数据，显示用户信息
           this.setData({
-            userInfo: res.data,
+            avatarUrl:res.data.avatarUrl,
+            nickname:res.data.nickname,
+            phone:res.data.phone,
+            addr:res.data.addr,
+            age:res.data.age,
+             gender:res.data.gender,
           });
         } else {
           // 处理请求失败的情况
@@ -61,9 +68,73 @@ Page({
         // chooseMedia 成功后的回调函数
         // 通过 setData 更新数据，将选择的图片路径存储在 imgPath 变量中
         that.setData({
-          imgPath:res.tempFiles[0].tempFilePath
+          avatarUrl:res.tempFiles[0].tempFilePath,
+          avatarUrl_changed:true,
         })
       }
     })
   },
+  onNicknameChange: function(e){
+    this.setData({
+      nickname: e.detail.value,
+    });
+    //console.log("nickname: ",this.data.nickname);
+  },
+  onPhoneChange: function(e){
+    this.setData({
+      phone: e.detail.value,
+    });
+  },
+  onAddrChange: function(e){
+    this.setData({
+      addr: e.detail.value,
+    });
+    //console.log("addr: ",this.data.addr);
+  },
+  onAgeChange: function(e){
+    this.setData({
+      age: e.detail.value,
+    });
+  },
+
+  // 保存按钮点击事件处理函数
+  saveUserInfo: function () {
+    // 获取输入框的值
+    const nickname = this.data.nickname;
+    const phone = this.data.phone;
+    const addr = this.data.addr;
+    var avatarUrl = "";
+    if (this.data.avatarUrl_changed == true) {
+      avatarUrl = this.data.avatarUrl;}
+    const age = this.data.age;
+
+    // 调用后端接口保存数据
+    wx.request({
+      method: 'PATCH', // 假设这里是用 POST 请求保存数据
+      url: 'http://127.0.0.1:8000/api/user/edit_info',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': app.globalData.jwt, // 添加 JWT Token
+      },
+      data: {
+        nickname: nickname,
+        phone: phone,
+        avatarUrl:avatarUrl,
+        addr:addr,
+        age:age,
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          console.log('用户信息保存成功');
+          // 这里可以根据后端返回的数据进行相应的处理
+        } else {
+          console.error('保存用户信息失败:', res.data);
+        }
+      },
+      fail: (err) => {
+        console.error('请求保存用户信息失败:', err);
+      }
+    });
+  },
+
 });
