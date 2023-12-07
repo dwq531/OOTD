@@ -105,7 +105,7 @@ def edit_info(request):
             else:
                 return JsonResponse({"message": "Invalid gender"}, status=400)
         if (content.get('phone')):
-            pattern = r'^\d{10}$'  # 例如：123-456-7890
+            pattern = r'^\d{11}$'  # 例如：1234567890
             if re.match(pattern, content['phone']):
                 user.phone = content['phone']
             else:
@@ -137,7 +137,23 @@ def edit_info(request):
 '''
 openid 感觉没必要返回给用户，jwt 已经完成了
 '''
+@login_required
+def upload_file(request):
+    try:
+        if request.method == 'POST':
+            uploaded_file = request.FILES['file'] 
+            user = request.user
+            print(user.avatarUrl)
+            #删除原来的头像
+            user.avatar.delete(save=False)
+            user.avatarUrl = 'avatars/' + f'{user.openid}_avatar.jpg'
+            user.avatar.save(user.avatarUrl, uploaded_file)
+            
 
+            return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated,"message": "ok"}, status=200)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": "Internal Server Error"}, status=500)
 
 
 # 感觉好像没用，先注释了

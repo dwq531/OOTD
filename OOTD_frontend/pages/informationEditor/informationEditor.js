@@ -105,10 +105,29 @@ Page({
     const addr = this.data.addr;
     var avatarUrl = "";
     if (this.data.avatarUrl_changed == true) {
-      avatarUrl = this.data.avatarUrl;}
+      avatarUrl = this.data.avatarUrl;
+      wx.uploadFile({
+        url: 'http://127.0.0.1:8000/api/user/avatar', // 上传接口地址
+        filePath: avatarUrl, // 要上传的文件路径
+        name: 'file', // 后端接收文件的字段名
+        header: {
+          'Content-Type': 'application/json',
+          'Authorization': app.globalData.jwt, // 添加 JWT Token
+        },
+        success: function (res) {
+          // 上传成功的处理逻辑
+          console.log(res.data);
+        },
+        fail: function (res) {
+          // 上传失败的处理逻辑
+          console.error(res);
+        }
+      });
+    }
     const age = this.data.age;
 
     // 调用后端接口保存数据
+    // 更改文字信息
     wx.request({
       method: 'PATCH', // 假设这里是用 POST 请求保存数据
       url: 'http://127.0.0.1:8000/api/user/edit_info',
@@ -119,7 +138,6 @@ Page({
       data: {
         nickname: nickname,
         phone: phone,
-        avatarUrl:avatarUrl,
         addr:addr,
         age:age,
       },
@@ -135,6 +153,7 @@ Page({
         console.error('请求保存用户信息失败:', err);
       }
     });
+    wx.navigateBack({delta:1})
   },
 
 });
