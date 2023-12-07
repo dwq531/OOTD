@@ -1,0 +1,35 @@
+<view class="container">
+  <scroll-view scroll-y>
+    <view class="top">
+      <image src="/static/weather/{{weatherCode}}-fill.svg" alt="QWeather Icons" />
+      <text class="weatherText">{{weatherChar}} {{temprature}}℃</text>
+      <text wx:if="{{score!=0}}" class="scoreText">{{score}}分</text>
+    </view>
+    <view class="image">
+      <block wx:for="{{images}}" wx:key="*this">
+        <view class="imageItem">
+          <image src="{{item}}" mode="aspectFill"></image>
+          <button id="deleteBut" bindtap="deleteImage" data-id="{{index}}">-</button>
+        </view>
+      </block>
+      <block wx:if="{{images.length<9}}">
+        <view class="imageItem">
+          <view class="addimage" bindtap="addImage">
+            <text>+</text>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="title">
+      <input id="title_input" placeholder="添加标题：起一个有趣的标题吧"></input>
+    </view>
+    <view class="content">
+      <textarea id="content_input" placeholder="添加内容：描述一下今日穿搭"></textarea>
+    </view>
+    <checkbox-group bindChange="setShare">
+      <checkbox>展示评分</checkbox>
+      <checkbox>分享天气</checkbox>
+    </checkbox-group>
+    <button id="post">发表</button>
+  </scroll-view>
+</view>
