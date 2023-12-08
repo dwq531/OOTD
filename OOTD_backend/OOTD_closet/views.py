@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from utils.jwt import login_required
 from .models import Clothes
 import json
+from django.utils import timezone
+from .models import Type
 
 @login_required
 def add_clothes(request):
@@ -58,35 +60,29 @@ def edit_clothes(request):
                 clothes.name = content['name']
 
         if (content.get('Mtype')):
-            if content['gender']=='女':
-                clothes.clothes_main_type = Gender.FEMALE
-            elif content['gender']=='男':
-                clothes_main_type = Gender.MALE
+            if content['Mtype']=='上装':
+                clothes.clothes_main_type = Type.UPPER
+            elif content['Mtype']=='下装':
+                clothes.clothes_main_type = Type.BOTTOM
+            elif content['Mtype']=='鞋':
+                clothes.clothes_main_type = Type.SHOES
+            elif content['Mtype']=='包':
+                clothes.clothes_main_type = Type.BAG
+            elif content['Mtype']=='首饰':
+                clothes.clothes_main_type = Type.ACCESSORIES
             else:
                 return JsonResponse({"message": "Invalid gender"}, status=400)
-        if (content.get('phone')):
-            pattern = r'^\d{11}$'  # 例如：1234567890
-            if re.match(pattern, content['phone']):
-                user.phone = content['phone']
+        
+        if (clothes.get('Dtype')):
+            if len(content['Dtype'])>32:
+                return JsonResponse({"message": "Invalid Dtype"}, status=400)
             else:
-                return JsonResponse({"message": "Invalid phone"}, status=400)
-        if (content.get('intro')):
-            if len(content['intro'])>255:
-                return JsonResponse({"message": "Invalid intro"}, status=400)
-            else:
-                user.intro = content['intro']
-        if (content.get('addr')):
-            if len(content['addr'])>127:
-                return JsonResponse({"message": "Invalid addr"}, status=400)
-            else:
-                user.addr = content['addr']
-        if (content.get('age')):
-            if content['age']<0 or content['age']>100:
-                return JsonResponse({"message": "Invalid age"}, status=400)
-            else:
-                user.age = content['age']
-        user.save()
-        user.updated = timezone.now()
+                clothes.clothes_detail_type = content['Dtype']
+
+
+
+        clothes.save()
+        clothes.updated = timezone.now()
         
         return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated, "message": "ok"}, status=200)
         
@@ -99,15 +95,14 @@ def upload_file(request):
     try:
         if request.method == 'POST':
             uploaded_file = request.FILES['file'] 
-            user = request.user
-            print(user.avatarUrl)
+            Clothes = request.user
+            print(Clothes.clothes_picture_url)
             #删除原来的头像
-            user.avatar.delete(save=False)
-            user.avatarUrl = 'avatars/' + f'{user.openid}_avatar.jpg'
-            user.avatar.save(user.avatarUrl, uploaded_file)
-            
+            Clothes.clothes_picture.delete(save=False)
+            Clothes.clothes_picture_url = 'avatars/' + f'{Clothes.clothesid}_avatar.jpg'
+            Clothes.clothes_picture.save(Clothes.clothes_picture_url, uploaded_file)
 
-            return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated,"message": "ok"}, status=200)
+            return JsonResponse({"avatarUrl":Clothes.clothes_picture_url, "updated": Clothes.updated,"message": "ok"}, status=200)
     except Exception as e:
         print(e)
         return JsonResponse({"message": "Internal Server Error"}, status=500)
