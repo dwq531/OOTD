@@ -5,7 +5,8 @@
     "pages/closet/closet",
     "pages/editClothes/editClothes",
     "pages/personalCenter/personalCenter",
-    "pages/informationEditor/informationEditor"
+    "pages/informationEditor/informationEditor",
+    "pages/posting/posting"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -33,7 +34,7 @@
         "text": "个人中心"
       },
       {
-        "pagePath": "pages/logs/logs",
+        "pagePath": "pages/posting/posting",
         "iconPath": "/static/navBar/send.png",
         "selectedIconPath": "/static/navBar/send-active.png",
         "text": "发帖"
