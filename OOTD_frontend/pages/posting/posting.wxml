@@ -30,6 +30,6 @@
       <checkbox>展示评分</checkbox>
       <checkbox>分享天气</checkbox>
     </checkbox-group>
-    <button id="post" bindChange="posting">发表</button>
+    <button id="post" bindtap="send">发表</button>
   </scroll-view>
 </view>

@@ -53,14 +53,30 @@ Page({
       content:e.detail.value
     })
   },
-  posting:function(e){
+  send:function(e){
+
+    console.log('posting')
+    /*
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/posting/create_post/',
+      method:'GET',
+      header: {
+        'Authorization':app.globalData.jwt,
+        'Content-Type': 'application/json' // 设置请求头为JSON格式
+      },
+      success:function(res){
+        console.log(res)
+      }
+    })
+    */
+
     wx.uploadFile({
-      filePath: this.data.images,
+      filePath: this.data.images[0],
       name: 'images',
-      url: 'http://127.0.0.1:8000/api/posting/create_post',
-      header:{
-        'Authrization':app.globalData.jwt,
-        'Content-Type': 'application/json'
+      url: 'http://127.0.0.1:8000/api/posting/create_post/',
+      header: {
+        'Authorization':app.globalData.jwt,
+        'Content-Type': 'application/json' // 设置请求头为JSON格式
       },
       formData:{
         'title':this.data.title,
@@ -69,19 +85,7 @@ Page({
       success:function(res){
         console.log(res)
       }
-    })
-  },
-  onLoad(){
-    wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/create_post',
-      method:'GET',
-      header:{
-        'Authrization':app.globalData.jwt,
-        'Content-Type': 'application/json'
-      },
-      success:function(res){
-        console.log(res)
-      }
+      
     })
   }
 })
