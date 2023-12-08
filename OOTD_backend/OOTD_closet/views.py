@@ -79,8 +79,6 @@ def edit_clothes(request):
             else:
                 clothes.clothes_detail_type = content['Dtype']
 
-
-
         clothes.save()
         clothes.updated = timezone.now()
         
