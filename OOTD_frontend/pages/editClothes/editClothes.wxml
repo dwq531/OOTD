@@ -12,7 +12,7 @@
   </view>
   <view class="name">
     <text>名称</text>
-    <input id="name_input" type="text"></input>
+    <input id="name_input" type="text" bindchange="nameChange"></input>
   </view>
   <view class="category">
     <text>种类</text>

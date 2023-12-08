@@ -28,23 +28,7 @@ Page({
 
   },
   onLoad: function() {
-      // 加载的使用进行网络访问，把需要的数据设置到data数据对象
-      var that = this        
-      wx.request({
-          url: '',
-          method: 'GET',
-          data: {},
-          header: {
-              'Accept': 'application/json'
-          },
-          success: function(res) {
-              console.log(res)
-              that.setData({
-                  navLeftItems: res.data,
-                  navRightItems: res.data
-              })
-          }
-      })
+
   },
 
   //事件处理函数
