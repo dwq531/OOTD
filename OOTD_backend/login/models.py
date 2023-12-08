@@ -19,7 +19,6 @@ class User(models.Model):
     phone=models.CharField(max_length=15,default='none',verbose_name="手机号码")
     intro=models.TextField(max_length=255,default='none',verbose_name="个人简介")
     updated=models.DateTimeField(auto_now=True, verbose_name="更新时间")
-    clothes=models.ManyToManyField('Clothes', related_name='users')
     
     def save_image_from_url(self):
         response = requests.get(self.avatarUrl)

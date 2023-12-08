@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.files.base import ContentFile
 import requests
+from .models import User
 
 # Create your models here.
 
@@ -23,6 +24,8 @@ class Clothes(models.Model):
     clothes_picture_url=models.CharField(max_length=255,default='/',verbose_name="衣服图片url")   # 在服务器上的 url
     clothes_picture = models.ImageField(upload_to='images/')   # 指定衣服储存的目录
     clothes_used_time = models.IntegerField(default=0,verbose_name="衣服使用次数")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_clothes = models.ManyToManyField(User,related_name='user_clothes',blank=True)
     
     def save_image_from_url(self):
         response = requests.get(self.clothes_picture_url)
@@ -30,6 +33,6 @@ class Clothes(models.Model):
             self.clothes_picture_url = 'clothes/' + f'{self.clothesid}_clothes.jpg'
             self.clothes_picture.save(self.clothes_picture_url, ContentFile(response.content))
         else:
-            # TODO 将 None 替换为默认头像
+            # TODO 将 None 替换为默认
             self.clothes_picture_url = None
             self.clothes_picture = None
