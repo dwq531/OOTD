@@ -54,34 +54,15 @@ Page({
     })
   },
   send:function(e){
-
-    console.log('posting')
-    /*
-    wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/create_post/',
-      method:'GET',
-      header: {
-        'Authorization':app.globalData.jwt,
-        'Content-Type': 'application/json' // 设置请求头为JSON格式
-      },
-      success:function(res){
-        console.log(res)
-      }
-    })
-    */
-
+    console.log(e.detail.value)
     wx.uploadFile({
       filePath: this.data.images[0],
       name: 'images',
       url: 'http://127.0.0.1:8000/api/posting/create_post/',
       header: {
-        'Authorization':app.globalData.jwt,
-        'Content-Type': 'application/json' // 设置请求头为JSON格式
+        'Authorization':app.globalData.jwt
       },
-      formData:{
-        'title':this.data.title,
-        'content':this.data.content,
-      },
+      formData:e.detail.value,
       success:function(res){
         console.log(res)
       }
