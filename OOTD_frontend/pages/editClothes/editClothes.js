@@ -55,14 +55,34 @@ Page({
     })
   },
   deleteClothes:function(e){
+    const that=this
     wx.showModal({
       title: '删除衣服',
       content: '您确认要删除这件衣服吗？操作不可撤销！',
       complete: (res) => {
         if (res.confirm) {
           // 更新后端数据
-          wx.navigateBack({
-            delta:1
+          wx.request({
+            url: 'http://127.0.0.1:8000/api/clothes/delete_clothes',
+            header: {
+              'Content-Type': 'application/json' ,
+              'Authorization':app.globalData.jwt
+            },
+            data:{
+              'id':this.data.index
+            },
+            success:function(res){
+              let pages = getCurrentPages()
+              let prepage = pages[pages.length - 2]
+              let clothesToDelete = prepage.__data__.clothes.findIndex(c => c.id === that.data.index)
+              prepage.data.clothes.splice(clothesToDelete,1)
+              prepage.setData({
+                clothes:prepage.data.clothes
+              }) 
+              wx.navigateBack({
+                delta:1
+              })
+            }
           })
         }
       }
@@ -85,7 +105,7 @@ Page({
         filePath: this.data.imgPath,
         name: 'file',
         url: 'http://127.0.0.1:8000/api/clothes/edit_clothes',
-         header: {
+        header: {
           'Content-Type': 'application/json' ,
           'Authorization':app.globalData.jwt
         },
