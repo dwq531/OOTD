@@ -21,15 +21,15 @@
       </block>
     </view>
     <view class="title">
-      <input id="title_input" placeholder="添加标题：起一个有趣的标题吧"></input>
+      <input id="title_input" placeholder="添加标题：起一个有趣的标题吧" bindChange="titleChange"></input>
     </view>
     <view class="content">
-      <textarea id="content_input" placeholder="添加内容：描述一下今日穿搭"></textarea>
+      <textarea id="content_input" placeholder="添加内容：描述一下今日穿搭" bindChange="contentChange"></textarea>
     </view>
     <checkbox-group bindChange="setShare">
       <checkbox>展示评分</checkbox>
       <checkbox>分享天气</checkbox>
     </checkbox-group>
-    <button id="post">发表</button>
+    <button id="post" bindChange="posting">发表</button>
   </scroll-view>
 </view>

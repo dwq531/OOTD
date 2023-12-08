@@ -16,6 +16,8 @@ Page({
       "/static/default/noimage.png",
       "/static/default/noimage.png"
     ],
+    title:'',
+    content:''
   },
   addImage:function(e){
     const that=this
@@ -39,6 +41,47 @@ Page({
     this.data.images.splice(index,1);
     this.setData({
       images:this.data.images
+    })
+  },
+  titleChange:function(e){
+    this.setData({
+      title:e.detail.value
+    })
+  },
+  contentChange:function(e){
+    this.setData({
+      content:e.detail.value
+    })
+  },
+  posting:function(e){
+    wx.uploadFile({
+      filePath: this.data.images,
+      name: 'images',
+      url: 'http://127.0.0.1:8000/api/posting/create_post',
+      header:{
+        'Authrization':app.globalData.jwt,
+        'Content-Type': 'application/json'
+      },
+      formData:{
+        'title':this.data.title,
+        'content':this.data.content,
+      },
+      success:function(res){
+        console.log(res)
+      }
+    })
+  },
+  onLoad(){
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/posting/create_post',
+      method:'GET',
+      header:{
+        'Authrization':app.globalData.jwt,
+        'Content-Type': 'application/json'
+      },
+      success:function(res){
+        console.log(res)
+      }
     })
   }
 })
