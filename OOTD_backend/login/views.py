@@ -106,6 +106,7 @@ def edit_info(request):
                 return JsonResponse({"message": "Invalid gender"}, status=400)
         if (content.get('phone')):
             pattern = r'^\d{11}$'  # 例如：1234567890
+
             if re.match(pattern, content['phone']):
                 user.phone = content['phone']
             else:
@@ -125,6 +126,7 @@ def edit_info(request):
                 return JsonResponse({"message": "Invalid age"}, status=400)
             else:
                 user.age = content['age']
+
         user.save()
         user.updated = timezone.now()
         
