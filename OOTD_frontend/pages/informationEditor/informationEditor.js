@@ -104,56 +104,76 @@ Page({
     const phone = this.data.phone;
     const addr = this.data.addr;
     var avatarUrl = "";
-    if (this.data.avatarUrl_changed == true) {
-      avatarUrl = this.data.avatarUrl;
-      wx.uploadFile({
-        url: 'http://127.0.0.1:8000/api/user/avatar', // 上传接口地址
-        filePath: avatarUrl, // 要上传的文件路径
-        name: 'file', // 后端接收文件的字段名
-        header: {
-          'Content-Type': 'application/json',
-          'Authorization': app.globalData.jwt, // 添加 JWT Token
-        },
-        success: function (res) {
-          // 上传成功的处理逻辑
-          console.log(res.data);
-        },
-        fail: function (res) {
-          // 上传失败的处理逻辑
-          console.error(res);
-        }
-      });
-    }
     const age = this.data.age;
-
-    // 调用后端接口保存数据
-    // 更改文字信息
-    wx.request({
-      method: 'PATCH', // 假设这里是用 POST 请求保存数据
-      url: 'http://127.0.0.1:8000/api/user/edit_info',
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': app.globalData.jwt, // 添加 JWT Token
-      },
-      data: {
-        nickname: nickname,
-        phone: phone,
-        addr:addr,
-        age:age,
-      },
-      success: (res) => {
-        if (res.statusCode === 200) {
-          console.log('用户信息保存成功');
-          // 这里可以根据后端返回的数据进行相应的处理
-        } else {
-          console.error('保存用户信息失败:', res.data);
-        }
-      },
-      fail: (err) => {
-        console.error('请求保存用户信息失败:', err);
+  
+    // 定义上传头像的 Promise
+    const uploadAvatar = new Promise((resolve, reject) => {
+      if (this.data.avatarUrl_changed==true) {
+        avatarUrl = this.data.avatarUrl;
+        wx.uploadFile({
+          url: 'http://127.0.0.1:8000/api/user/avatar', // 上传接口地址
+          filePath: avatarUrl, // 要上传的文件路径
+          name: 'file', // 后端接收文件的字段名
+          header: {
+            'Content-Type': 'application/json',
+            'Authorization': app.globalData.jwt, // 添加 JWT Token
+          },
+          success: (res) => {
+            // 上传成功的处理逻辑
+            console.log(res.data);
+            resolve();
+          },
+          fail: (res) => {
+            // 上传失败的处理逻辑
+            console.error(res);
+            reject(res);
+          }
+        });
+      } else {
+        // 如果头像没有改变，直接 resolve
+        resolve();
       }
     });
-    wx.navigateBack({delta:1})
+  
+    // 上传头像完成后，保存用户信息
+    uploadAvatar.then(() => {
+      // 请求保存用户信息
+      return new Promise((resolve, reject) => {
+        wx.request({
+          method: 'PATCH', // 假设这里是用 POST 请求保存数据
+          url: 'http://127.0.0.1:8000/api/user/edit_info',
+          header: {
+            'Content-Type': 'application/json',
+            'Authorization': app.globalData.jwt, // 添加 JWT Token
+          },
+          data: {
+            nickname: nickname,
+            phone: phone,
+            addr:addr,
+            age:age,
+          },
+          success: (res) => {
+            if (res.statusCode === 200) {
+              console.log('用户信息保存成功');
+              // 这里可以根据后端返回的数据进行相应的处理
+              resolve();
+            } else {
+              console.error('保存用户信息失败:', res.data);
+              reject(res);
+            }
+          },
+          fail: (err) => {
+            console.error('请求保存用户信息失败:', err);
+            reject(err);
+          }
+        });
+      });
+    }).then(() => {
+      // 保存用户信息完成后，返回上一页
+      wx.navigateBack({ delta: 1 });
+    }).catch((error) => {
+      // 处理错误
+      console.error('保存用户信息发生错误:', error);
+    });
   },
-
 });
