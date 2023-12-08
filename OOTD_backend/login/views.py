@@ -3,7 +3,8 @@ from utils.jwt import encrypt_password, generate_jwt, login_required
 import json
 from login import controllers
 from django.utils import timezone
-
+from login.models import Gender
+import re
 
 
 def login(request):
@@ -22,7 +23,7 @@ def login(request):
             user, isOld = controllers.get_user(openid)
             if not isOld:  # 新用户，不在用户列表里
                 user,cflag = controllers.create_user(openid)
-                user.save_image_from_url()
+                #user.save_image_from_url()
             jwt = generate_jwt({"openid": openid})
             return JsonResponse({
                 'jwt': jwt,
@@ -30,7 +31,7 @@ def login(request):
                 'nickname': user.nickname,
                 'age': user.age,
                 'addr': user.addr,
-                'gender': user.gender,
+                'gender': Gender(user.gender).label,
                 'phone': user.phone,
                 'intro': user.intro,
                 'avatarUrl': user.avatarUrl,
@@ -63,7 +64,7 @@ def user(request):
             'nickname': user.nickname,
             'age': user.age,
             'addr': user.addr,
-            'gender': user.gender,
+            'gender': Gender(user.gender).label,
             'phone': user.phone,
             'intro': user.intro,
             'avatarUrl': user.avatarUrl,
@@ -89,32 +90,43 @@ def edit_info(request):
         
     try:
         user = request.user
-        
-        # TODO: 检查参数正确性
-        if False:
-            return JsonResponse({"message": "Invalid argument"}, status=400)
-        
-        
-        if (request.avatarUrl):
-            user.avatarUrl = request.avatarUrl
-            user.save_img_from_url()
+        content = json.loads(request.body)        
+        if (content.get('avatarUrl')):
+            user.avatarUrl = content['avatarUrl']
+            user.save_image_from_url()
             if user.avatar is None:
-                return JsonResponse({"message": "Invalid argument"}, status=400)
+                return JsonResponse({"message": "Invalid avatarUrl"}, status=400)
         
-        if (request.nickname):
-            user.nickname = request.nickname
-        if (request.gender):
-            user.gender = request.gender
-        if (request.phone):
-            user.phone = request.phone
-        if (request.intro):
-            user.intro = request.intro
-        
+        if (content.get('nickname')):
+            if len(content['nickname'])>32:
+                return JsonResponse({"message": "Invalid nickname"}, status=400)
+            else:
+                user.nickname = content['nickname']
+        if (content.get('gender')):
+            if content['gender']=='女':
+                user.gender = Gender.FEMALE
+            elif content['gender']=='男':
+                user.gender = Gender.MALE
+            else:
+                return JsonResponse({"message": "Invalid gender"}, status=400)
+        if (content.get('phone')):
+            pattern = r'^\d{10}$'  # 例如：123-456-7890
+            if re.match(pattern, content['phone']):
+                user.phone = content['phone']
+            else:
+                return JsonResponse({"message": "Invalid phone"}, status=400)
+        if (content.get('intro')):
+            if len(content['intro'])>255:
+                return JsonResponse({"message": "Invalid intro"}, status=400)
+            else:
+                user.intro = content['intro']
+        user.save()
         user.updated = timezone.now()
         
-        return JsonResponse({"updated": user.updated, "message": "ok"}, status=200)
+        return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated, "message": "ok"}, status=200)
         
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({"message": "Internal Server Error"}, status=500)
 
 '''

@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r"", include("login.urls")),
+    path('api/posting/', include('posting.urls'))
 ]
 
 # 开发环境，在生产环境中应将 MEDIA_ROOT 映射到 MEDIA_URL
