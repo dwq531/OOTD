@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.files.base import ContentFile
 import requests
-from .models import User
+from  login.models  import User
 
 # Create your models here.
 
@@ -18,9 +18,9 @@ class Clothes(models.Model):
     """
     clothesid = 0
     clothes_ID = models.IntegerField(default=0,verbose_name="衣服id")
-    clothes_name = models.CharField(max_lenghth=32,default='',verbose_name="衣服名字")
+    clothes_name = models.CharField(max_length=32,default='',verbose_name="衣服名字")
     clothes_main_type = models.CharField(max_length=32,choices=Type.choices,default=Type.UPPER,verbose_name="衣服主要类型")
-    clothes_detail_type = models.CharField(max_lenghth=32,default='',verbose_name="衣服细分类型")
+    clothes_detail_type = models.CharField(max_length=32,default='',verbose_name="衣服细分类型")
     clothes_picture_url=models.CharField(max_length=255,default='/',verbose_name="衣服图片url")   # 在服务器上的 url
     clothes_picture = models.ImageField(upload_to='images/')   # 指定衣服储存的目录
     clothes_used_time = models.IntegerField(default=0,verbose_name="衣服使用次数")
