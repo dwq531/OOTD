@@ -1,0 +1,26 @@
+<view class="container">
+  <scroll-view class="scroller" scroll-y>
+    <block wx:for="{{post}}" wx:key="id">
+      <view class="post">
+        <image class="post-image" src="http://127.0.0.1:8000{{item.images[0].image}}" mode="widthFix">{{item.images[0].image}}</image>
+        <view class="post-details">
+          <view class="post-title">{{item.title}}</view>
+          <view class="post-content">{{item.content}}</view>
+          <view class="post-author">Posted by {{item.user}}</view>
+          <view class="post-likes">
+            <image class="icon" src="/static/default/like.png"></image>
+            <text>{{item.likes.length}}</text>
+          </view>
+          <view class="post-comments">
+            <image class="icon" src="/static/default/comment.png"></image>
+            <text>{{item.comments.length}}</text>
+          </view>
+          <view class="post-favorites">
+            <image class="icon" src="/static/default/favorite.png"></image>
+            <text>{{item.favorites.length}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</view>

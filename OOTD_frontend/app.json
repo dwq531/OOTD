@@ -6,7 +6,8 @@
     "pages/editClothes/editClothes",
     "pages/personalCenter/personalCenter",
     "pages/informationEditor/informationEditor",
-    "pages/posting/posting"
+    "pages/posting/posting",
+    "pages/society/society"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -38,6 +39,12 @@
         "iconPath": "/static/navBar/send.png",
         "selectedIconPath": "/static/navBar/send-active.png",
         "text": "发帖"
+      },
+      {
+        "pagePath": "pages/society/society",
+        "iconPath": "/static/navBar/society.png",
+        "selectedIconPath": "/static/navBar/society-active.png",
+        "text": "社区"
       }
     ]
   }
