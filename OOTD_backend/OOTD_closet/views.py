@@ -13,8 +13,9 @@ def add_clothes(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
     try:
-        content = request.POST
+        content = json.loads(request.body)
         clothes_ID = Clothes.clothesid + 1
+        Clothes.clothesid += 1
         clothes_name = content.get("name")
         clothes_main_type = content.get("Mtype")
         clothes_detail_type = content.get("Dtype")
@@ -45,8 +46,11 @@ def edit_clothes(request):
         return JsonResponse({"message": "Method not allowed"}, status=405)
         
     try:
-        clothes = request.clothes
-        content = json.loads(request.body)        
+        content = json.loads(request.body)
+        clothes_id = content.get('clothes_ID', None)
+        clothes_id = int(clothes_id)
+        # 在数据库中查找相应的 Clothes 对象
+        clothes = Clothes.objects.get(clothes_ID=clothes_id)
         if (content.get('pictureUrl')):
             clothes.clothes_picture_url = content['pictureUrl']
             clothes.save_image_from_url()
@@ -82,7 +86,7 @@ def edit_clothes(request):
         clothes.save()
         clothes.updated = timezone.now()
         
-        return JsonResponse({"avatarUrl":user.avatarUrl, "updated": user.updated, "message": "ok"}, status=200)
+        return JsonResponse({"clothes_ID":clothes.clothes_ID, "pictureUrl":clothes.clothes_picture_url, "update":clothes.updated, "message": "ok"}, status=200)
         
     except Exception as e:
         print(e)
