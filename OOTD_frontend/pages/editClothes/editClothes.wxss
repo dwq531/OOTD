@@ -54,6 +54,15 @@ text{
   margin-top: 10px;
   color:gray;
 }
+.detail {
+  position:absolute;
+  top:360px;
+  height:50px;
+  width:100%;
+  background-color: white;
+  margin-top: 10px;
+  color:gray;
+}
 picker {
   width:200px;
   height:30px;

@@ -23,7 +23,7 @@ App({
           success:function(res){
             // 如果请求成功
             if(res.statusCode === 200){
-              console.log('后端返回: ',res.data);
+              //console.log('后端返回: ',res.data);
               // TODO
               // 处理后端返回的数据
               const isNewUser = res.data.new;
@@ -46,6 +46,7 @@ App({
               that.globalData.avatarUrl = avatarUrl;
               const updated = res.data.updated;
               that.globalData.updated = updated;
+              that.globalData.login = true;
             }
             else{
               console.error('请求失败，错误状态码：', res.statusCode);
@@ -60,6 +61,7 @@ App({
     })
   },
   globalData: {
+    login:false,
     userInfo: null,
     isNewUser: true,
     jwt: null,

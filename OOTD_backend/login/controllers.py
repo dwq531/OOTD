@@ -1,9 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from .models import User
+from .models import User,Gender
 import json
 import requests
-
+import os
+from configparser import ConfigParser
 
 def get_user(openid):
     try:
@@ -16,7 +17,7 @@ def get_user(openid):
         return "errors", False
 
 
-def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', avatarUrl='', phone='', intro="该用户未填写个人简介"):
+def create_user(openid, nickname="匿名用户", age=18, addr="北京", gender=Gender.FEMALE, avatarUrl='', phone='', intro="该用户未填写个人简介"):
     try:
         now = timezone.now()
         u = User.objects.create(
@@ -40,8 +41,20 @@ def create_user(openid, nickname="匿名用户", age=18, addr='', gender='F', av
 # 给微信API发送code2session请求
 def get_openid(code):
     try:
+        # 获取配置文件的路径
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config/settings.ini')
+        # 以 utf-8 编码打开文件
+        with open(config_path, 'r', encoding='utf-8') as file:
+            config_text = file.read()
 
-        response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=wxe695d8ed64cfbc63&secret=6a4d7088e79a482b8efaf77bedc14625&js_code="
+        # 创建 ConfigParser 并加载配置
+        config = ConfigParser()
+        config.read_string(config_text)
+        # 获取值
+        appid = config.get('WECHAT', 'APPID')
+        secret = config.get('WECHAT', 'SECRET')
+        
+        response = requests.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + appid + "&secret=" +  secret + "&js_code="
                                 +code+
                                 "&grant_type=authorization_code")
         dic_res = json.loads(response.text)
