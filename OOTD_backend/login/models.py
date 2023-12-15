@@ -5,6 +5,11 @@ class Gender(models.TextChoices):
     MALE = 'M', '男'
     FEMALE = 'F', '女'
 
+class Weather(models.Model):
+    icon = models.CharField(max_length=255, default='', verbose_name="天气图标")
+    text = models.CharField(max_length=255, default='', verbose_name="天气描述")
+    temperature = models.CharField(max_length=10, default='', verbose_name="温度")
+
 # Create your models here.
 class User(models.Model):
     """
@@ -20,6 +25,7 @@ class User(models.Model):
     phone=models.CharField(max_length=15,default='none',verbose_name="手机号码")
     intro=models.TextField(max_length=255,default='none',verbose_name="个人简介")
     updated=models.DateTimeField(auto_now=True, verbose_name="更新时间")
+    weather = models.ForeignKey(Weather, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="天气")
     
     def save_image_from_url(self):
         response = requests.get(self.avatarUrl)
