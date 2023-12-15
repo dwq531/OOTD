@@ -7,7 +7,7 @@ Page({
     const that = this
     // Send a request to the backend to retrieve the post list
     wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/user_posts/created', 
+      url: 'http://127.0.0.1:8000/api/posting/user_posts/all', 
       method: 'GET',
       header: {
         'content-type': 'application/json',

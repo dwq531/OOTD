@@ -3,8 +3,8 @@ from login.models import User
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
+    title = models.CharField(max_length=200, blank=True, default="分享穿搭")
+    content = models.TextField(blank=True, default="")
     images = models.ManyToManyField("Image", blank=True)
     rate = models.FloatField(default=0, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)

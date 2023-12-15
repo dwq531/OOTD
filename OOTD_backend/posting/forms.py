@@ -5,10 +5,10 @@ from .models import Post, Comment
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "images"]
+        fields = ["title", "content"]
 
-    images = forms.ImageField(required=False)
-
+class ImageForm(forms.Form):
+    image = forms.ImageField()
 
 class CommentForm(forms.ModelForm):
     class Meta:
