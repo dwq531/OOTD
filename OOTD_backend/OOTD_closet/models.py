@@ -36,3 +36,22 @@ class Clothes(models.Model):
             # TODO 将 None 替换为默认
             self.clothes_picture_url = None
             self.clothes_picture = None
+
+class DailyOutfit(models.Model):
+    """
+    每日搭配
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='dailyoutfit',verbose_name="用户")
+    clothes = models.ManyToManyField(Clothes,related_name='dailyoutfit',verbose_name="搭配的衣服")
+    date_worn = models.DateField(auto_now_add=True,verbose_name="日期")
+    rate = models.IntegerField(default=0,verbose_name="评分")
+    
+
+class ReplaceOutfit(models.Model):
+    """
+    评分后推荐替换成的搭配
+    只存储最新的一套
+    """
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='replaceoutfit',verbose_name="用户")
+    clothes = models.ForeignKey(Clothes,verbose_name="待替换的衣服")
+    rate = models.IntegerField(default=0,verbose_name="评分")
