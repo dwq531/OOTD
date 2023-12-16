@@ -16,7 +16,7 @@ def create_post(request):
     if request.method == "POST":  # 用户提交表单
         form = PostForm(request.POST)
         if not form.is_valid():
-            return JsonResponse({"message": "Invalid credentials"}, status=401)
+            return JsonResponse({"message": "Invalid form"}, status=400)
 
         post = form.save(commit=False)
         post.user = request.user
@@ -41,7 +41,7 @@ def upload_image(request, post_id):
     if request.method == "POST":
         form = ImageForm(request.POST, request.FILES)
         if not form.is_valid():
-            return JsonResponse({"message": "Invalid credentials"}, status=401)
+            return JsonResponse({"message": "Invalid form"}, status=400)
 
         post = get_object_or_404(Post, pk=post_id)
         post.images.create(image=request.FILES["image"])
