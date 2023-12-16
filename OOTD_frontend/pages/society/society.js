@@ -3,7 +3,7 @@ Page({
   data:{
     post:[]
   },
-  onLoad: function(e) {
+  onShow: function(e) {
     const that = this
     // Send a request to the backend to retrieve the post list
     wx.request({
@@ -20,5 +20,11 @@ Page({
         })
       }
     });
+  },
+  showDetail:function(e){
+    const index = e.currentTarget.dataset.index;
+    wx.navigateTo({
+      url:"/pages/postDetail/postDetail?"+"&index="+index,
+    })
   }
 })

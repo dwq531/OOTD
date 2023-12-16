@@ -60,6 +60,7 @@ Page({
       url: 'http://127.0.0.1:8000/api/posting/create_post/',
       method: 'POST',
       header: {
+        'Content-Type':'application/x-www-form-urlencoded',
         'Authorization': app.globalData.jwt
       },
       data: formData,
@@ -72,7 +73,7 @@ Page({
             name: `image`,
             url: `http://127.0.0.1:8000/api/posting/upload_image/${postId}/`,  // 使用新的URL，包含帖子的ID
             header: {
-              'Authorization': app.globalData.jwt
+              'Authorization': app.globalData.jwt,
             },
             success: function (res) {
               console.log(res)

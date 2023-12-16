@@ -63,3 +63,29 @@ page {
 .post-likes ,.post-comments,.post-favorites{
   margin-right: 10px;
 }
+.post-comments{
+  border-top:solid 1px gray;
+  margin-top: 10px;
+}
+.comment-item{
+  height:60px;
+  width:100%;
+  margin-top: 10px;
+  border-bottom: solid 1px gray;
+  position: relative;
+}
+.comment-author{
+  position: absolute;
+  top:0px;
+  left:30px;
+}
+.comment-content{
+  position: absolute;
+  top:20px;
+  left:30px
+}
+.comment-time {
+  position: absolute;
+  bottom:5px;
+  right:0px
+}

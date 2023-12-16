@@ -1,0 +1,53 @@
+<view class="container">
+  <scroll-view class="scroller" scroll-y>
+    <swiper>
+      <block wx:for="{{post.images}}" wx:key="*this">
+        <swiper-item>
+          <block wx:if="{{item}}">
+            <image class="post-image" src="http://127.0.0.1:8000{{item.image}}" mode="heightFix"></image>
+          </block>
+          <block wx:else>
+            <image class="post-image" src="/static/default/noimage.png" mode="widthFix"></image>
+          </block>
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="post-details">
+      <view class="post-title">{{post.title}}</view>
+      <view class="post-content">{{post.content}}</view>
+      <view class="post-author">{{post.user.nickname}}</view>
+      <view class="post-data">
+        <view class="post-likes">
+          <block wx:if="{{is_liked==0}}">
+            <image class="icon" src="/static/default/like.png"></image>
+          </block>
+          <block wx:else>
+            <image class="icon" src="/static/default/like-active.png"></image>
+          </block>
+          <text>{{like.length}}</text>
+        </view>
+        <view class="post-favorites">
+          <block wx:if="{{is_favorite==0}}">
+            <image class="icon" src="/static/default/favorite.png"></image>
+          </block>
+          <block wx:else>
+            <image class="icon" src="/static/default/favorite-active.png"></image>
+          </block>
+          <text>{{favorite.length}}</text>
+        </view>
+
+      </view>
+      <view class="post-comments">
+        <text>评论区：</text>
+        <block wx:for="{{comment}}" wx:key="*this">
+          <view class="comment-item">
+            <text class="comment-author">{{item.user.nickname}}</text>
+            <text class="comment-content">{{item.content}}</text>
+            <text class="comment-time">评论时间：{{item.create_time}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+  </scroll-view>
+</view>

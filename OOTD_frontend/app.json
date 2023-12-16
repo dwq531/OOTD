@@ -7,7 +7,8 @@
     "pages/personalCenter/personalCenter",
     "pages/informationEditor/informationEditor",
     "pages/posting/posting",
-    "pages/society/society"
+    "pages/society/society",
+    "pages/postDetail/postDetail"
   ],
   "window":{
     "backgroundTextStyle":"light",
