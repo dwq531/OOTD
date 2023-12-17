@@ -56,5 +56,56 @@ Page({
         */
       }
     });
+  },
+  like: function(e) {
+    const that = this;
+    // ？？？
+    wx.request({
+      url: `http://127.0.0.1:8000/api/posting/like_post/${that.data.id}/`, 
+      method: 'POST',
+      header: {
+        'Authorization': app.globalData.jwt,
+      },
+      success: function(res) {
+        console.log(res); 
+        this.setData({
+          is_liked:!that.data.is_liked
+        })
+      }
+    });
+    
+  },
+  favorite: function(e) {
+    const that = this;
+    wx.request({
+      url: `http://127.0.0.1:8000/api/posting/like_post/${that.data.id}/`, 
+      method: 'POST',
+      header: {
+        'Authorization': app.globalData.jwt,
+      },
+      success: function(res) {
+        console.log(res); 
+        this.setData({
+          is_favorite:!that.data.is_favorite
+        })
+      }
+    });
+  },
+  comment:function(e){
+    const that = this
+    const formData = e.detail.value
+    console.log(formData)
+    wx.request({
+      url: `http://127.0.0.1:8000/api/posting/post_detail/id=${that.data.id}/`, 
+      method: 'POST',
+      header: {
+        'Authorization': app.globalData.jwt,
+        'Content-Type':'application/x-www-form-urlencoded',
+      },
+      data:formData,
+      success: function(res) {
+        console.log(res); 
+      }
+    });
   }
 })

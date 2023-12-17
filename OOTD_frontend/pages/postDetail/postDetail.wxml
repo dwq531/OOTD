@@ -17,7 +17,7 @@
       <view class="post-content">{{post.content}}</view>
       <view class="post-author">{{post.user.nickname}}</view>
       <view class="post-data">
-        <view class="post-likes">
+        <view class="post-likes" bindtap="like">
           <block wx:if="{{is_liked==0}}">
             <image class="icon" src="/static/default/like.png"></image>
           </block>
@@ -26,7 +26,7 @@
           </block>
           <text>{{like.length}}</text>
         </view>
-        <view class="post-favorites">
+        <view class="post-favorites" bindtap="favorite">
           <block wx:if="{{is_favorite==0}}">
             <image class="icon" src="/static/default/favorite.png"></image>
           </block>
@@ -37,6 +37,10 @@
         </view>
 
       </view>
+      <form class="writecomment" bindsubmit="comment">
+        <input name="comment" placeholder="写一条友善的评论吧"></input>
+        <button form-type="submit" id="comment-button">发送</button>
+      </form>
       <view class="post-comments">
         <text>评论区：</text>
         <block wx:for="{{comment}}" wx:key="*this">
