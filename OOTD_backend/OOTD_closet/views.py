@@ -4,38 +4,79 @@ from .models import Clothes
 import json
 from django.utils import timezone
 from .models import Type
+from django import forms
+from django.shortcuts import get_object_or_404
+
+class ClothesForm(forms.ModelForm):
+    class Meta:
+        model = Clothes
+        fields = ['clothes_name', 'clothes_main_type', 'clothes_detail_type']
 
 @login_required
 def add_clothes(request):
     """
-        添加衣服
+    添加衣服
     """
+    if request.method == "POST":
+        form = ClothesForm(request.POST)
+        if not form.is_valid():
+            # print("Invalid arguments")
+            return JsonResponse({"message": "Invalid arguments"}, status=400)
+        
+        new_clothes = form.save(commit=False)
+        new_clothes.user = request.user
+        new_clothes.clothesid = Clothes.clothesid + 1
+        Clothes.clothesid += 1
+        new_clothes.save()
+        
+        return JsonResponse({"clothesid":new_clothes.clothesid, "message": "Clothes added to the closet successfully"}, status=201)
+    
+    elif request.method == "GET":
+        form = ClothesForm()
+        return JsonResponse({"message": "empty"}, status=200)
+    
+    else:
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+"""
+@login_required
+def add_clothes(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
     try:
+        # print(request.body)
         content = json.loads(request.body)
+        
         clothes_ID = Clothes.clothesid + 1
         Clothes.clothesid += 1
         clothes_name = content.get("name")
         clothes_main_type = content.get("Mtype")
         clothes_detail_type = content.get("Dtype")
-        clothes_picture_url = content.get("pictureUrl")
+        # clothes_picture_url = content.get("pictureUrl")
 
         new_clothes = Clothes(
             clothes_ID = clothes_ID,
             clothes_name = clothes_name,
             clothes_main_type = clothes_main_type,
             clothes_detail_type = clothes_detail_type,
-            clothes_picture_url = clothes_picture_url,
+            # clothes_picture_url = clothes_picture_url,
         )
-        new_clothes.save_image_from_url()
+        # new_clothes.save_image_from_url()
+        uploaded_file = request.FILES['file'] 
+        user = request.user
+        new_clothes.user = user
+        # print(Clothes.clothes_picture_url)
+        new_clothes.clothes_picture_url = 'clothes/' + f'{new_clothes.clothesid}_clothes.jpg'
+        new_clothes.clothes_picture.save(new_clothes.clothes_picture_url, uploaded_file)
         new_clothes.save()
+        new_clothes.updated = timezone.now()
 
-        return JsonResponse({"message": "Clothes added to the wardrobe successfully"}, status=201)
+        return JsonResponse({"message": "Clothes added to the closet successfully"}, status=201)
 
     except Exception as e:
         print(e)
         return JsonResponse({"message": "Internal Server Error"}, status=500)
+"""
 
 @login_required
 def edit_clothes(request):
@@ -99,7 +140,7 @@ def upload_file(request):
             uploaded_file = request.FILES['file'] 
             Clothes = request.user
             print(Clothes.clothes_picture_url)
-            #删除原来的头像
+            #删除原来的图片
             Clothes.clothes_picture.delete(save=False)
             Clothes.clothes_picture_url = 'avatars/' + f'{Clothes.clothesid}_avatar.jpg'
             Clothes.clothes_picture.save(Clothes.clothes_picture_url, uploaded_file)

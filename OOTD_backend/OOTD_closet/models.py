@@ -11,7 +11,7 @@ class Type(models.TextChoices):
     SHOES = 'shoes','鞋'
     BAG = 'bag','包'
     ACCESSORIES = 'accessories','首饰'
-
+    
 class Clothes(models.Model):
     """
     衣服
@@ -25,7 +25,7 @@ class Clothes(models.Model):
     clothes_picture = models.ImageField(upload_to='images/')   # 指定衣服储存的目录
     clothes_used_time = models.IntegerField(default=0,verbose_name="衣服使用次数")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_clothes = models.ManyToManyField(User,related_name='user_clothes',blank=True)
+    # user_clothes = models.ManyToManyField(User,related_name='user_clothes',blank=True)
     updated = models.DateTimeField(auto_now=True, verbose_name="更新时间")
     
     def save_image_from_url(self):
