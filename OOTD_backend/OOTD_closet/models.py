@@ -26,6 +26,7 @@ class Clothes(models.Model):
     clothes_used_time = models.IntegerField(default=0,verbose_name="衣服使用次数")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_clothes = models.ManyToManyField(User,related_name='user_clothes',blank=True)
+    updated = models.DateTimeField(auto_now=True, verbose_name="更新时间")
     
     def save_image_from_url(self):
         response = requests.get(self.clothes_picture_url)
