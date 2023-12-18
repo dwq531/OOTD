@@ -54,7 +54,7 @@ class ReplaceOutfit(models.Model):
     只存储最新的一套
     """
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='replaceoutfit',verbose_name="用户")
-    clothes = models.ForeignKey(Clothes,verbose_name="待替换的衣服")
+    clothes = models.ForeignKey(Clothes,on_delete=models.CASCADE,verbose_name="待替换的衣服")
     rate = models.IntegerField(default=0,verbose_name="评分")
 
 # 每类衣服的推荐温度范围

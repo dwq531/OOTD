@@ -111,6 +111,30 @@ def upload_file(request):
         print(e)
         return JsonResponse({"message": "Internal Server Error"}, status=500)
 
+# 获取衣服列表
+@login_required
+def get_clothes(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+    try:
+        user = request.user
+        clothes = Clothes.objects.filter(user=user)
+        clothes_list = []
+        for cloth in clothes.iterator():
+            clothes_list.append({
+                "id": cloth.clothes_ID,
+                "name": cloth.clothes_name,
+                "Mtype": cloth.clothes_main_type,
+                "Dtype": cloth.clothes_detail_type,
+                "pictureUrl": cloth.clothes_picture_url
+            })
+        return JsonResponse({"clothes": clothes_list,"message": "ok"}, status=200)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": "Internal Server Error"}, status=500)
+
+
 # 添加穿搭
 @login_required
 def add_outfit(request):

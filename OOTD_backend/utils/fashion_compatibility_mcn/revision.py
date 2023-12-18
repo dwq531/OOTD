@@ -5,11 +5,11 @@ import matplotlib; matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import torch
 from PIL import Image
-from diagnosis import *
+from utils.fashion_compatibility_mcn.diagnosis import *
 import random
 warnings.filterwarnings('ignore')
 plt.rc('font',family='Times New Roman')
-from model import CompatModel
+from utils.fashion_compatibility_mcn.model import CompatModel
 
 def retrieve_sub(x, select, order, all_path, model):
     """ Retrieve the datset to substitute the worst item for the best choice.
