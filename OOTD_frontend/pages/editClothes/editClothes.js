@@ -104,7 +104,7 @@ Page({
       wx.uploadFile({
         filePath: this.data.imgPath,
         name: 'file',
-        url: 'http://127.0.0.1:8000/api/clothes/edit_clothes',
+        url: 'http://127.0.0.1:8000/api/closet/add_clothes',
         header: {
           'Content-Type': 'application/json' ,
           'Authorization':app.globalData.jwt
@@ -112,7 +112,7 @@ Page({
         formData:{
           'name':this.data.name,
           'Mtype':this.data.chosenCategory,  
-          'Dtyoe':this.data.chosenDetail,  
+          'Dtype':this.data.chosenDetail,  
         },
         success:function(res){
           let pages = getCurrentPages()
