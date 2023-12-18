@@ -22,16 +22,19 @@ def add_clothes(request):
     if request.method == "POST":
         form = ClothesForm(request.POST)
         if not form.is_valid():
-            # print("Invalid arguments")
-            return JsonResponse({"message": "Invalid arguments"}, status=400)
+            print("Invalid arguments")
+            return JsonResponse({"message": "Invalid arguments"}, status=402)
         
         new_clothes = form.save(commit=False)
         new_clothes.user = request.user
-        new_clothes.clothesid = Clothes.clothesid + 1
+        new_clothes.clothes_ID = Clothes.clothesid + 1
         Clothes.clothesid += 1
+        uploaded_file = request.FILES['file'] 
+        new_clothes.clothes_picture_url = 'clothes/' + f'{new_clothes.clothesid}_clothes.jpg'
+        new_clothes.clothes_picture.save(new_clothes.clothes_picture_url, uploaded_file)
         new_clothes.save()
         
-        return JsonResponse({"clothesid":new_clothes.clothesid, "message": "Clothes added to the closet successfully"}, status=201)
+        return JsonResponse({"clothesid":new_clothes.clothesid, "message": "Clothes added to the closet successfully"}, status=200)
     
     elif request.method == "GET":
         form = ClothesForm()

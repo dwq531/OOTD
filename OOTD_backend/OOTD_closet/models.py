@@ -6,11 +6,11 @@ from  login.models  import User
 # Create your models here.
 
 class Type(models.TextChoices):
-    UPPER = 'upper','上装'
-    BOTTOM = 'bottom','下装'
-    SHOES = 'shoes','鞋'
-    BAG = 'bag','包'
-    ACCESSORIES = 'accessories','首饰'
+    UPPER ='上衣', 'upper'
+    BOTTOM = '下装','bottom'
+    SHOES = '鞋子','shoes'
+    BAG = '包','bag'
+    ACCESSORIES = '饰品','accessories'
     
 class Clothes(models.Model):
     """
@@ -18,6 +18,7 @@ class Clothes(models.Model):
     """
     clothesid = 0
     clothes_ID = models.IntegerField(default=0,verbose_name="衣服id")
+    # clothes_ID = models.AutoField(primary_key=True,verbose_name="衣服id")
     clothes_name = models.CharField(max_length=32,default='',verbose_name="衣服名字")
     clothes_main_type = models.CharField(max_length=32,choices=Type.choices,default=Type.UPPER,verbose_name="衣服主要类型")
     clothes_detail_type = models.CharField(max_length=32,default='',verbose_name="衣服细分类型")
