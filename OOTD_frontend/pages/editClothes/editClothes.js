@@ -90,6 +90,8 @@ Page({
   },
   saveClothes:function(e){
     const that = this
+    e.detail.value.clothes_main_type = this.data.chosenCategory
+    e.detail.value.clothes_detail_type = this.data.chosenDetail
     console.log(e.detail.value)
     if(this.data.imgPath=='')
     {
