@@ -10,18 +10,20 @@
       <image src="/static/default/addImg.png" bindtap="uploadImg"></image>
     </button>
   </view>
-  <view class="name">
-    <text>名称</text>
-    <input id="name_input" type="text" bindchange="nameChange"></input>
-  </view>
-  <view class="category">
-    <text>种类</text>
-    <picker mode="selector" id="category_picker" range="{{category}}" value="{{index}}" bindchange="categoryChange">{{chosenCategory}}</picker>
-  </view>
-  <view class="detail">
-    <text>细分类型</text>
-    <picker mode="selector" id="category_picker" range="{{detail}}" value="{{index}}" bindchange="detailChange">{{chosenDetail}}</picker>
-  </view>
-  <button id="deleteBut" wx:if="{{index!=-1}}" bindtap="deleteClothes">删除</button>
-  <button id="saveBut" bindtap="saveClothes">保存</button>
+  <form bindsubmit="saveClothes">
+    <view class="name">
+      <text >名称</text>
+      <input name="name" id="name_input" type="text" bindchange="nameChange"></input>
+    </view>
+    <view class="category">
+      <text >种类</text>
+      <picker name="Mtype" mode="selector" id="category_picker" range="{{category}}" value="{{index}}" bindchange="categoryChange">{{chosenCategory}}</picker>
+    </view>
+    <view class="detail">
+      <text>细分类型</text>
+      <picker name="Dtype" mode="selector" id="category_picker" range="{{detail}}" value="{{index}}" bindchange="detailChange">{{chosenDetail}}</picker>
+    </view>
+    <button id="deleteBut" wx:if="{{index!=-1}}" bindtap="deleteClothes">删除</button>
+    <button id="saveBut" form-type="submit">保存</button>
+  </form>
 </view>

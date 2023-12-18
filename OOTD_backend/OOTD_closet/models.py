@@ -37,3 +37,76 @@ class Clothes(models.Model):
             # TODO 将 None 替换为默认
             self.clothes_picture_url = None
             self.clothes_picture = None
+
+class DailyOutfit(models.Model):
+    """
+    每日搭配
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='dailyoutfit',verbose_name="用户")
+    clothes = models.ManyToManyField(Clothes,related_name='dailyoutfit',verbose_name="搭配的衣服")
+    date_worn = models.DateField(auto_now_add=True,verbose_name="日期")
+    rate = models.IntegerField(default=0,verbose_name="评分")
+    
+
+class ReplaceOutfit(models.Model):
+    """
+    评分后推荐替换成的搭配
+    只存储最新的一套
+    """
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='replaceoutfit',verbose_name="用户")
+    clothes = models.ForeignKey(Clothes,on_delete=models.CASCADE,verbose_name="待替换的衣服")
+    rate = models.IntegerField(default=0,verbose_name="评分")
+
+# 每类衣服的推荐温度范围
+clothing_suggestions = {
+    "upper": {
+        "T恤": (20, 30),
+        "衬衫": (15, 25),
+        "卫衣": (-10, 25),
+        "毛衣": (-10, 20),
+        "吊带": (25, 40),
+        "POLO衫": (20, 30),
+        "连衣裙": (15, 35),
+        "风衣": (10, 25),
+        "马甲": (15, 25),
+        "夹克": (10, 25),
+        "皮衣": (10, 25),
+        "冲锋衣": (5, 15),
+        "防晒衣": (25, 40),
+        "羽绒服": (-30, 10),
+        "正装外套": None,
+        "其他": None
+    },
+    "bottom": {
+        "牛仔裤": (15, 30),
+        "裙裤": (15, 35),
+        "运动裤": None,
+        "背带裤": (15, 25),
+        "休闲裤": None,
+        "棉裤": (-30, 10),
+        "正装裤": None,
+        "半身裙": (15, 40),
+        "其他": None
+    },
+    "shoes": {
+        "运动鞋": None,
+        "凉鞋": (25, 40),
+        "板鞋": (10, 35),
+        "帆布鞋": (10, 35),
+        "靴子": (-30, 10),
+        "其他": None
+    },
+    "bag": {
+        "手提包": None,
+        "腰包": None,
+        "挎包": None,
+        "背包": None
+    },
+    "accessories": {
+        "项链": None,
+        "帽子": None,
+        "围巾": None,
+        "耳环": None,
+        "头饰": None
+    }
+}

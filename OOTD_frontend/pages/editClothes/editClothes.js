@@ -90,6 +90,7 @@ Page({
   },
   saveClothes:function(e){
     const that = this
+    console.log(e.detail.value)
     if(this.data.imgPath=='')
     {
       wx.showModal({
@@ -100,20 +101,16 @@ Page({
     }
     // 更新后端
     if(this.data.index==-1)
-    {
+    {// 新增衣服
       wx.uploadFile({
         filePath: this.data.imgPath,
         name: 'file',
         url: 'http://127.0.0.1:8000/api/closet/add_clothes',
         header: {
-          'Content-Type': 'application/json' ,
+          'Content-Type': 'application/x-www-form-urlencoded' ,
           'Authorization':app.globalData.jwt
         },
-        formData:{
-          'name':this.data.name,
-          'Mtype':this.data.chosenCategory,  
-          'Dtype':this.data.chosenDetail,  
-        },
+        formData:e.detail.value,
         success:function(res){
           let pages = getCurrentPages()
           let prepage = pages[pages.length - 2]
@@ -133,6 +130,10 @@ Page({
           })
         }
       })
+    }
+    else
+    {// 编辑衣服
+
     }
     
   },
