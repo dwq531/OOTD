@@ -34,6 +34,37 @@ Page({
       }
     })
   },
+  onShow: function () {
+    // 页面加载时的初始化操作，可以在这里处理数据加载等任务
+    // console.log("页面加载完成");
+    // console.log("nickname:",this.data.nickname);
+    wx.request({
+      method: 'GET',
+      url: 'http://127.0.0.1:8000/api/user/weather',
+      header: {
+        'Authorization': app.globalData.jwt, // 添加 JWT Token
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          // 更新页面数据，显示用户信息
+          this.setData({
+            weatherChar: res.data.text,
+            weatherCode: res.data.icon,
+            temprature: res.data.temperature,
+          }, () => {
+            console.log('页面数据已更新');
+          });
+        } else {
+          // 处理请求失败的情况
+          console.error('Failed to request weather:', res.data);
+        }
+      },
+      fail: (err) => {
+        // 处理请求失败的情况
+        console.error('Failed to request weather:', err);
+      },
+    });
+  },
   deleteImage:function(e){
     const index = e.currentTarget.dataset.id;
     this.data.images.splice(index,1);

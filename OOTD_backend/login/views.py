@@ -6,6 +6,7 @@ from django.utils import timezone
 from login.models import Gender
 import re
 import gzip
+import requests
 
 
 def login(request):
@@ -164,26 +165,38 @@ def get_weather(request):
     try:
         user = request.user
         api_key="67d28b46a25041b4a6515de071592609"
-        api_location_url="https://geoapi.qweather.com/v2/city/lookup?location={user.addr}&key={api_key}"
+        api_location_url=f"https://geoapi.qweather.com/v2/city/lookup?location={user.addr}&key={api_key}"
         response = requests.get(api_location_url)
+        data = {}
 
         if response.status_code == 200:
-            compressed_data = response.content
-            decompressed_data = gzip.decompress(compressed_data)
-            data = json.loads(decompressed_data.decode('utf-8'))
-            
-            locationid = data["location"]["id"]
-            api_weather_url = "https://devapi.qweather.com/v7/weather/now?location={locationid}&key={api_key}"
-            response = requests.get(api_weather_url)
-            if response.status_code == 200:
+            content_type = response.headers.get('content-type', '')
+            if 'gzip' in content_type:
                 compressed_data = response.content
                 decompressed_data = gzip.decompress(compressed_data)
                 data = json.loads(decompressed_data.decode('utf-8'))
 
+            else:
+                data = response.json()
+                #print("here")
+            #print(data)
+
+            locationid = data["location"][0]["id"]
+            api_weather_url = f"https://devapi.qweather.com/v7/weather/now?location={locationid}&key={api_key}"
+            response = requests.get(api_weather_url)
+            if response.status_code == 200:
+                content_type = response.headers.get('content-type', '')
+                if 'gzip' in content_type:
+                    compressed_data = response.content
+                    decompressed_data = gzip.decompress(compressed_data)
+                    data = json.loads(decompressed_data.decode('utf-8'))
+                else:
+                    data = response.json()
+
                 user.weather.icon = data["now"]["icon"]
                 user.weather.text = data["now"]["text"]
-                user.weather.temperature = data["now"]["temperature"]
-
+                user.weather.temperature = data["now"]["temp"]
+                #print(user.weather.text)
             else:
                 return "Failed to fetch weather data"
             
@@ -195,7 +208,8 @@ def get_weather(request):
             'text':user.weather.text,
             'temperature':user.weather.temperature
         }, status=200)
-    except:
+    except Exception as e:
+        print(f"发生异常：{str(e)}")
         return JsonResponse({"message": "Internal Server Error"}, status=500)
 
 
