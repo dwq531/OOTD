@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login',
+    'OOTD_closet',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ SALT = "bar"
 # 媒体文件目录
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 设置为 5 MB

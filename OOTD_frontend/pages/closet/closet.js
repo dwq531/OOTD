@@ -2,16 +2,9 @@ const app = getApp()
 
 Page({
   data: {
-      category: ["上衣","下装","连衣裙","外套","帽子","鞋子"],
-      clothes: [
-        ["短袖1","短袖2","卫衣1","卫衣2","长袖1","长袖2","长袖3","长袖4","长袖5","长袖6","长袖7","长袖8","长袖9","长袖10","长袖11","长袖12"],
-        ["牛仔裤","运动裤","短裙",]
-      ],
-      outfitItems: [
-        {"name":"搭配1","category":1},
-        {"name":"搭配2","category":2},
-        {"name":"搭配3","category":3},
-        {"name":"搭配4","category":4},],
+      category: ["上衣","下装","鞋子","包","饰品"],
+      clothes: [],
+      outfitItems: [],
       curIndex: 0, // 选中的类别
       weatherChar: "晴",
       weatherCode:102,
@@ -30,29 +23,56 @@ Page({
 
   },
   onLoad: function() {
-      // 加载的使用进行网络访问，把需要的数据设置到data数据对象
-      var that = this        
-      wx.request({
-          url: '',
-          method: 'GET',
-          data: {},
-          header: {
-              'Accept': 'application/json'
-          },
-          success: function(res) {
-              console.log(res)
-              that.setData({
-                  navLeftItems: res.data,
-                  navRightItems: res.data
-              })
-          }
-      })
+    // 加载的使用进行网络访问，把需要的数据设置到data数据对象
+    var that = this        
+    wx.request({
+        url: '',
+        method: 'GET',
+        data: {},
+        header: {
+            'Accept': 'application/json'
+        },
+        success: function(res) {
+            console.log(res)
+            that.setData({
+                navLeftItems: res.data,
+                navRightItems: res.data
+            })
+        }
+    })
 
   },
+  
   onShow: function () {
     // 页面加载时的初始化操作，可以在这里处理数据加载等任务
     // console.log("页面加载完成");
     // console.log("nickname:",this.data.nickname);
+    var that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/get_clothes',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      success:function(res){
+        console.log(res)
+        that.setData({
+          clothes:res.data.clothes
+        })
+      }
+    })
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/get_outfit',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      success:function(res){
+        that.setData({
+          outfitItems:res.data.clothes
+        })
+      }
+    })
     wx.request({
       method: 'GET',
       url: 'http://127.0.0.1:8000/api/user/weather',
@@ -91,9 +111,9 @@ Page({
       })
   },
   longtap: function(e){
-    const img = e.currentTarget.dataset.img;
     const url = e.currentTarget.dataset.url;
-    //console.log(url)
+    const img = url.pictureUrl
+    console.log(url)
     if(img)
     {
       this.setData({
@@ -126,6 +146,7 @@ Page({
     }
   },
   touchend: function(e){
+    const that = this
     const x = e.changedTouches[0].pageX
     const y = e.changedTouches[0].pageY
     //console.log(x,y)
@@ -138,11 +159,30 @@ Page({
       if(x>rect.left && x<rect.right && y>rect.top && y<rect.bottom)
       {
         //console.log("add")
-        var new_outfit = {'name':this.data.movingUrl,'category':this.data.curIndex};
+        var new_outfit = this.data.movingUrl;
         var flag=false;
+        // 连接后端
+        wx.request({
+          url: 'http://127.0.0.1:8000/api/closet/add_outfit',
+          method:'POST',
+          header: {
+            'Content-Type': 'application/json' ,
+            'Authorization':app.globalData.jwt
+          },
+          data:{
+            "id":this.data.movingUrl.id
+          },
+          success:function(res){
+            console.log(res)
+            that.setData({
+              outfitItems:res.data.clothes
+            })
+          }
+        })
+        /*
         for(var i=0;i<this.data.outfitItems.length;i++)
         {
-          if(this.data.outfitItems[i].category == new_outfit.category)
+          if(this.data.outfitItems[i].Mtype == new_outfit.Mtype)
           {
             // 相同类别进行替换
             this.data.outfitItems[i] = new_outfit;
@@ -152,10 +192,11 @@ Page({
         }
         if(!flag)
           this.data.outfitItems.push(new_outfit);
+        */
         this.setData({
           outfitItems:this.data.outfitItems
         })
-        //console.log(new_outfit);
+        
       }
     }).exec();
 
@@ -167,23 +208,34 @@ Page({
     })
   },
   deleteOutfit:function(e){
-    const index = e.currentTarget.dataset.id;
-    this.data.outfitItems.splice(index,1);
-    this.setData({
-      outfitItems:this.data.outfitItems
+    const url = e.currentTarget.dataset.url;
+    const that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/remove_outfit',
+      method:'POST',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      data:{
+        "id":url.id
+      },
+      success:function(res){
+        that.setData({
+          outfitItems:res.data.clothes
+        })
+      }
     })
   },
   shorttap: function(e) {
     const url = e.currentTarget.dataset.url;
-    const index = e.currentTarget.dataset.index;
-    //console.log(index)
     wx.navigateTo({
-      url:"/pages/editClothes/editClothes?url="+url+"&index="+index,
+      url:"/pages/editClothes/editClothes?url="+JSON.stringify(url)+"&add=0",
     })
   },
   addClothes: function(e){
     wx.navigateTo({
-      url:"/pages/editClothes/editClothes?url=0&index=-1",
+      url:"/pages/editClothes/editClothes?url=0&add=1",
     })
   },
   evaluate:function(e){
