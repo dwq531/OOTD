@@ -70,7 +70,7 @@ page {
 .nav_right .nav_right_items {
   float: left;
   width: 33.33%;
-  height: 80px;
+  height: 130px;
   text-align: center;
 }
 
