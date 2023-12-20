@@ -2,33 +2,37 @@
 <view class="container">
   <view class="headbar">
     <view class="gradientRect"></view>
-    <view class="userinfo" bindtap="editProfile">
-    
-      <image class="userinfo-avatar" src="http://127.0.0.1:8000/media/images/avatars/o3iSx6yd6nPHuhpYRGHqw3k3_Ls0_avatar_aLESQu5.jpg" mode="aspectFill"></image>
-      <text class="userinfo-nickname">{{app.globalData.nickname}}</text>
-      <text class="userinfo-gender">{{app.globalData.gender}}</text>
-      <text class="userinfo-age">{{app.globalData.age}}</text>
-      <text class="userinfo-addr">{{app.globalData.addr}}</text>
-    
-      <view class="collection-container">
-        <view class='userinfo-likes'>
+    <view class="userinfo">
+      <view class="container1">    
+        <image class="avatar" src="http://127.0.0.1:8000/media/images/{{avatarUrl}}" mode="aspectFill"></image>
+          <view class="nickname"><text >{{nickname}}</text></view>
+          <view class="infoSet">
+            <view class="gender"><text>{{gender}}</text></view>
+            <view class="age"><text>{{age}}</text></view>
+            <view class="addr"><text>{{addr}}</text></view>
+          </view>
+          <button id="editProfileButton" bindtap="editProfile">
+            <text class="butText">编辑资料</text>
+          </button>
+      </view>
+      <view class="container2">
+        <view class='likes'>
           <text class="label">收藏</text>
-          <text class="info">{{ 9 }}</text>
+          <text class="info">{{ likes }}</text>
         </view>
-        <view class='userinfo-following'>
+        <view class='following'>
           <text class="label">关注</text>
-          <text class="info">{{ 9 }}</text>
+          <text class="info">{{ following }}</text>
         </view>
-        <view class='userinfo-posts'>
+        <view class="posts">
           <text class="label">帖子</text>
-          <text class="info">{{ 9 }}</text>
+          <text class="info">{{ posts }}</text>
         </view>
-        <view class='userinfo-followers'>
+        <view class='followers'>
           <text class="label">粉丝</text>
-          <text class="info">{{ 9 }}</text>
+          <text class="info">{{ followers }}</text>
         </view>
       </view>
-
     </view>
   </view>
   
