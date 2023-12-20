@@ -6,7 +6,7 @@ Page({
       outfitItems: [],
       curIndex: 0, // 选中的类别
       weatherChar: "晴",
-      weatherCode:102,
+      weatherCode:100,
       temprature:15,
       score:0,
       dialogShow:true,
@@ -27,6 +27,7 @@ Page({
     // 页面加载时的初始化操作，可以在这里处理数据加载等任务
     // console.log("页面加载完成");
     // console.log("nickname:",this.data.nickname);
+    const that = this
     wx.request({
       url: 'http://127.0.0.1:8000/api/closet/get_clothes',
       header: {
@@ -48,7 +49,8 @@ Page({
       },
       success:function(res){
         that.setData({
-          outfitItems:res.data.clothes
+          outfitItems:res.data.clothes,
+          score:res.data.rate
         })
       }
     })
@@ -158,20 +160,6 @@ Page({
             })
           }
         })
-        /*
-        for(var i=0;i<this.data.outfitItems.length;i++)
-        {
-          if(this.data.outfitItems[i].Mtype == new_outfit.Mtype)
-          {
-            // 相同类别进行替换
-            this.data.outfitItems[i] = new_outfit;
-            flag=true;
-            break;
-          }
-        }
-        if(!flag)
-          this.data.outfitItems.push(new_outfit);
-        */
         this.setData({
           outfitItems:this.data.outfitItems
         })
@@ -233,11 +221,11 @@ Page({
           that.setData({
             dialogShow:false,
             replace_clothes:res.data.replace,
-            best_score:res.data.best_score.toFixed(2)
+            best_score:res.data.best_score
           })
         }
         that.setData({
-          score:res.data.rate.toFixed(2)
+          score:res.data.rate
         })
       }
     })
@@ -256,7 +244,7 @@ Page({
         console.log(res.data)
         that.setData({
           outfitItems:res.data.clothes,
-          score:res.data.rate.toFixed(2)
+          score:res.data.rate
         })
       }
     })
@@ -282,7 +270,7 @@ Page({
         console.log(res.data)
         that.setData({
           outfitItems:res.data.clothes,
-          score:res.data.rate.toFixed(2)
+          score:res.data.rate
         })
       }
     })

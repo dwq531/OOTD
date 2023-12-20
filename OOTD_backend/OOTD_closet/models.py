@@ -103,7 +103,7 @@ clothing_suggestions = {
         "挎包": None,
         "背包": None
     },
-    "accessories": {
+    "accessory": {
         "项链": None,
         "帽子": None,
         "围巾": None,

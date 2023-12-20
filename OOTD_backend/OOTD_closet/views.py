@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from utils.jwt import login_required
 from utils.fashion_compatibility_mcn.revision import preprocess, evaluate, generate_outfit
-from .models import Clothes, DailyOutfit, ReplaceOutfit
+from .models import Clothes, DailyOutfit, ReplaceOutfit,clothing_suggestions
 import json
 from django.utils import timezone
 from .models import Type
@@ -215,6 +215,7 @@ def add_outfit(request):
     except Clothes.DoesNotExist:
         pass
     dailyoutfit.clothes.add(clothes)
+    dailyoutfit.rate = 0
     dailyoutfit.save()
     response = []
     for clothit in dailyoutfit.clothes.iterator():
@@ -247,6 +248,7 @@ def remove_outfit(request):
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
     dailyoutfit.clothes.remove(clothes)
+    dailyoutfit.rate = 0
     dailyoutfit.save()
     response = []
     for clothit in dailyoutfit.clothes.iterator():
@@ -278,7 +280,7 @@ def get_outfit(request):
             "Dtype": cloth.clothes_detail_type,
             "pictureUrl": cloth.clothes_picture_url
         })
-    return JsonResponse({"clothes": clothes_list, "message": "ok"}, status=200)
+    return JsonResponse({"clothes": clothes_list,"rate":dailyoutfit.rate ,"message": "ok"}, status=200)
 
 # 穿搭评分
 @login_required
@@ -303,14 +305,17 @@ def score(request):
         clothes = Clothes.objects.filter(user=user)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
+    temp = int(user.weather.temperature)
     for clothit in clothes.iterator():
         # 根据天气筛选衣服种类
-
-        all_list[clothit.get_clothes_main_type_display()].append(clothit)
-        all_path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
+        sug = clothing_suggestions[clothit.get_clothes_main_type_display()][clothit.clothes_detail_type]
+        if sug is None or sug[0] <= temp <= sug[1]:
+            all_list[clothit.get_clothes_main_type_display()].append(clothit)
+            all_path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
     model = preprocess()
     rate, replace, best_score, best_img_path, img_idx = evaluate(path_values, model, all_path)
-    dailyoutfit.rate = rate*100
+    dailyoutfit.rate = int(rate*100)
+    dailyoutfit.save()
     response = []
     try:
         replace_outfit = ReplaceOutfit.objects.get(user=user)
@@ -321,7 +326,7 @@ def score(request):
             replace_outfit.clothes.clear()
         else:
             replace_outfit.clothes = Clothes.objects.none()
-        replace_outfit.rate = best_score*100
+        replace_outfit.rate = int(best_score*100)
         print(img_idx)
         # 遍历字典img_idx，把all_list中对应的衣服加入到replace_outfit中
         for key, value in img_idx.items():
@@ -333,7 +338,7 @@ def score(request):
                 "Dtype": all_list[key][value].clothes_detail_type,
                 "pictureUrl": all_list[key][value].clothes_picture_url})
         replace_outfit.save()
-    return JsonResponse({"rate": rate*100, "have_better": replace, "best_score": best_score*100, "replace": response, "message": "ok"}, status=200)
+    return JsonResponse({"rate":  dailyoutfit.rate, "have_better": replace, "best_score": replace_outfit.rate, "replace": response, "message": "ok"}, status=200)
 
 
 # 替换成推荐穿搭
@@ -383,16 +388,18 @@ def generate(request):
             'shoes': [], 'bag': [], 'accessory': []}
     clist = {'upper': [], 'bottom': [],
             'shoes': [], 'bag': [], 'accessory': []}
+    temp = int(user.weather.temperature)
     for clothit in clothes.iterator():
         # 根据天气筛选衣服种类
-
-        path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
-        clist[clothit.get_clothes_main_type_display()].append(clothit)
+        sug = clothing_suggestions[clothit.get_clothes_main_type_display()][clothit.clothes_detail_type]
+        if sug is None or sug[0] <= temp <= sug[1]:
+            path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
+            clist[clothit.get_clothes_main_type_display()].append(clothit)
     model = preprocess()
     best_score, best_img_path, img_idx = generate_outfit(path, model)
     response = []
     dailyoutfit.clothes.clear()
-    dailyoutfit.rate = best_score*100
+    dailyoutfit.rate = int(best_score*100)
     for key, value in img_idx.items():
         dailyoutfit.clothes.add(clist[key][value])
         response.append({
@@ -402,5 +409,5 @@ def generate(request):
             "Dtype": clist[key][value].clothes_detail_type,
             "pictureUrl": clist[key][value].clothes_picture_url})
     dailyoutfit.save()
-    return JsonResponse({"rate": best_score*100, "clothes": response, "message": "ok"}, status=200)
+    return JsonResponse({"rate": dailyoutfit.rate, "clothes": response, "message": "ok"}, status=200)
 
