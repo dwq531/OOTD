@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from utils.jwt import login_required
-from utils.fashion_compatibility_mcn.revision import preprocess, score, generate_outfit
-from .models import Clothes, DailyOutfit, ReplaceOutfit
+from utils.fashion_compatibility_mcn.revision import preprocess,score,generate_outfit
+from .models import Clothes, DailyOutfit,ReplaceOutfit
 import json
 from django.utils import timezone
 from .models import Type
@@ -10,21 +10,11 @@ from django import forms
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotAllowed
 
-class AddClothesForm(forms.ModelForm):
+class ClothesForm(forms.ModelForm):
     class Meta:
         model = Clothes
         fields = ['clothes_name', 'clothes_main_type', 'clothes_detail_type']
         
-class DeleteClothesForm(forms.ModelForm):
-    class Meta:
-        model = Clothes
-        fields = ['clothes_ID']
-        
-class EditClothesForm(forms.ModelForm):
-    class Meta:
-        model = Clothes
-        fields = ['clothes_ID','clothes_name', 'clothes_main_type', 'clothes_detail_type']
-
 
 @login_required
 def add_clothes(request):
@@ -32,26 +22,28 @@ def add_clothes(request):
     添加衣服
     """
     if request.method == "POST":
-        form = AddClothesForm(request.POST)
+        form = ClothesForm(request.POST)
+        # print(form)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=402)
 
         new_clothes = form.save(commit=False)
         new_clothes.user = request.user
-        new_clothes.clothes_ID = Clothes.clothesid + 1
-        Clothes.clothesid += 1
+        # new_clothes.clothes_ID = Clothes.clothesid + 1
+        # Clothes.clothesid += 1
         uploaded_file = request.FILES['file']
+        new_clothes.save()
         new_clothes.clothes_picture_url = 'clothes/' + \
-            f'{new_clothes.clothesid}_clothes.jpg'
+            f'{new_clothes.pk}_clothes.jpg'
+        print(new_clothes.pk)
         new_clothes.clothes_picture.save(
             new_clothes.clothes_picture_url, uploaded_file)
         new_clothes.save()
-
-        return JsonResponse({"clothesid": new_clothes.clothesid, "message": "Clothes added to the closet successfully"}, status=200)
+        return JsonResponse({"clothesid": new_clothes.pk, "message": "Clothes added to the closet successfully"}, status=200)
 
     elif request.method == "GET":
-        form = AddClothesForm()
+        form = ClothesForm()
         return JsonResponse({"message": "empty"}, status=200)
 
     else:
@@ -63,34 +55,27 @@ def delete_clothes(request):
     删除衣服
     """
     if request.method == "POST":
-        form = DeleteClothesForm(request.POST)
-        if not form.is_valid():
-            print("Invalid arguments")
-            return JsonResponse({"message": "Invalid arguments"}, status=402)
-        
-        clothes = get_object_or_404(Clothes, id=form.cleaned_data['clothes_ID'])
-        clothes.delete()    
+        content = json.loads(request.body)
+        clothes_ID = content.get("id")
+        # print(clothes_ID)
+        Clothes.objects.get(pk=clothes_ID).delete()
         return JsonResponse({"message": "Clothes deleted successfully"}, status=200)
-    
-    elif request.method == "GET":
-        form = DeleteClothesForm()
-        return JsonResponse({"message": "empty"}, status=200)
-    
     else:
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
 @login_required
-def edit_clothes(request, clothes_ID):
+def edit_clothes(request,clothes_id):
     """
     编辑衣服
     """
     if request.method == "POST":
-        form = EditClothesForm(request.POST)
+        form = ClothesForm(request.POST)
+        # print(form.modified_data)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=402)
         
-        clothes = get_object_or_404(Clothes, id=form.cleaned_data['clothes_ID'])
+        clothes = get_object_or_404(Clothes, pk=clothes_id)
         clothes.clothes_name = form.cleaned_data['clothes_name']
         clothes.clothes_main_type = form.cleaned_data['clothes_main_type']
         clothes.clothes_detail_type = form.cleaned_data['clothes_detail_type']
@@ -102,7 +87,7 @@ def edit_clothes(request, clothes_ID):
         return JsonResponse({"message": "Clothes edited successfully"}, status=200)
     
     elif request.method == "GET":
-        form = EditClothesForm()
+        form = ClothesForm()
         return JsonResponse({"message": "empty"}, status=200)
     
     else:
@@ -121,7 +106,7 @@ def get_clothes(request):
         clothes_list = []
         for cloth in clothes.iterator():
             clothes_list.append({
-                "id": cloth.clothes_ID,
+                "id": cloth.pk,
                 "name": cloth.clothes_name,
                 "Mtype": cloth.clothes_main_type,
                 "Dtype": cloth.clothes_detail_type,
@@ -150,7 +135,7 @@ def add_outfit(request):
     clothes_ID = content.get("id")
     clothes = None
     try:
-        clothes = Clothes.objects.get(clothes_ID=clothes_ID)
+        clothes = Clothes.objects.get(pk=clothes_ID)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
     try:
@@ -163,7 +148,7 @@ def add_outfit(request):
     response = []
     for clothit in dailyoutfit.clothes.iterator():
         response.append({
-            "id": clothit.clothes_ID,
+            "id": clothit.pk,
             "name": clothit.clothes_name,
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
@@ -187,7 +172,7 @@ def remove_outfit(request):
     clothes_ID = content.get("id")
     clothes = None
     try:
-        clothes = dailyoutfit.clothes.get(clothes_ID=clothes_ID)
+        clothes = dailyoutfit.clothes.get(pk=clothes_ID)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
     dailyoutfit.clothes.remove(clothes)
@@ -195,7 +180,7 @@ def remove_outfit(request):
     response = []
     for clothit in dailyoutfit.clothes.iterator():
         response.append({
-            "id": clothit.clothes_ID,
+            "id": clothit.pk,
             "name": clothit.clothes_name,
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
@@ -216,7 +201,7 @@ def get_outfit(request):
     clothes_list = []
     for cloth in clothes:
         clothes_list.append({
-            "id": cloth.clothes_ID,
+            "id": cloth.pk,
             "name": cloth.clothes_name,
             "Mtype": cloth.clothes_main_type,
             "Dtype": cloth.clothes_detail_type,
@@ -260,7 +245,7 @@ def score(request):
             for i in img_idx:
                 replace_outfit.clothes.add(all_list[i])
                 response.append({
-                    "id": all_list[i].clothes_ID,
+                    "id": all_list[i].pk,
                     "name": all_list[i].clothes_name,
                     "Mtype": all_list[i].clothes_main_type,
                     "Dtype": all_list[i].clothes_detail_type,
@@ -290,7 +275,7 @@ def replace(request):
         for clothit in replace_outfit.clothes.iterator():
             dailyoutfit.clothes.add(clothit)
             response.append({
-                "id": clothit.clothes_ID,
+                "id": clothit.pk,
                 "name": clothit.clothes_name,
                 "Mtype": clothit.clothes_main_type,
                 "Dtype": clothit.clothes_detail_type,
@@ -331,7 +316,7 @@ def generate(request):
         for i in img_idx:
             dailyoutfit.clothes.add(clist[i])
             response.append({
-                "id": clist[i].clothes_ID,
+                "id": clist[i].pk,
                 "name": clist[i].clothes_name,
                 "Mtype": clist[i].clothes_main_type,
                 "Dtype": clist[i].clothes_detail_type,
