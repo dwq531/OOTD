@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from utils.jwt import login_required
-from utils.fashion_compatibility_mcn.revision import preprocess, score, generate_outfit
+from utils.fashion_compatibility_mcn.revision import preprocess, evaluate, generate_outfit
 from .models import Clothes, DailyOutfit, ReplaceOutfit
 import json
 from django.utils import timezone
@@ -285,78 +285,83 @@ def get_outfit(request):
 def score(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
+    user = request.user
     try:
-        user = request.user
-        dailyoutfit = DailyOutfit.objects.get(
-            user=user, date_worn=datetime.date.today())
-        if dailyoutfit is None:
-            return JsonResponse({"message": "Outfit not found"}, status=400)
-        paths = path = {'upper': [], 'bottom': [],
-                        'shoes': [], 'bag': [], 'accessory': []}
-        for clothit in dailyoutfit.clothes.iterator():
-            path[clothit.clothes_main_type].append(clothit.clothes_picture_url)
-        all_list = []
-        all_path = {'upper': [], 'bottom': [],
-                    'shoes': [], 'bag': [], 'accessory': []}
+        dailyoutfit = DailyOutfit.objects.get(user=user, date_worn=datetime.date.today())
+    except DailyOutfit.DoesNotExist:
+        return JsonResponse({"message": "Outfit not found"}, status=400)
+    path = {'upper': 'upper_mean', 'bottom': 'bottom_mean',
+                    'shoes': 'shoes_mean', 'bag': 'bag_mean', 'accessory': 'accessory_mean'}
+    for clothit in dailyoutfit.clothes.iterator():
+        path[clothit.get_clothes_main_type_display()]=clothit.clothes_picture_url
+    path_values = list(path.values())
+    all_list = {'upper': [], 'bottom': [],
+                'shoes': [], 'bag': [], 'accessory': []}
+    all_path = {'upper': [], 'bottom': [],
+                'shoes': [], 'bag': [], 'accessory': []}
+    try:
         clothes = Clothes.objects.filter(user=user)
-        for clothit in clothes.iterator():
-            # 根据天气筛选衣服种类
+    except Clothes.DoesNotExist:
+        return JsonResponse({"message": "Clothes not found"}, status=400)
+    for clothit in clothes.iterator():
+        # 根据天气筛选衣服种类
 
-            all_list.append(clothit)
-            all_path[clothit.clothes_main_type].append(
-                clothit.clothes_picture_url)
-        model = preprocess()
-        rate, replace, best_score, best_img_path, img_idx = score(
-            path, model, all_path)
-        response = []
+        all_list[clothit.get_clothes_main_type_display()].append(clothit)
+        all_path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
+    model = preprocess()
+    rate, replace, best_score, best_img_path, img_idx = evaluate(path_values, model, all_path)
+    dailyoutfit.rate = rate*100
+    response = []
+    try:
         replace_outfit = ReplaceOutfit.objects.get(user=user)
-        if replace:
+    except ReplaceOutfit.DoesNotExist:
+        replace_outfit = ReplaceOutfit.objects.create(user=user)
+    if replace:
+        if replace_outfit.clothes is not None:
             replace_outfit.clothes.clear()
-            replace_outfit.rate = rate
-            for i in img_idx:
-                replace_outfit.clothes.add(all_list[i])
-                response.append({
-                    "id": all_list[i].clothes_ID,
-                    "name": all_list[i].clothes_name,
-                    "Mtype": all_list[i].clothes_main_type,
-                    "Dtype": all_list[i].clothes_detail_type,
-                    "pictureUrl": all_list[i].clothes_picture_url})
-            replace_outfit.save()
-        return JsonResponse({"rate": rate, "have_better": replace, "best_score": best_score, "replace": response, "message": "ok"}, status=200)
+        else:
+            replace_outfit.clothes = Clothes.objects.none()
+        replace_outfit.rate = best_score*100
+        print(img_idx)
+        # 遍历字典img_idx，把all_list中对应的衣服加入到replace_outfit中
+        for key, value in img_idx.items():
+            replace_outfit.clothes.add(all_list[key][value])
+            response.append({
+                "id": all_list[key][value].clothes_ID,
+                "name":all_list[key][value].clothes_name,
+                "Mtype": all_list[key][value].clothes_main_type,
+                "Dtype": all_list[key][value].clothes_detail_type,
+                "pictureUrl": all_list[key][value].clothes_picture_url})
+        replace_outfit.save()
+    return JsonResponse({"rate": rate*100, "have_better": replace, "best_score": best_score*100, "replace": response, "message": "ok"}, status=200)
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)
 
 # 替换成推荐穿搭
 @login_required
 def replace(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
-    try:
-        user = request.user
-        replace_outfit = ReplaceOutfit.objects.get(user=user)
-        if replace_outfit is None or replace_outfit.clothes is None:
-            return JsonResponse({"message": "Outfit not found"}, status=400)
-        dailyoutfit = DailyOutfit.objects.get(
-            user=user, date_worn=datetime.date.today())
-        dailyoutfit.clothes.clear()
-        dailyoutfit.rate = replace_outfit.rate
-        response = []
-        for clothit in replace_outfit.clothes.iterator():
-            dailyoutfit.clothes.add(clothit)
-            response.append({
-                "id": clothit.clothes_ID,
-                "name": clothit.clothes_name,
-                "Mtype": clothit.clothes_main_type,
-                "Dtype": clothit.clothes_detail_type,
-                "pictureUrl": clothit.clothes_picture_url})
-        dailyoutfit.save()
-        return JsonResponse({"rate": replace_outfit.rate, "clothes": response, "message": "ok"}, status=200)
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)
+    user = request.user
+    try:
+        replace_outfit = ReplaceOutfit.objects.get(user=user)
+        dailyoutfit = DailyOutfit.objects.get(user=user, date_worn=datetime.date.today())
+    except ReplaceOutfit.DoesNotExist or DailyOutfit.DoesNotExist:
+        return JsonResponse({"message": "Outfit not found"}, status=400)
+    dailyoutfit.clothes.clear()
+    dailyoutfit.rate = replace_outfit.rate
+    response = []
+    for clothit in replace_outfit.clothes.iterator():
+        dailyoutfit.clothes.add(clothit)
+        response.append({
+            "id": clothit.clothes_ID,
+            "name": clothit.clothes_name,
+            "Mtype": clothit.clothes_main_type,
+            "Dtype": clothit.clothes_detail_type,
+            "pictureUrl": clothit.clothes_picture_url})
+    dailyoutfit.save()
+    return JsonResponse({"rate": replace_outfit.rate, "clothes": response, "message": "ok"}, status=200)
+
 
 # 生成推荐穿搭
 
@@ -365,36 +370,37 @@ def replace(request):
 def generate(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
+    user = request.user
     try:
-        user = request.user
-        dailyoutfit = DailyOutfit.objects.get(
-            user=user, date_worn=datetime.date.today())
-        if dailyoutfit is None:
-            dailyoutfit = DailyOutfit.objects.create(user=user)
+        dailyoutfit = DailyOutfit.objects.get(user=user, date_worn=datetime.date.today())
+    except DailyOutfit.DoesNotExist:
+        dailyoutfit = DailyOutfit.objects.create(user=user)
+    try:
         clothes = Clothes.objects.filter(user=user)
-        path = {'upper': [], 'bottom': [],
-                'shoes': [], 'bag': [], 'accessory': []}
-        clist = []
-        for clothit in clothes.iterator():
-            # 根据天气筛选衣服种类
+    except Clothes.DoesNotExist:
+        return JsonResponse({"message": "Clothes not found"}, status=400)
+    path = {'upper': [], 'bottom': [],
+            'shoes': [], 'bag': [], 'accessory': []}
+    clist = {'upper': [], 'bottom': [],
+            'shoes': [], 'bag': [], 'accessory': []}
+    for clothit in clothes.iterator():
+        # 根据天气筛选衣服种类
 
-            path[clothit.clothes_main_type].append(clothit.clothes_picture_url)
-            clist.append(clothit)
-        model = preprocess()
-        best_score, best_img_path, img_idx = generate_outfit(path, model)
-        response = []
-        dailyoutfit.clothes.clear()
-        for i in img_idx:
-            dailyoutfit.clothes.add(clist[i])
-            response.append({
-                "id": clist[i].clothes_ID,
-                "name": clist[i].clothes_name,
-                "Mtype": clist[i].clothes_main_type,
-                "Dtype": clist[i].clothes_detail_type,
-                "pictureUrl": clist[i].clothes_picture_url})
-        dailyoutfit.save()
-        return JsonResponse({"rate": best_score, "clothes": response, "message": "ok"}, status=200)
+        path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
+        clist[clothit.get_clothes_main_type_display()].append(clothit)
+    model = preprocess()
+    best_score, best_img_path, img_idx = generate_outfit(path, model)
+    response = []
+    dailyoutfit.clothes.clear()
+    dailyoutfit.rate = best_score*100
+    for key, value in img_idx.items():
+        dailyoutfit.clothes.add(clist[key][value])
+        response.append({
+            "id": clist[key][value].clothes_ID,
+            "name": clist[key][value].clothes_name,
+            "Mtype": clist[key][value].clothes_main_type,
+            "Dtype": clist[key][value].clothes_detail_type,
+            "pictureUrl": clist[key][value].clothes_picture_url})
+    dailyoutfit.save()
+    return JsonResponse({"rate": best_score*100, "clothes": response, "message": "ok"}, status=200)
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)

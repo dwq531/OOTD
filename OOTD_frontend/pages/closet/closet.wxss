@@ -259,7 +259,7 @@ movable-view image{
   font-size:20px;
 }
 .dialog image{
-  width:100%;
+  width:20%;
 }
 #change{
   position:absolute;

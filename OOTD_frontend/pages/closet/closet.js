@@ -19,7 +19,8 @@ Page({
       y: 0,
       scrollable: true,
       scrollTop:0,
-
+      replace_clothes:[],
+      best_score:0
   },
   onShow:function(e){
     const that = this
@@ -189,12 +190,48 @@ Page({
     })
   },
   evaluate:function(e){
-    //wx.request
-    this.setData({
-      dialogShow:false
+    const that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/score',
+      method:'POST',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      success:function(res){
+        console.log(res.data)
+        if(res.data.have_better)
+        {
+          that.setData({
+            dialogShow:false,
+            replace_clothes:res.data.replace,
+            best_score:res.data.best_score.toFixed(2)
+          })
+        }
+        that.setData({
+          score:res.data.rate.toFixed(2)
+        })
+      }
     })
+    
   },
   changeOutfit:function(e){
+    const that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/replace',
+      method:'POST',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      success:function(res){
+        console.log(res.data)
+        that.setData({
+          outfitItems:res.data.clothes,
+          score:res.data.rate.toFixed(2)
+        })
+      }
+    })
     this.setData({
       dialogShow:true
     })
@@ -202,6 +239,24 @@ Page({
   cancel:function(e){
     this.setData({
       dialogShow:true
+    })
+  },
+  recommend:function(e){
+    const that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/generate',
+      method:'POST',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      success:function(res){
+        console.log(res.data)
+        that.setData({
+          outfitItems:res.data.clothes,
+          score:res.data.rate.toFixed(2)
+        })
+      }
     })
   }
 })

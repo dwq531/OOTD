@@ -14,7 +14,7 @@ from utils.fashion_compatibility_mcn.model import CompatModel
 def retrieve_sub(x, select, order, all_path, model):
     """ Retrieve the datset to substitute the worst item for the best choice.
     """
-    all_names = {0:'upper', 1:'bottom', 2:'shoe', 3:'bag', 4:'accessory'}
+    all_names = {0:'upper', 1:'bottom', 2:'shoes', 3:'bag', 4:'accessory'}
 
     best_score = -1
     best_img_path = dict()
@@ -29,7 +29,7 @@ def retrieve_sub(x, select, order, all_path, model):
             #print("outfit:",outfit)
             if best_score > 0.9:
                 break
-            img_path = os.path.join("../data/images/", outfit)
+            img_path = os.path.join("media/images/", outfit)
             img = transform(Image.open(img_path).convert('RGB')).to(device)
             x[0][problem_part_idx] = img
             with torch.no_grad():
@@ -49,24 +49,25 @@ def retrieve_sub(x, select, order, all_path, model):
         # plt.show()
     
     after = show_imgs(x[0], select, "revised_outfit.png")
-    return best_score, best_img_path,img_idx, after
+    return best_score, best_img_path,img_idx
 
 def generate_outfit(path,model):
-    all_names = ['bottom','shoe','bag','accessory']
+    all_names = ['bottom','shoes','bag','accessory']
     select = [0]
     best_score = -1
     best_img_path = dict()
-    img_path_idx = [random.randint(0,len(path["upper"])-1),-1,-1,-1,-1]
+    img_path_idx = dict()
+    img_path_idx["upper"] = random.randint(0,len(path["upper"])-1)
     #print(img_path_idx)
-    best_img_path['upper'] = os.path.join("../data/images/",path['upper'][img_path_idx[0]])
-    x = loadimg_from_path([best_img_path['upper'],"../data/bottom.png","../data/shoe.png","../data/bag.png","../data/accessory.png"])
+    best_img_path['upper'] = path['upper'][img_path_idx["upper"]]
+    x = loadimg_from_path([best_img_path['upper'],"bottom_mean","shoes_mean","bag_mean","accessory_mean"])
     idx=0
     for name in all_names:
         idx+=1
         have_better = False
         outfit_idx = 0
         for outfit in path[name]:
-            img_path = os.path.join("../data/images/", outfit)
+            img_path = os.path.join("media/images/", outfit)
             img = Image.open(img_path).convert('RGB')
             img = transform(img).to(device)
             x[0][idx]=img
@@ -76,19 +77,20 @@ def generate_outfit(path,model):
                 have_better = True
                 best_score = score.item()
                 best_img_path[name]=img_path
-                img_path_idx[idx]=outfit_idx
+                img_path_idx[name]=outfit_idx
             outfit_idx+=1
         if have_better:
             select.append(idx)
             x[0][idx] = transform(Image.open(best_img_path[name]).convert('RGB')).to(device)
         else:
-             x[0][idx] = transform(Image.open("../data/"+name+".png").convert('RGB')).to(device)
+            x[0][idx] = transform(Image.open("utils/data/"+name+".png").convert('RGB')).to(device)
 
     show_imgs(x[0], select, "generated_outfit.png")
     print('score is {:.4f}'.format(best_score))
+    print(img_path_idx)
     return best_score,best_img_path,img_path_idx
 
-def score(path,model,all_path):
+def evaluate(path,model,all_path):
     x = loadimg_from_path(path).to(device)
     select = [i for i, l in enumerate(path) if 'mean' not in l]
     before = show_imgs(x[0], select)
@@ -97,14 +99,14 @@ def score(path,model,all_path):
     show_rela_diagnosis(relation, select, cmap=plt.cm.Blues)
     result, order = item_diagnosis(relation, select)
     best_score, best_img_path,img_idx = retrieve_sub(x, select, order,all_path, model)
-    replace = (best_score == rate)
+    replace = (best_score != rate)
     return rate, replace, best_score, best_img_path,img_idx
     
 
 
 def preprocess():
     model = CompatModel(embed_size=1000, need_rep=True, vocabulary=2757).to(device)
-    model.load_state_dict(torch.load('./model_train_relation_vse_type_cond_scales.pth',map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load('utils/fashion_compatibility_mcn/model_train_relation_vse_type_cond_scales.pth',map_location=torch.device('cpu')))
     model.eval()
     return model
 
