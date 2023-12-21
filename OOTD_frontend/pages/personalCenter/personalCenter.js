@@ -20,7 +20,7 @@ Page({
   // 页面加载时执行的函数
   onLoad: function () {
     // 页面加载时的初始化操作，可以在这里处理数据加载等任务
-    console.log("页面加载完成");
+    //console.log("页面加载完成");
     //console.log("nickname:",this.data.nickname);
     wx.request({
       method: 'GET',
@@ -70,11 +70,11 @@ Page({
       posts:"",
       followers:"",
     });
-    console.log("缓存已清理");
+    //console.log("缓存已清理");
   },
   onShow: function () {
     // 页面加载时的初始化操作，可以在这里处理数据加载等任务
-    console.log("页面加载完成");
+    //console.log("页面加载完成");
     //console.log("nickname:",this.data.nickname);
     wx.request({
       method: 'GET',

@@ -4,18 +4,18 @@
     <image src="/static/weather/{{weatherCode}}-fill.svg" alt="QWeather Icons" />
     <text class="weatherText">{{weatherChar}} {{temprature}}℃</text>
     <text wx:if="{{score!=0}}" class="scoreText">{{score}}分</text>
-    <button id="recommendBut">推荐穿搭</button>
-    <button id="addBut" bindtap="addClothes" >添加衣服</button>
+    <button id="recommendBut" bindtap="recommend">推荐穿搭</button>
+    <button id="addBut" bindtap="addClothes">添加衣服</button>
     <button id="scoreBut" bindtap="evaluate">评分</button>
   </view>
   <movable-area>
     <movable-view x="{{x}}" y="{{y}}" direction="all" damping="{{5000}}" friction="{{1}}" hidden="{{hidden}}">
       <view class="item-move" hidden="{{hidden}}">
         <block wx:if="{{movingImg}}">
-          <image src="{{movingImg}}" class='item_img'></image>
+          <image src="http://127.0.0.1:8000/media/images/{{movingImg}}" class='item_img' mode = "widthFix"></image>
         </block>
         <block wx:else>
-          <image mode="widthFix" src="/static/default/noimage.png" ></image>
+          <image mode="widthFix" src="/static/default/noimage.png"></image>
         </block>
       </view>
     </movable-view>
@@ -23,17 +23,17 @@
       <text id="outfit_text">今日穿搭</text>
       <scroll-view scroll-x>
         <block wx:if="{{outfitItems}}">
-          <block wx:for="{{outfitItems}}" id="oufit_{{index}}" wx:key="*this">
+          <block wx:for="{{outfitItems}}" id="oufit_{{index}}" wx:key="id">
             <view class="outfit_item">
-              <block wx:if="{{item.image}}">
-                <image src="{{item.image}}">
+              <block wx:if="{{item.pictureUrl}}">
+                <image src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
                 </image>
               </block>
               <block wx:else>
                 <image src="/static/default/noimage.png"></image>
               </block>
               <text>{{item.name}}</text>
-              <button id="deleteBut" bindtap="deleteOutfit" data-id="{{index}}">-</button>
+              <button id="deleteBut" bindtap="deleteOutfit" data-id="{{index}}" data-url="{{item}}">-</button>
             </view>
           </block>
         </block>
@@ -50,18 +50,17 @@
         </block>
       </view>
       <scroll-view scroll-y="{{scrollable}}" class="nav_right" bindscroll="onScrolly">
-        <block wx:if="{{clothes[curIndex]}}">
-          <block wx:for="{{clothes[curIndex]}}" >
+        <block wx:for="{{clothes}}" wx:key="id">
+          <block wx:if="{{item.Mtype==category[curIndex]}}">
             <view class="nav_right_items" data-index="{{index}}" data-url="{{item}}" bindlongpress="longtap" bindtouchstart='touchs' bindtouchend='touchend' bindtouchmove='touchm' bindtap="shorttap">
-              <block wx:if="{{item.image}}">
-                <image src="{{item.image}}">
+              <block wx:if="{{item.pictureUrl}}">
+                <image src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
                 </image>
               </block>
               <block wx:else>
                 <image src="/static/default/noimage.png"></image>
               </block>
-              <text>{{item}}</text>
-
+              <text>{{item.name}}</text>
             </view>
           </block>
         </block>
@@ -70,10 +69,19 @@
   </movable-area>
   <view class="dialog" hidden="{{dialogShow}}">
     <text>当前评分：{{score}}</text>
-    <image mode="widthFix" src="/static/test/outfit.png"/>
-    <text>搭配建议如下，更换后评分：</text>
-    <image mode="widthFix" src="/static/test/revised_outfit.png"/>
-    <button id="change" bindtap="changeOutfit">替换</button>
-    <button id="cancel" bindtap="cancel">取消</button>
+    <view class="before">
+      <block wx:for="{{outfitItems}}" wx:key="id">
+        <image mode="widthFix" src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" />
+      </block>
+    </view>
+    <view class="after">
+      <text>搭配建议如下，更换后评分：{{best_score}}</text>
+      <block wx:for="{{replace_clothes}}" wx:key="id">
+        <image mode="widthFix" src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" />
+        <button id="change" bindtap="changeOutfit">替换</button>
+        <button id="cancel" bindtap="cancel">取消</button>
+      </block>
+    </view>
+    
   </view>
 </view>

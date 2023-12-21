@@ -30,7 +30,8 @@ def create_user(openid, nickname="匿名用户", age=18, addr="北京", gender=G
             avatar=None,
             phone=phone,
             intro=intro,
-            updated=now
+            updated=now,
+            weather=None
         )
         u.save()
         return u,True
