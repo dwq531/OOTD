@@ -8,13 +8,13 @@ from .models import Type
 import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
-
+from django.http import HttpResponseNotAllowed
 
 class ClothesForm(forms.ModelForm):
     class Meta:
         model = Clothes
         fields = ['clothes_name', 'clothes_main_type', 'clothes_detail_type']
-
+        
 
 @login_required
 def add_clothes(request):
@@ -23,22 +23,24 @@ def add_clothes(request):
     """
     if request.method == "POST":
         form = ClothesForm(request.POST)
+        # print(form)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=402)
 
         new_clothes = form.save(commit=False)
         new_clothes.user = request.user
-        new_clothes.clothes_ID = Clothes.clothesid + 1
-        Clothes.clothesid += 1
+        # new_clothes.clothes_ID = Clothes.clothesid + 1
+        # Clothes.clothesid += 1
         uploaded_file = request.FILES['file']
+        new_clothes.save()
         new_clothes.clothes_picture_url = 'clothes/' + \
-            f'{new_clothes.clothesid}_clothes.jpg'
+            f'{new_clothes.pk}_clothes.jpg'
+        print(new_clothes.pk)
         new_clothes.clothes_picture.save(
             new_clothes.clothes_picture_url, uploaded_file)
         new_clothes.save()
-
-        return JsonResponse({"clothesid": new_clothes.clothesid, "message": "Clothes added to the closet successfully"}, status=200)
+        return JsonResponse({"clothesid": new_clothes.pk, "message": "Clothes added to the closet successfully"}, status=200)
 
     elif request.method == "GET":
         form = ClothesForm()
@@ -47,122 +49,49 @@ def add_clothes(request):
     else:
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
-
-"""
 @login_required
-def add_clothes(request):
-    if request.method != "POST":
-        return JsonResponse({"message": "Method not allowed"}, status=405)
-    try:
-        # print(request.body)
+def delete_clothes(request):
+    """
+    删除衣服
+    """
+    if request.method == "POST":
         content = json.loads(request.body)
+        clothes_ID = content.get("id")
+        # print(clothes_ID)
+        Clothes.objects.get(pk=clothes_ID).delete()
+        return JsonResponse({"message": "Clothes deleted successfully"}, status=200)
+    else:
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+@login_required
+def edit_clothes(request,clothes_id):
+    """
+    编辑衣服
+    """
+    if request.method == "POST":
+        form = ClothesForm(request.POST)
+        # print(form.modified_data)
+        if not form.is_valid():
+            print("Invalid arguments")
+            return JsonResponse({"message": "Invalid arguments"}, status=402)
         
-        clothes_ID = Clothes.clothesid + 1
-        Clothes.clothesid += 1
-        clothes_name = content.get("name")
-        clothes_main_type = content.get("Mtype")
-        clothes_detail_type = content.get("Dtype")
-        # clothes_picture_url = content.get("pictureUrl")
-
-        new_clothes = Clothes(
-            clothes_ID = clothes_ID,
-            clothes_name = clothes_name,
-            clothes_main_type = clothes_main_type,
-            clothes_detail_type = clothes_detail_type,
-            # clothes_picture_url = clothes_picture_url,
-        )
-        # new_clothes.save_image_from_url()
+        clothes = get_object_or_404(Clothes, pk=clothes_id)
+        clothes.clothes_name = form.cleaned_data['clothes_name']
+        clothes.clothes_main_type = form.cleaned_data['clothes_main_type']
+        clothes.clothes_detail_type = form.cleaned_data['clothes_detail_type']
         uploaded_file = request.FILES['file'] 
-        user = request.user
-        new_clothes.user = user
-        # print(Clothes.clothes_picture_url)
-        new_clothes.clothes_picture_url = 'clothes/' + f'{new_clothes.clothesid}_clothes.jpg'
-        new_clothes.clothes_picture.save(new_clothes.clothes_picture_url, uploaded_file)
-        new_clothes.save()
-        new_clothes.updated = timezone.now()
-
-        return JsonResponse({"message": "Clothes added to the closet successfully"}, status=201)
-
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)
-"""
-
-
-@login_required
-def edit_clothes(request):
-    """
-    修改衣服信息
-    """
-    if request.method != "PATCH":
-        return JsonResponse({"message": "Method not allowed"}, status=405)
-
-    try:
-        content = json.loads(request.body)
-        clothes_id = content.get('clothes_ID', None)
-        clothes_id = int(clothes_id)
-        # 在数据库中查找相应的 Clothes 对象
-        clothes = Clothes.objects.get(clothes_ID=clothes_id)
-        if (content.get('pictureUrl')):
-            clothes.clothes_picture_url = content['pictureUrl']
-            clothes.save_image_from_url()
-            if clothes.clothes_picture is None:
-                return JsonResponse({"message": "Invalid avatarUrl"}, status=400)
-
-        if (clothes.get('name')):
-            if len(content['name']) > 32:
-                return JsonResponse({"message": "Invalid nickname"}, status=400)
-            else:
-                clothes.name = content['name']
-
-        if (content.get('Mtype')):
-            if content['Mtype'] == '上装':
-                clothes.clothes_main_type = Type.UPPER
-            elif content['Mtype'] == '下装':
-                clothes.clothes_main_type = Type.BOTTOM
-            elif content['Mtype'] == '鞋':
-                clothes.clothes_main_type = Type.SHOES
-            elif content['Mtype'] == '包':
-                clothes.clothes_main_type = Type.BAG
-            elif content['Mtype'] == '首饰':
-                clothes.clothes_main_type = Type.ACCESSORIES
-            else:
-                return JsonResponse({"message": "Invalid gender"}, status=400)
-
-        if (clothes.get('Dtype')):
-            if len(content['Dtype']) > 32:
-                return JsonResponse({"message": "Invalid Dtype"}, status=400)
-            else:
-                clothes.clothes_detail_type = content['Dtype']
-
+        clothes.clothes_picture.delete(save=False)
+        clothes.clothes_picture_url = 'clothes/' + f'{clothes.clothesid}_clothes.jpg'
+        clothes.clothes_picture.save(clothes.clothes_picture_url, uploaded_file)
         clothes.save()
-        clothes.updated = timezone.now()
-
-        return JsonResponse({"clothes_ID": clothes.clothes_ID, "pictureUrl": clothes.clothes_picture_url, "update": clothes.updated, "message": "ok"}, status=200)
-
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)
-
-
-@login_required
-def upload_file(request):
-    try:
-        if request.method == 'POST':
-            uploaded_file = request.FILES['file']
-            Clothes = request.user
-            print(Clothes.clothes_picture_url)
-            # 删除原来的图片
-            Clothes.clothes_picture.delete(save=False)
-            Clothes.clothes_picture_url = 'avatars/' + \
-                f'{Clothes.clothesid}_avatar.jpg'
-            Clothes.clothes_picture.save(
-                Clothes.clothes_picture_url, uploaded_file)
-
-            return JsonResponse({"avatarUrl": Clothes.clothes_picture_url, "updated": Clothes.updated, "message": "ok"}, status=200)
-    except Exception as e:
-        print(e)
-        return JsonResponse({"message": "Internal Server Error"}, status=500)
+        return JsonResponse({"message": "Clothes edited successfully"}, status=200)
+    
+    elif request.method == "GET":
+        form = ClothesForm()
+        return JsonResponse({"message": "empty"}, status=200)
+    
+    else:
+        return JsonResponse({"message": "Method not allowed"}, status=405)
 
 # 获取衣服列表
 
@@ -177,7 +106,7 @@ def get_clothes(request):
         clothes_list = []
         for cloth in clothes.iterator():
             clothes_list.append({
-                "id": cloth.clothes_ID,
+                "id": cloth.pk,
                 "name": cloth.clothes_name,
                 "Mtype": cloth.clothes_main_type,
                 "Dtype": cloth.clothes_detail_type,
@@ -206,7 +135,7 @@ def add_outfit(request):
     clothes_ID = content.get("id")
     clothes = None
     try:
-        clothes = Clothes.objects.get(clothes_ID=clothes_ID)
+        clothes = Clothes.objects.get(pk=clothes_ID)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
     try:
@@ -220,7 +149,7 @@ def add_outfit(request):
     response = []
     for clothit in dailyoutfit.clothes.iterator():
         response.append({
-            "id": clothit.clothes_ID,
+            "id": clothit.pk,
             "name": clothit.clothes_name,
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
@@ -244,7 +173,7 @@ def remove_outfit(request):
     clothes_ID = content.get("id")
     clothes = None
     try:
-        clothes = dailyoutfit.clothes.get(clothes_ID=clothes_ID)
+        clothes = dailyoutfit.clothes.get(pk=clothes_ID)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
     dailyoutfit.clothes.remove(clothes)
@@ -253,7 +182,7 @@ def remove_outfit(request):
     response = []
     for clothit in dailyoutfit.clothes.iterator():
         response.append({
-            "id": clothit.clothes_ID,
+            "id": clothit.pk,
             "name": clothit.clothes_name,
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
@@ -274,7 +203,7 @@ def get_outfit(request):
     clothes_list = []
     for cloth in clothes:
         clothes_list.append({
-            "id": cloth.clothes_ID,
+            "id": cloth.pk,
             "name": cloth.clothes_name,
             "Mtype": cloth.clothes_main_type,
             "Dtype": cloth.clothes_detail_type,
@@ -332,7 +261,7 @@ def score(request):
         for key, value in img_idx.items():
             replace_outfit.clothes.add(all_list[key][value])
             response.append({
-                "id": all_list[key][value].clothes_ID,
+                "id": all_list[key][value].pk,
                 "name":all_list[key][value].clothes_name,
                 "Mtype": all_list[key][value].clothes_main_type,
                 "Dtype": all_list[key][value].clothes_detail_type,
@@ -359,7 +288,7 @@ def replace(request):
     for clothit in replace_outfit.clothes.iterator():
         dailyoutfit.clothes.add(clothit)
         response.append({
-            "id": clothit.clothes_ID,
+            "id": clothit.pk,
             "name": clothit.clothes_name,
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
@@ -403,7 +332,7 @@ def generate(request):
     for key, value in img_idx.items():
         dailyoutfit.clothes.add(clist[key][value])
         response.append({
-            "id": clist[key][value].clothes_ID,
+            "id": clist[key][value].pk,
             "name": clist[key][value].clothes_name,
             "Mtype": clist[key][value].clothes_main_type,
             "Dtype": clist[key][value].clothes_detail_type,

@@ -16,9 +16,9 @@ class Clothes(models.Model):
     """
     衣服
     """
-    clothesid = 0
-    clothes_ID = models.IntegerField(default=0,verbose_name="衣服id")
-    # clothes_ID = models.AutoField(primary_key=True,verbose_name="衣服id")
+    # clothesid = 0
+    # clothes_ID = models.IntegerField(default=0,verbose_name="衣服id")
+    # id = models.AutoField(primary_key=True,verbose_name="衣服id")
     clothes_name = models.CharField(max_length=32,default='',verbose_name="衣服名字")
     clothes_main_type = models.CharField(max_length=32,choices=Type.choices,default=Type.UPPER,verbose_name="衣服主要类型")
     clothes_detail_type = models.CharField(max_length=32,default='',verbose_name="衣服细分类型")

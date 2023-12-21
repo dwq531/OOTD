@@ -89,13 +89,14 @@ Page({
         if (res.confirm) {
           // 更新后端数据
           wx.request({
+            method: 'POST',
             url: 'http://127.0.0.1:8000/api/closet/delete_clothes',
             header: {
               'Content-Type': 'application/json' ,
               'Authorization':app.globalData.jwt
             },
             data:{
-              'id':this.data.index
+              'id':that.data.url.id
             },
             success:function(res){
               wx.navigateBack({
@@ -141,13 +142,12 @@ Page({
     }
     else
     {// 编辑衣服
-      e.detail.value.id = this.data.url.id
       if(this.data.imgChange)
       {
         wx.uploadFile({
           filePath: this.data.imgPath,
           name: 'file',
-          url: 'http://127.0.0.1:8000/api/closet/edit_clothes',
+          url: `http://127.0.0.1:8000/api/closet/edit_clothes/${this.data.url.id}`,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded' ,
             'Authorization':app.globalData.jwt
@@ -167,7 +167,7 @@ Page({
       else
       {
         wx.request({
-          url: 'http://127.0.0.1:8000/api/closet/edit_clothes',
+          url:`http://127.0.0.1:8000/api/closet/edit_clothes/${this.data.url.id}`,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded' ,
             'Authorization':app.globalData.jwt
