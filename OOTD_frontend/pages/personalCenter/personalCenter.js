@@ -130,11 +130,8 @@ Page({
 
   getWeeklyRatings: function(){
     wx.request({
-      url: 'http://127.0.0.1:8000/api/user/ratings', // 替换为实际的API地址和用户ID
+      url: 'http://127.0.0.1:8000/api/clothes/ratings', // 替换为实际的API地址和用户ID
       method: 'GET',
-      header: {
-        'Authorization': app.globalData.jwt, // 添加 JWT Token
-      },
       success: (res) => {
         if (res.statusCode === 200){
           // 处理数据，将日期和评分分别提取出来
