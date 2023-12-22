@@ -22,14 +22,14 @@ all_path = {
 }
 
 device = torch.device("cpu")
-def loadimg_from_path(path,root_dir="../data/images/"):
+def loadimg_from_path(path,root_dir="media/images/"):
     imgs = []
     for p in path:
         if 'mean' in p:
-            img_path = img_path = os.path.join("../data/", p.split('_')[0]) + '.png'
+            img_path = os.path.join("utils/data", p.split('_')[0]) + '.png'
            # print(img_path)
         else:
-            img_path = p
+            img_path = os.path.join(root_dir,p) 
         img = Image.open(img_path).convert('RGB')
         img = transform(img)
         imgs.append(img)

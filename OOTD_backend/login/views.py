@@ -198,6 +198,7 @@ def get_weather(request):
                 user.weather.icon = data["now"]["icon"]
                 user.weather.text = data["now"]["text"]
                 user.weather.temperature = data["now"]["temp"]
+                user.weather.save()
                 #print(user.weather.text)
             else:
                 return "Failed to fetch weather data"
