@@ -12,7 +12,7 @@ Page({
       dialogShow:true,
       // 长按拖拽
       movingImg: '',
-      movingUrl:"none",
+      movingUrl:null,
       hidden: true,
       flag: false,
       x: 0,
@@ -94,7 +94,7 @@ Page({
   longtap: function(e){
     const url = e.currentTarget.dataset.url;
     const img = url.pictureUrl
-    console.log(url)
+    //console.log(url)
     if(img)
     {
       this.setData({
@@ -109,6 +109,7 @@ Page({
         scrollable:false,
         movingUrl:url
       })
+      console.log(this.data.movingUrl)
   },
   touchs: function(e) {
     this.setData({
@@ -127,20 +128,23 @@ Page({
     }
   },
   touchend: function(e){
+
     const that = this
     const x = e.changedTouches[0].pageX
     const y = e.changedTouches[0].pageY
     //console.log(x,y)
-    this.setData({
+    that.setData({
       scrollable:true,
       hidden:true
     })
-    const query = wx.createSelectorQuery().in(this);
+    if(this.data.movingUrl==null)return
+    const query = wx.createSelectorQuery().in(that);
     query.select('.outfit').boundingClientRect(rect=>{
       if(x>rect.left && x<rect.right && y>rect.top && y<rect.bottom)
-      {
-        //console.log("add")
-        var new_outfit = this.data.movingUrl;
+      { 
+        // console.log("add")
+        // console.log("print:", that.data.movingUrl);
+        var new_outfit = that.data.movingUrl;
         var flag=false;
         // 连接后端
         wx.request({
@@ -151,17 +155,18 @@ Page({
             'Authorization':app.globalData.jwt
           },
           data:{
-            "id":this.data.movingUrl.id
+            "id":that.data.movingUrl.id
           },
           success:function(res){
-            console.log(res)
+            //console.log(res)
             that.setData({
               outfitItems:res.data.clothes
             })
           }
         })
         this.setData({
-          outfitItems:this.data.outfitItems
+          outfitItems:that.data.outfitItems,
+          movingUrl:null
         })
         
       }

@@ -9,6 +9,9 @@ import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotAllowed
+#import logging
+
+#logger = logging.getLogger(__name__)
 
 class ClothesForm(forms.ModelForm):
     class Meta:
@@ -27,7 +30,7 @@ def add_clothes(request):
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=402)
-
+        
         new_clothes = form.save(commit=False)
         new_clothes.user = request.user
         # new_clothes.clothes_ID = Clothes.clothesid + 1
@@ -124,29 +127,36 @@ def get_clothes(request):
 def add_outfit(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
-
+    
     user = request.user
     dailyoutfit = None
     try:
         dailyoutfit = DailyOutfit.objects.get(user=user, date_worn=datetime.date.today())
     except DailyOutfit.DoesNotExist:
         dailyoutfit = DailyOutfit.objects.create(user=user)
+    #print(request.body)  # 打印请求体内容
     content = json.loads(request.body)
+    # print(content)
     clothes_ID = content.get("id")
     clothes = None
+    
+    # print(clothes_ID)
     try:
         clothes = Clothes.objects.get(pk=clothes_ID)
     except Clothes.DoesNotExist:
         return JsonResponse({"message": "Clothes not found"}, status=400)
-    try:
+    
+    try: 
         old_clothes = dailyoutfit.clothes.get(clothes_main_type=clothes.clothes_main_type)
         dailyoutfit.clothes.remove(old_clothes)
     except Clothes.DoesNotExist:
         pass
+    
     dailyoutfit.clothes.add(clothes)
     dailyoutfit.rate = 0
     dailyoutfit.save()
     response = []
+    
     for clothit in dailyoutfit.clothes.iterator():
         response.append({
             "id": clothit.pk,
@@ -163,10 +173,12 @@ def remove_outfit(request):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
     
+    
     user = request.user
     dailyoutfit = None
     try:
         dailyoutfit = DailyOutfit.objects.get(user=user, date_worn=datetime.date.today())
+        
     except DailyOutfit.DoesNotExist:
         return JsonResponse({"message": "Outfit not found"}, status=400)
     content = json.loads(request.body)
@@ -187,6 +199,7 @@ def remove_outfit(request):
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
             "pictureUrl": clothit.clothes_picture_url})
+    
     return JsonResponse({"clothes":response,"message": "ok"}, status=200)
 
 # 获取穿搭
