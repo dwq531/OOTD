@@ -37,14 +37,14 @@
   </view>
   
   <view class="user_frequency">
-      <picker mode="selector" range="{{months}}" 
+      <picker mode="selector" range="{{period}}" 
       value="{{0}}"bindchange="onPickerChange">
       <view class="picker">{{selectedMonth}}</view>
       </picker>
-    <text class="outfitTitle">穿搭频次统计</text>
+    <text class="outfitTitle">穿搭评分</text>
   </view>
   <view class="chart">
-  <text class="title">统计图统计图统计图</text>
+    <canvas id="lineCanvas" type="2d" style="width: 100%; height: 60%;"></canvas>
   </view>
   <view class="line"></view>
   <view class="user_wordle">
