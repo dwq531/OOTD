@@ -30,6 +30,7 @@
       <checkbox>展示评分</checkbox>
       <checkbox>分享天气</checkbox>
     </checkbox-group>
+    <button id="load_outfit" bindtap="load_outfit">导入穿搭</button>
     <button id="post">发表</button>
   </scroll-view>
 </view>
