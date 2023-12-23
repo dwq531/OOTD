@@ -84,6 +84,7 @@ def generate_outfit(path,model):
             x[0][idx] = transform(Image.open(best_img_path[name]).convert('RGB')).to(device)
         else:
             x[0][idx] = transform(Image.open("utils/data/"+name+".png").convert('RGB')).to(device)
+            best_img_path.setdefault(name, "utils/data/"+name+".png")  # 设置默认值
 
     show_imgs(x[0], select, "generated_outfit.png")
     print('score is {:.4f}'.format(best_score))
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     all_path = {
     'upper':["up/up1.jpg","up/up2.jpg","up/dress.jpg","up/fengyi.jpg"],
     'bottom':["bottom/bottom1.jpg","bottom/bottom2.jpg","bottom/blackpants.jpg"],
-    'shoe':["shoes/shoes1.jpg","shoes/shoes2.jpg","shoes/nike.jpg","shoes/highheel.jpg"],
+    'shoes':["shoes/shoes1.jpg","shoes/shoes2.jpg","shoes/nike.jpg","shoes/highheel.jpg"],
     'bag':["bag/bag1.jpg","bag/bag2.jpg"],
     'accessory':["accessory/hat1.jpg","accessory/hat2.jpg"]
     }
