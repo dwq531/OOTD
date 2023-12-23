@@ -238,6 +238,8 @@ def score(request):
                     'shoes': 'shoes_mean', 'bag': 'bag_mean', 'accessory': 'accessory_mean'}
     for clothit in dailyoutfit.clothes.iterator():
         path[clothit.get_clothes_main_type_display()]=clothit.clothes_picture_url
+    if len(path['upper']) == 0 or len(path["bottom"]) == 0:
+        return JsonResponse({"message": "No upper or bottom clothes found"}, status=400)
     path_values = list(path.values())
     all_list = {'upper': [], 'bottom': [],
                 'shoes': [], 'bag': [], 'accessory': []}
@@ -251,7 +253,7 @@ def score(request):
     for clothit in clothes.iterator():
         # 根据天气筛选衣服种类
         sug = clothing_suggestions[clothit.get_clothes_main_type_display()][clothit.clothes_detail_type]
-        if sug is None or sug[0] <= temp <= sug[1]:
+        if sug is None or sug[0] <= temp <= sug[1] or clothit.clothes_picture_url in path_values:
             all_list[clothit.get_clothes_main_type_display()].append(clothit)
             all_path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
     model = preprocess()
@@ -337,6 +339,8 @@ def generate(request):
         if sug is None or sug[0] <= temp <= sug[1]:
             path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
             clist[clothit.get_clothes_main_type_display()].append(clothit)
+    if len(path['upper']) == 0:
+        return JsonResponse({"message": "No upper clothes found"}, status=400)
     model = preprocess()
     best_score, best_img_path, img_idx = generate_outfit(path, model)
     response = []
