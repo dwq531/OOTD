@@ -182,7 +182,7 @@ def item_diagnosis(relation, select):
     mats = vec2mat(relation, select)
     for m in mats:
         mask = torch.eye(*m.shape).byte()
-        m.masked_fill_(mask, 0)
+        m.masked_fill_(mask.bool(), 0)#
     result = torch.cat(mats).sum(dim=0)
     order = [i for i, j in sorted(enumerate(result), key=lambda x:x[1], reverse=True)]
     return result, order
