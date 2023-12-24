@@ -13,10 +13,11 @@ Page({
     following:"",
     posts:"",
     followers:"",
-    period: ['最近一周', '最近一月', '最近一年'],
-    selectedMonth: '时间选择',
-    canvasWidth: 320,
-    canvasHeight: 200,
+    period: ['最近一周', '最近两周', '最近一月'],
+    selectedMonthIndex: 0,
+    selectedMonth: '最近一周',
+    canvasWidth: 300,
+    canvasHeight: 170,
   },
 
   // 页面加载时执行的函数
@@ -116,12 +117,18 @@ Page({
   },
   
   onPickerChange: function (e) {
-    const selectedMonthIndex = e.detail.value;
-    const selectedMonth = this.data.months[selectedMonthIndex];
-    this.setData({
-      selectedMonth: selectedMonth
-    });
+    const selectedMonthIndex = e.detail && e.detail.value; // 添加安全性检查
+    if (selectedMonthIndex !== undefined) {
+      const selectedMonth = this.data.months[selectedMonthIndex];
+      this.setData({
+        selectedMonth: selectedMonth,
+        selectedMonthIndex: selectedMonthIndex
+      });
+    } else {
+      console.error("Invalid picker event:", e);
+    }
   },
+  
   editProfile:function(e){
     wx.navigateTo({
       url: '/pages/informationEditor/informationEditor',
@@ -129,15 +136,23 @@ Page({
   },
 
   getWeeklyRatings: function(){
+    var that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/clothes/ratings', // 替换为实际的API地址和用户ID
+      url: 'http://127.0.0.1:8000/api/closet/get_score', // 替换为实际的API地址和用户ID
       method: 'GET',
+      header: {
+        'Content-Type': 'application/json' ,
+        'Authorization':app.globalData.jwt
+      },
+      data:{
+        index:that.data.selectedMonthIndex 
+      },
       success: (res) => {
         if (res.statusCode === 200){
           // 处理数据，将日期和评分分别提取出来
           const dates = res.data.dates;
           const scores = res.data.ratings;
-
+          console.log(scores[7])
           // 绘制折线图
           this.drawLineChart(dates, scores);
         }
@@ -152,49 +167,61 @@ Page({
   drawLineChart: function (dates, scores) {
     wx.createSelectorQuery()
     .select('#lineCanvas') // 在 WXML 中填入的 id
-    .node(({ node: canvas }) => {
-        const ctx = canvas.getContext('2d');
-        
-        // 设置坐标系原点
-        const originX = 30;
-        const originY = 180;
+    .fields({ node: true, size: true })
+    .exec((res)=>{
+      const canvas = res[0].node;
+      const ctx = canvas.getContext('2d');
 
-        // 计算横坐标和纵坐标的间隔
-        const xGap = (this.data.canvasWidth - originX * 2) / (dates.length - 1);
-        const yGap = (originY - 20) / (Math.max(...scores) - 0);
+      ctx.clearRect(0, 0, this.data.canvasWidth, this.data.canvasHeight)
 
-        // 绘制横坐标轴
-        ctx.moveTo(originX, originY);
-        ctx.lineTo(this.data.canvasWidth - originX, originY);
-        ctx.stroke();
+      // 设置坐标系原点
+      const originX = 30;
+      const originY = 130;
 
-        // 绘制纵坐标轴
-        ctx.moveTo(originX, originY);
-        ctx.lineTo(originX, 20);
-        ctx.stroke();
+      // 计算评分的最小值和最大值
+      const minScore = Math.min(...scores);
+      const maxScore = Math.max(...scores);
 
-        // 绘制折线
-        ctx.beginPath();
-        ctx.moveTo(originX, originY - (scores[0] - 0) * yGap);
-        for (let i = 1; i < dates.length; i++) {
-          ctx.lineTo(originX + i * xGap, originY - (scores[i] - 0) * yGap);
-        }
-        ctx.stroke();
-        ctx.closePath();
+      // 设置纵轴的最小值和最大值的边距
+      const margin = 5;
+      const yMinValue = Math.floor(minScore - margin);
+      const yMaxValue = Math.ceil(maxScore + margin);
 
-        // 绘制横坐标刻度
-        for (let i = 0; i < dates.length; i++) {
-          ctx.fillText(dates[i], originX + i * xGap - 10, originY + 20);
-        }
+      // 计算横、纵坐标轴的单位高度
+      const xUnitHeight = (this.data.canvasWidth - originX * 2) / (dates.length - 1);
+      const yUnitHeight = Math.floor((yMaxValue - yMinValue) / 5);
 
-        // 绘制纵坐标刻度
-        for (let i = 0; i <= Math.max(...scores); i++) {
-          ctx.fillText(i, originX - 25, originY - i * yGap + 5);
-        }
+      // 绘制横坐标轴
+      ctx.moveTo(originX, originY);
+      ctx.lineTo(this.data.canvasWidth - originX, originY);
+      ctx.stroke();
 
-        // 执行绘图操作
-        ctx.draw();
+      // 绘制纵坐标轴
+      ctx.moveTo(originX, originY);
+      ctx.lineTo(originX, 20);
+      ctx.stroke();
+
+      // 绘制折线
+      ctx.beginPath();
+      ctx.moveTo(originX, (originY - (scores[0] - yMinValue)));
+      for (let i = 1; i < dates.length; i++) {
+        ctx.lineTo(originX + i * xUnitHeight,(originY - (scores[i] - yMinValue)));
+      }
+      ctx.stroke();
+      //ctx.closePath(); 闭合曲线
+
+      // 绘制横坐标刻度
+      for (let i = 0; i < dates.length; i++) {
+        ctx.fillText(dates[i], originX + i * xUnitHeight - 10, originY + 20);
+      }
+
+      // 绘制纵坐标刻度
+      let value = yMinValue;
+      for (let i = 0 ; i < 5 || value <= 100; i++,value+=yUnitHeight) {
+        ctx.fillText(value, originX - 25, originY-yUnitHeight*i);
+      }
+      // ctx.fillText(100, originX - 25, 20);
+      console.log('draw done');
     })
-    .exec()
   },
 });

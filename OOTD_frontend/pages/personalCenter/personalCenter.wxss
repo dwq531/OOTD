@@ -126,7 +126,7 @@ page{
   width: 100%;
   display: flex;
   padding-left: 10%;
-  margin-top: -10%;
+  margin-top: 0;
   justify-content: flex-start; /* 从左侧开始排列 */
   align-items: center; /* 元素垂直居中 */
 }
@@ -143,4 +143,12 @@ page{
 .line {
   width: 90%;
   border-top: 1px solid rgb(56, 55, 55); /* 创建一根1像素宽的黑色线 */
+}
+.chart{
+  width:300px;
+  height: 170px;
+}
+#lineCanvas{
+  width: 300px;
+  height: 170px;
 }

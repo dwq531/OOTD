@@ -44,7 +44,7 @@
     <text class="outfitTitle">穿搭评分</text>
   </view>
   <view class="chart">
-    <canvas id="lineCanvas" type="2d" style="width: 100%; height: 60%;"></canvas>
+    <canvas id="lineCanvas" type="2d"></canvas>
   </view>
   <view class="line"></view>
   <view class="user_wordle">

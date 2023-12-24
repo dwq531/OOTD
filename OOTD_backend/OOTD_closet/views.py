@@ -353,3 +353,43 @@ def generate(request):
     dailyoutfit.save()
     return JsonResponse({"rate": dailyoutfit.rate, "clothes": response, "message": "ok"}, status=200)
 
+
+# 统计穿搭评分
+@login_required
+def get_score(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    index = request.GET.get("index")
+
+    if index is None:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+    try:
+        index = int(index)
+        if index == 0:
+            days = 7
+        elif index == 1:
+            days = 14
+        elif index == 2:
+            days = 30
+        else:
+            return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+        # 获取最近days天的穿搭评分
+        # print(days)
+        dailyoutfit = DailyOutfit.objects.filter(user=user, date_worn__gte=datetime.date.today() - datetime.timedelta(days)) 
+        score_list = []
+        date_list = []
+        
+        for outfit in dailyoutfit.iterator():
+            score_list.append(outfit.rate)
+            date_list.append(outfit.date_worn.strftime("%m-%d"))
+            
+        # print(len(score_list))
+        return JsonResponse({"ratings": score_list, "dates": date_list, "message": "ok"}, status=200)
+    except ValueError:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+    except DailyOutfit.DoesNotExist:
+        return JsonResponse({"message": "Outfit not found"}, status=404)
