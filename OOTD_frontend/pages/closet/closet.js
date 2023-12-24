@@ -8,7 +8,7 @@ Page({
       weatherChar: "晴",
       weatherCode:100,
       temprature:15,
-      score:0,
+      score:-1,
       dialogShow:true,
       // 长按拖拽
       movingImg: '',
@@ -221,17 +221,28 @@ Page({
       },
       success:function(res){
         console.log(res.data)
-        if(res.data.have_better)
+        if(res.statusCode == 200)
         {
+          if(res.data.have_better)
+          {
+            that.setData({
+              dialogShow:false,
+              replace_clothes:res.data.replace,
+              best_score:res.data.best_score
+            })
+          }
           that.setData({
-            dialogShow:false,
-            replace_clothes:res.data.replace,
-            best_score:res.data.best_score
+            score:res.data.rate
           })
         }
-        that.setData({
-          score:res.data.rate
-        })
+        else
+        {
+          wx.showModal({
+            title: '错误',
+            content: '穿搭至少包含1件上衣和1件下装',
+          })
+        }
+        
       }
     })
     
@@ -273,10 +284,20 @@ Page({
       },
       success:function(res){
         console.log(res.data)
-        that.setData({
-          outfitItems:res.data.clothes,
-          score:res.data.rate
-        })
+        if(res.statusCode==200)
+        {
+          that.setData({
+            outfitItems:res.data.clothes,
+            score:res.data.rate
+          })
+        }
+        else
+        {
+          wx.showModal({
+            title: '错误',
+            content: '衣柜中当季衣服太少，无法给出搭配推荐',
+          })
+        }
       }
     })
   }
