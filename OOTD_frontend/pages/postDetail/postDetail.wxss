@@ -5,10 +5,9 @@
   color: #939393;
   padding: 0;
 }
-
 .scroller {
   width:100%;
-  height:90%;
+  height:100%;
   display: flex;
 }
 
@@ -26,62 +25,90 @@
   height: 100%;
 }
 
-.post-details {
-  margin-top: 20rpx;
-}
 
 .post-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  margin-bottom: 10rpx;
+  font-size: 23px;
+  margin:10px;
+  color:rgb(78, 78, 78)
 }
 
 .post-content {
-  font-size: 28rpx;
-  margin-bottom: 10rpx;
+  font-size: 18px;
+  margin-left: 10px;
+  margin-bottom: 30px;
 }
 
 .post-author {
-  font-size: 24rpx;
-  color: gray;
+  font-size: 20px;
+  color: rgb(88, 88, 88);
+  position: relative;
+  border-bottom: solid 1px #dadada;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.post-author text{
+  position: absolute;
+  margin-left: 20px;
+  top:25px;
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+}
+.optional-data {
+  margin:10px;
+}
+.optional-data text{
+  margin-right: 10px;
+  color:rgb(180, 180, 180);
+  font-size: 15px;
 }
 .post-data {
-  height:20px;
+  height:30px;
   display: flex;
+}
+.post-data text {
+  margin-right:20px;
 }
 .post-likes ,.post-comments,.post-favorites{
   margin-right: 10px;
+  margin-left: 10px;
 }
 .post-comments{
-  border-top:solid 1px gray;
+  border-top:solid 1px #dadada;
   margin-top: 10px;
+  padding-bottom: 30px;
 }
 .comment-item{
-  height:60px;
-  width:100%;
+  display: flex;
   margin-top: 10px;
-  border-bottom: solid 1px gray;
+  border-bottom: solid 1px #dadada;
   position: relative;
+  font-size: 15px;
+}
+.comment-main {
+  display: flex;
+  flex-direction: column;
+  width:80%;
+  height:100%;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  color:rgb(97, 97, 97);
 }
 .comment-author{
-  position: absolute;
-  top:0px;
-  left:30px;
+  height: 100%;
 }
 .comment-content{
-  position: absolute;
-  top:20px;
-  left:30px
+  left:50px;
+  height: 100%;
+  margin-top: 10px;
 }
 .comment-time {
   position: absolute;
-  bottom:5px;
+  top:0px;
   right:0px;
+  color:rgb(197, 197, 197);
 }
 .writecomment{
   position: relative;
@@ -90,18 +117,43 @@
   display: block;
 }
 input {
-  border:solid 1px gray;
+  border-radius: 10px;
+  border:solid 1px rgb(204, 204, 204);
   width:70%;
   height:30px;
   margin:10px 0 0 10px;
+}
+.ph {
+  color:rgb(204, 204, 204);
+  margin-left: 10px;
 }
 #comment-button{
   position: absolute;
   right:10px;
   top:0px;
-  padding:0px;
+  padding:3px 1px 1px 1px;
   width:80px;
   height:32px;
   margin:0px;
-  border:solid 1px gray;
+  background-color: rgb(170, 196, 233);
+  color:white;
+}
+swiper{
+  background-color: #f5f5f5;
+  height:230px;
+}
+swiper image{
+  position: absolute;
+  left:50%;
+  transform: translate(-50%,0);
+}
+
+.avatar {
+  height: 50px;
+  width: 50px;
+  margin:10px;
+}
+.comment-avatar {
+  height:45px;
+  width: 45px;
 }

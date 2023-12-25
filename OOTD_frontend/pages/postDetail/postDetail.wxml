@@ -1,21 +1,38 @@
 <view class="container">
   <scroll-view class="scroller" scroll-y>
-    <swiper>
+    <swiper indicator-dots="true">
       <block wx:for="{{post.images}}" wx:key="*this">
         <swiper-item>
           <block wx:if="{{item}}">
             <image class="post-image" src="http://127.0.0.1:8000{{item.image}}" mode="heightFix"></image>
           </block>
           <block wx:else>
-            <image class="post-image" src="/static/default/noimage.png" mode="widthFix"></image>
+            <image class="post-image" src="/static/default/noimage.png" mode="heightFix"></image>
           </block>
         </swiper-item>
       </block>
     </swiper>
     <view class="post-details">
+      <view class="post-author">
+        <block wx:if="{{post.user.avatarUrl}}">
+          <image class="avatar" src="http://127.0.0.1:8000/media/images/{{post.user.avatarUrl}}" mode="heightFix"></image>
+        </block>
+        <block wx:else>
+          <image class="avatar" src="/static/default/noimage.png" mode="heightFix"></image>
+        </block>
+        <text>{{post.user.nickname}}</text>
+      </view>
       <view class="post-title">{{post.title}}</view>
       <view class="post-content">{{post.content}}</view>
-      <view class="post-author">{{post.user.nickname}}</view>
+      <view class="optional-data">
+        <block wx:if="{{post.weather}}">
+          <text>{{post.weather}} {{post.temperature}}℃</text>
+        </block>
+        <block wx:if="{{post.rate}}">
+          <text>AI评分:{{post.rate}}分</text>
+        </block>
+        <text>{{post.create_time}}</text>
+      </view>
       <view class="post-data">
         <view class="post-likes" bindtap="like">
           <block wx:if="{{is_liked==0}}">
@@ -35,18 +52,25 @@
           </block>
           <text>{{favorite.length}}</text>
         </view>
-
       </view>
       <form class="writecomment" bindsubmit="comment">
-        <input name="comment" placeholder="写一条友善的评论吧"></input>
+        <input name="comment" placeholder="写一条友善的评论吧" placeholder-class="ph"></input>
         <button form-type="submit" id="comment-button">发送</button>
       </form>
       <view class="post-comments">
-        <text>评论区：</text>
+        <text>共{{comment.length}}条评论</text>
         <block wx:for="{{comment}}" wx:key="*this">
           <view class="comment-item">
-            <text class="comment-author">{{item.user.nickname}}</text>
-            <text class="comment-content">{{item.content}}</text>
+            <block wx:if="{{item.user.avatarUrl}}">
+              <image class="comment-avatar" src="http://127.0.0.1:8000/media/images/{{item.user.avatarUrl}}" mode="aspectFit"></image>
+            </block>
+            <block wx:else>
+              <image class="comment-avatar" src="/static/default/noimage.png" mode="aspectFit"></image>
+            </block>
+            <view class="comment-main">
+              <text class="comment-author">{{item.user.nickname}}</text>
+              <text class="comment-content" auto-height="true">{{item.content}}</text>
+            </view>
             <text class="comment-time">评论时间：{{item.create_time}}</text>
           </view>
         </block>

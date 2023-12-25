@@ -4,24 +4,30 @@ Page({
     id:0,
     post:{
       "title":"标题",
-      "content":"内容111111",
-      "user":{"nickname":"dwq","avatarUrl":"/static/default/noimage.png"},
+      "content":"内容111111asdlaskjdnasdkj naskcnkasncksncksnkjscnkajnsck ascjsjdhajhdshdjas asdasdasd dsad sdas dsd",
+      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
       "create_time":"2023-5-31",
       "rate":90,
       "weather":"晴",
+      "temperature":"10",
       "images":[{
         "create_time": "2023-12-16T07:18:10.629618Z",
         "description": "",
         "id": 1,
-        "image": "/media/post_images/4IntEXqP2IBH1baebcfc930de208e19e650eed453fc3.jpg"},
+        "image": "/media/post_images/3SEC9pXPt8wZd004092524c1e061e22223000959642e.jpg"},
         {
           "create_time": "2023-12-16T07:18:10.629618Z",
           "description": "",
           "id": 1,
-          "image": "/media/post_images/4IntEXqP2IBH1baebcfc930de208e19e650eed453fc3.jpg"}]
+          "image": "/media/post_images/61iMgVVBw2NV6e47dd2ac73dbf6bd2f2e17a5691fadd.jpg"}]
     },
     comment:[{
-      "user":{"nickname":"dwq","avatarUrl":"/static/default/noimage.png"},
+      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
+      "content":"你好我好大家好askdjhaks jhdkashkdhaksjdhkashdkajsd hkahsdkjsh",
+      "create_time":"2023-5-31"
+    },
+    {
+      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
       "content":"你好我好大家好",
       "create_time":"2023-5-31"
     }],
@@ -68,7 +74,7 @@ Page({
       },
       success: function(res) {
         console.log(res); 
-        this.setData({
+        that.setData({
           is_liked:!that.data.is_liked
         })
       }
@@ -85,7 +91,7 @@ Page({
       },
       success: function(res) {
         console.log(res); 
-        this.setData({
+        that.setData({
           is_favorite:!that.data.is_favorite
         })
       }

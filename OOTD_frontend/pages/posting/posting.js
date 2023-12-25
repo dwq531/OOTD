@@ -56,6 +56,22 @@ Page({
   send: function (e) {
     console.log(e.detail.value)
     const formData = e.detail.value;
+    if(formData.title === "")
+    {
+      wx.showModal({
+        title: '错误',
+        content: '标题不能为空',
+      })
+      return
+    }
+    else if(this.data.images.length === 0)
+    {
+      wx.showModal({
+        title: '错误',
+        content: '至少上传一张图片',
+      })
+      return
+    }
     wx.request({
       url: 'http://127.0.0.1:8000/api/posting/create_post/',
       method: 'POST',
@@ -80,6 +96,10 @@ Page({
             }
           })
         });
+        // 跳转到帖子页面
+        wx.switchTab({
+          url: '/pages/society/society',
+        })
       }
     })
   }
