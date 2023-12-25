@@ -88,7 +88,9 @@ def comment_post(request, post_id):
     comment.post = post
     comment.save()
 
-    return JsonResponse({"id": comment.pk}, status=201)
+    serializer = CommentSerializer(comment)
+
+    return JsonResponse({"comment": serializer.data}, status=200)
 
 
 @login_required
@@ -123,8 +125,10 @@ def favorite_post(request, post_id):
 
     if user in post.favorites.all():
         post.favorites.remove(user)
+        user.favorite_posts.remove(post)
     else:
         post.favorites.add(user)
+        user.favorite_posts.add(post)
 
     return JsonResponse({"message": "Success"}, status=200)
 
@@ -143,7 +147,7 @@ def user_posts(request, post_type):
     # 通过不同的 post_type 获取贴文列表
     if post_type == "created":
         posts = Post.objects.filter(user=user)
-    elif post_type == "favorites":
+    elif post_type == "favorite":
         posts = user.favorite_posts.all()
     elif post_type == "all":
         posts = Post.objects.all()
