@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from utils.jwt import login_required
 from django.http import JsonResponse
 from .models import Post
-from .forms import PostForm, ImageForm, CommentForm, LikeForm, FavoriteForm
+from .forms import PostForm, ImageForm, CommentForm
 from .serializers import PostSerializer, CommentSerializer
 
 
@@ -99,17 +99,13 @@ def like_post(request, post_id):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
-    form = LikeForm(request.POST)
-    if not form.is_valid():
-        return JsonResponse({"message": "Invalid form"}, status=400)
-
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
 
-    if form.cleaned_data["like"]:
-        post.likes.add(user)
-    else:
+    if user in post.data.likes.all():
         post.likes.remove(user)
+    else:
+        post.likes.add(user)
 
     return JsonResponse({"message": "Success"}, status=200)
 
@@ -122,17 +118,13 @@ def favorite_post(request, post_id):
     if request.method != "POST":
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
-    form = FavoriteForm(request.POST)
-    if not form.is_valid():
-        return JsonResponse({"message": "Invalid form"}, status=400)
-
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
 
-    if form.cleaned_data["favorite"]:
-        post.favorites.add(user)
-    else:
+    if user in post.data.favorites.all():
         post.favorites.remove(user)
+    else:
+        post.favorites.add(user)
 
     return JsonResponse({"message": "Success"}, status=200)
 
