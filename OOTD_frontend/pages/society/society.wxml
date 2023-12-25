@@ -20,12 +20,12 @@
             <view class="post-title">{{item.title}}</view>
             <view class="post-author">
               <block wx:if="{{item.user.avatarUrl}}">
-                <image class="avatar" src="http://127.0.0.1:8000/media/images/{{item.user.avatarUrl}}" mode="aspectFit"></image>
+                <image class="avatar" src="http://127.0.0.1:8000{{item.user.avatar}}" mode="aspectFit"></image>
               </block>
               <block wx:else>
                 <image class="avatar" src="/static/default/noimage.png" mode="aspectFit"></image>
               </block>
-              <text>{{item.user}}</text>
+              <text>{{item.user.nickname}}</text>
             </view>
             <view class="post-data">
               <view class="post-likes">
@@ -58,12 +58,12 @@
             <view class="post-title">{{item.title}}</view>
             <view class="post-author">
               <block wx:if="{{item.user.avatarUrl}}">
-                <image class="avatar" src="http://127.0.0.1:8000/media/images/{{item.user.avatarUrl}}" mode="aspectFit"></image>
+                <image class="avatar" src="http://127.0.0.1:8000{{item.user.avatar}}" mode="aspectFit"></image>
               </block>
               <block wx:else>
                 <image class="avatar" src="/static/default/noimage.png" mode="aspectFit"></image>
               </block>
-              <text>{{item.user}}</text>
+              <text>{{item.user.nickname}}</text>
             </view>
             <view class="post-data">
               <view class="post-likes">

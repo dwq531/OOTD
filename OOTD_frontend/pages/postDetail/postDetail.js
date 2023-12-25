@@ -2,25 +2,7 @@ const app = getApp()
 Page({
   data:{
     id:0,
-    post:{
-      "title":"标题",
-      "content":"内容111111asdlaskjdnasdkj naskcnkasncksncksnkjscnkajnsck ascjsjdhajhdshdjas asdasdasd dsad sdas dsd",
-      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
-      "create_time":"2023-5-31",
-      "rate":90,
-      "weather":"晴",
-      "temperature":"10",
-      "images":[{
-        "create_time": "2023-12-16T07:18:10.629618Z",
-        "description": "",
-        "id": 1,
-        "image": "/media/post_images/3SEC9pXPt8wZd004092524c1e061e22223000959642e.jpg"},
-        {
-          "create_time": "2023-12-16T07:18:10.629618Z",
-          "description": "",
-          "id": 1,
-          "image": "/media/post_images/61iMgVVBw2NV6e47dd2ac73dbf6bd2f2e17a5691fadd.jpg"}]
-    },
+    post:{},
     comment:[{
       "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
       "content":"你好我好大家好askdjhaks jhdkashkdhaksjdhkashdkajsd hkahsdkjsh",
@@ -34,7 +16,9 @@ Page({
     favorite:[],
     like:[],
     is_liked:0,
-    is_favorite:0
+    like_num:0,
+    is_favorite:0,
+    fav_num:0
   },
   onLoad: function (options) {
     this.setData({
@@ -51,21 +35,38 @@ Page({
         'Content-Type':'application/x-www-form-urlencoded',
       },
       success: function(res) {
-        console.log(res); 
-        /*
+        console.log(res.data); 
+        const post = res.data.post
+        for(let i=0;i<post.likes.length;i++)
+        {
+          if(post.likes[i]==post.user.id)
+          {
+            that.data.is_liked=true
+            break
+          }
+        }
+        for(let i=0;i<post.favorites.length;i++)
+        {
+          if(post.favorites[i]==post.user.id)
+          {
+            that.data.is_favorite=true
+            break
+          }
+        }
         that.setData({
           post:res.data.post,
-          favorite:res.data.favorite_form,
-          comment:res.data.comment_form,
-          like:res.data.like_form
+          comment:res.data.comments,
+          like_num:res.data.post.likes.length,
+          fav_num:res.data.post.favorites.length,
+          is_liked:that.data.is_liked,
+          is_favorite:that.data.is_favorite
         })
-        */
+        
       }
     });
   },
   like: function(e) {
     const that = this;
-    // ？？？
     wx.request({
       url: `http://127.0.0.1:8000/api/posting/like_post/${that.data.id}/`, 
       method: 'POST',
@@ -73,10 +74,18 @@ Page({
         'Authorization': app.globalData.jwt,
       },
       success: function(res) {
-        console.log(res); 
-        that.setData({
-          is_liked:!that.data.is_liked
-        })
+        if(res.statusCode==200)
+        {
+          if(that.data.is_liked)
+            that.data.like_num--
+          else
+            that.data.like_num++
+          that.setData({
+            is_liked:!that.data.is_liked,
+            like_num:that.data.like_num
+          })
+        }
+        
       }
     });
     
@@ -84,16 +93,24 @@ Page({
   favorite: function(e) {
     const that = this;
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/like_post/${that.data.id}/`, 
+      url: `http://127.0.0.1:8000/api/posting/favorite_post/${that.data.id}/`, 
       method: 'POST',
       header: {
         'Authorization': app.globalData.jwt,
       },
       success: function(res) {
-        console.log(res); 
-        that.setData({
-          is_favorite:!that.data.is_favorite
-        })
+        if(res.statusCode==200)
+        {
+          if(that.data.is_favorite)
+            that.data.fav_num--
+          else
+            that.data.fav_num++
+          that.setData({
+            is_favorite:!that.data.is_favorite,
+            fav_num:that.data.fav_num
+          })
+        }
+        
       }
     });
   },
@@ -102,7 +119,7 @@ Page({
     const formData = e.detail.value
     console.log(formData)
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/post_detail/id=${that.data.id}/`, 
+      url: `http://127.0.0.1:8000/api/posting/comment_post/${that.data.id}/`, 
       method: 'POST',
       header: {
         'Authorization': app.globalData.jwt,
@@ -111,6 +128,13 @@ Page({
       data:formData,
       success: function(res) {
         console.log(res); 
+        if(res.statusCode==201)
+        {
+          wx.showModal({
+            title: '评论发送成功',
+            content: '发送评论:'+formData.content,
+          })
+        }
       }
     });
   }

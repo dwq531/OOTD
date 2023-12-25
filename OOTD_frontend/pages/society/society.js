@@ -33,6 +33,7 @@ Page({
         'Authorization': app.globalData.jwt
       },
       success: function(res) {
+        console.log(res.data)
         that.splitPost(res.data.posts)
         that.setData({
           post:res.data.posts

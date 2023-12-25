@@ -102,7 +102,7 @@ def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
 
-    if user in post.data.likes.all():
+    if user in post.likes.all():
         post.likes.remove(user)
     else:
         post.likes.add(user)
@@ -121,7 +121,7 @@ def favorite_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
 
-    if user in post.data.favorites.all():
+    if user in post.favorites.all():
         post.favorites.remove(user)
     else:
         post.favorites.add(user)
