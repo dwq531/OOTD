@@ -24,9 +24,9 @@ Page({
   },
   onShow: function(e) {
     const that = this
-    // Send a request to the backend to retrieve the post list
+    const url_name = ['all','created','favorite']
     wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/user_posts/all', 
+      url: 'http://127.0.0.1:8000/api/posting/user_posts/'+url_name[that.data.curIndex], 
       method: 'GET',
       header: {
         'content-type': 'application/json',
