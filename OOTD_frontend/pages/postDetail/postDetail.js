@@ -3,16 +3,7 @@ Page({
   data:{
     id:0,
     post:{},
-    comment:[{
-      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
-      "content":"你好我好大家好askdjhaks jhdkashkdhaksjdhkashdkajsd hkahsdkjsh",
-      "create_time":"2023-5-31"
-    },
-    {
-      "user":{"nickname":"dwq","avatarUrl":"avatars/og4-U6m9DqAf90Ou_Kb9HEkkah-Q_avatar_qGl2VxU.jpg"},
-      "content":"你好我好大家好",
-      "create_time":"2023-5-31"
-    }],
+    comment:[],
     favorite:[],
     like:[],
     is_liked:0,
@@ -127,12 +118,16 @@ Page({
       },
       data:formData,
       success: function(res) {
-        console.log(res); 
-        if(res.statusCode==201)
+        console.log(res.data.comment); 
+        if(res.statusCode==200)
         {
           wx.showModal({
             title: '评论发送成功',
             content: '发送评论:'+formData.content,
+          })
+          that.data.comment.push(res.data.comment)
+          that.setData({
+            comment:that.data.comment
           })
         }
       }
