@@ -120,3 +120,9 @@ checkbox{
 scroll-view{
   background-color: white;
 }
+#load_outfit{
+  margin-top: 10px;
+  width:90%;
+  color:white;
+  background-color: rgb(170, 196, 233);
+}
