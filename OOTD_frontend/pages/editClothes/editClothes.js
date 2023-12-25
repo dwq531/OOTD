@@ -13,7 +13,7 @@ Page({
   },
   onLoad: function (options) {
     var url = JSON.parse(options.url)
-    console.log(options.add)
+    //console.log(url)
     const type = url.Mtype
     if(type == "上衣")
       this.data.detail = ["T恤","衬衫","卫衣","毛衣","吊带","POLO衫","连衣裙","风衣","马甲","夹克","皮衣","冲锋衣","防晒衣","羽绒服","正装外套","其他"]
@@ -145,9 +145,9 @@ Page({
       if(this.data.imgChange)
       {
         wx.uploadFile({
-          filePath: this.data.imgPath,
+          filePath: that.data.imgPath,
           name: 'file',
-          url: `http://127.0.0.1:8000/api/closet/edit_clothes/${this.data.url.id}`,
+          url: `http://127.0.0.1:8000/api/closet/edit_clothes/${that.data.url.id}`,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded' ,
             'Authorization':app.globalData.jwt
@@ -173,7 +173,7 @@ Page({
             'Authorization':app.globalData.jwt
           },
           method:'POST',
-          formData:e.detail.value,
+          data:e.detail.value,
           success:function(res){
             console.log(res)
             wx.navigateBack({
