@@ -13,7 +13,7 @@
   <form bindsubmit="saveClothes">
     <view class="name">
       <text >名称</text>
-      <input name="clothes_name" id="name_input" type="text" bindchange="nameChange" placeholder="{{name}}"></input>
+      <input name="clothes_name" id="name_input" type="text" bindchange="nameChange" value="{{name}}"></input>
     </view>
     <view class="category">
       <text >种类</text>

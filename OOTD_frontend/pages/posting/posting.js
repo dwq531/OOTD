@@ -56,6 +56,16 @@ Page({
         console.error('Failed to request weather:', err);
       },
     })
+  },
+  deleteImage:function(e){
+    const index = e.currentTarget.dataset.id;
+    this.data.images.splice(index,1);
+    this.setData({
+      images:this.data.images
+    })
+  },
+  load_outfit:function(e){
+    const that = this
     wx.request({
       url: 'http://127.0.0.1:8000/api/closet/get_outfit',
       method:'GET',
@@ -67,8 +77,9 @@ Page({
         console.log(res)
         if(res.statusCode==200)
         {
-          that.data.images = []
-          for(let i=0;i<res.data.clothes.length;i++)
+          let img_num = Math.min(res.data.clothes.length,9-that.data.images.length)
+          console.log(img_num)
+          for(let i=0;i<img_num;i++)
           {
             that.data.images.push("http://127.0.0.1:8000/media/images/"+res.data.clothes[i].pictureUrl)
           }
@@ -79,13 +90,6 @@ Page({
           })
         }
       }
-    })
-  },
-  deleteImage:function(e){
-    const index = e.currentTarget.dataset.id;
-    this.data.images.splice(index,1);
-    this.setData({
-      images:this.data.images
     })
   }
 })
