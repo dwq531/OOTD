@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from utils.jwt import login_required
 from django.http import JsonResponse
 from .models import Post
@@ -54,58 +54,87 @@ def upload_image(request, post_id):
 @login_required
 def post_detail(request, post_id):
     """
-    贴文详情页。可以用 POST 或 GET 请求。
     GET: 返回此贴文的详细信息。
-    POST: 用户进行评论、点赞、收藏操作。
     """
-    # 获取贴文详情
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
     post = get_object_or_404(Post, pk=post_id)
+    post_serializer = PostSerializer(post)
 
-    comment_form = CommentForm(request.POST or None)
-    like_form = LikeForm(request.POST or None)
-    favorite_form = FavoriteForm(request.POST or None)
-
-    comment_serializer = None
-    post_serializer = None
-
-    if request.method == "POST":
-        # 评论操作
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.post = post
-            comment.user = request.user
-            comment.save()
-            comment_serializer = CommentSerializer(comment_form)
-
-    # 点赞操作
-    is_liked = None
-    if like_form.is_valid():
-        is_liked = like_form.cleaned_data.get("is_liked")
-        if is_liked:
-            post.likes.add(request.user)
-        else:
-            post.likes.remove(request.user)
-
-    # 收藏操作
-    is_favorite = None
-    if favorite_form.is_valid():
-        is_favorite = favorite_form.cleaned_data.get("is_favorite")
-        if is_favorite:
-            post.favorites.add(request.user)
-        else:
-            post.favorites.remove(request.user)
+    comments = post.comments.all()
+    comments_serializer = CommentSerializer(comments, many=True)
 
     return JsonResponse(
-        {
-            "post": post_serializer.data if post_serializer is not None else {},
-            "comment_form": comment_serializer.data
-            if comment_serializer is not None
-            else {},
-            "liked_form": is_liked,
-            "favorite_form": is_favorite,
-        },
-        status=200,
+        {"post": post_serializer.data, "comments": comments_serializer.data}, status=200
     )
+
+
+@login_required
+def comment_post(request, post_id):
+    """
+    POST: 提交一个评论表单。
+    """
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    form = CommentForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"message": "Invalid form"}, status=400)
+
+    post = get_object_or_404(Post, pk=post_id)
+    comment = form.save(commit=False)
+    comment.user = request.user
+    comment.post = post
+    comment.save()
+
+    return JsonResponse({"id": comment.pk}, status=201)
+
+
+@login_required
+def like_post(request, post_id):
+    """
+    POST: 点赞或取消点赞。
+    """
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    form = LikeForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"message": "Invalid form"}, status=400)
+
+    post = get_object_or_404(Post, pk=post_id)
+    user = request.user
+
+    if form.cleaned_data["like"]:
+        post.likes.add(user)
+    else:
+        post.likes.remove(user)
+
+    return JsonResponse({"message": "Success"}, status=200)
+
+
+@login_required
+def favorite_post(request, post_id):
+    """
+    POST: 收藏或取消收藏。
+    """
+    if request.method != "POST":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    form = FavoriteForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"message": "Invalid form"}, status=400)
+
+    post = get_object_or_404(Post, pk=post_id)
+    user = request.user
+
+    if form.cleaned_data["favorite"]:
+        post.favorites.add(user)
+    else:
+        post.favorites.remove(user)
+
+    return JsonResponse({"message": "Success"}, status=200)
 
 
 @login_required
