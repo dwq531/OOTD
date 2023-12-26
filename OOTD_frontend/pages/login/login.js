@@ -45,7 +45,7 @@ Page({
             canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
           })
           wx.request({
-            url: 'http://127.0.0.1:8000/api/user/edit_info',
+            url: 'http://43.138.127.14:8000/api/user/edit_info',
             method: 'PATCH',
             header: {
               'Authorization':app.globalData.jwt,

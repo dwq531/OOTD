@@ -12,7 +12,7 @@ App({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
         wx.request({
-          url: 'http://127.0.0.1:8000/api/user/login',
+          url: 'http://43.138.127.14:8000/api/user/login',
           method: 'PATCH',
           header: {
             'Content-Type': 'application/json' // 设置请求头为JSON格式

@@ -27,7 +27,7 @@ Page({
     //console.log("nickname:",this.data.nickname);
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/user',
+      url: 'http://43.138.127.14:8000/api/user/user',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -82,7 +82,7 @@ Page({
     //console.log("nickname:",this.data.nickname);
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/user',
+      url: 'http://43.138.127.14:8000/api/user/user',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -139,7 +139,7 @@ Page({
   getWeeklyRatings: function(){
     var that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_score', // 替换为实际的API地址和用户ID
+      url: 'http://43.138.127.14:8000/api/closet/get_score', // 替换为实际的API地址和用户ID
       method: 'GET',
       header: {
         'Content-Type': 'application/json' ,

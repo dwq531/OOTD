@@ -11,7 +11,7 @@
       <block wx:for="{{left}}" wx:key="id">
         <view class="post" bindtap="showDetail" data-index="{{item.id}}">
           <block wx:if="{{item.images.length != 0}}">
-            <image class="post-image" src="http://127.0.0.1:8000{{item.images[0].image}}" mode="widthFix"></image>
+            <image class="post-image" src="http://43.138.127.14:8000{{item.images[0].image}}" mode="widthFix"></image>
           </block>
           <block wx:else>
             <image class="post-image" src="/static/default/noimage.png" mode="widthFix"></image>
@@ -20,7 +20,7 @@
             <view class="post-title">{{item.title}}</view>
             <view class="post-author">
               <block wx:if="{{item.user.avatarUrl}}">
-                <image class="avatar" src="http://127.0.0.1:8000{{item.user.avatar}}" mode="aspectFit"></image>
+                <image class="avatar" src="http://43.138.127.14:8000{{item.user.avatar}}" mode="aspectFit"></image>
               </block>
               <block wx:else>
                 <image class="avatar" src="/static/default/noimage.png" mode="aspectFit"></image>
@@ -49,7 +49,7 @@
       <block wx:for="{{right}}" wx:key="id">
         <view class="post" bindtap="showDetail" data-index="{{item.id}}">
           <block wx:if="{{item.images.length != 0}}">
-            <image class="post-image" src="http://127.0.0.1:8000{{item.images[0].image}}" mode="widthFix"></image>
+            <image class="post-image" src="http://43.138.127.14:8000{{item.images[0].image}}" mode="widthFix"></image>
           </block>
           <block wx:else>
             <image class="post-image" src="/static/default/noimage.png" mode="widthFix"></image>
@@ -58,7 +58,7 @@
             <view class="post-title">{{item.title}}</view>
             <view class="post-author">
               <block wx:if="{{item.user.avatarUrl}}">
-                <image class="avatar" src="http://127.0.0.1:8000{{item.user.avatar}}" mode="aspectFit"></image>
+                <image class="avatar" src="http://43.138.127.14:8000{{item.user.avatar}}" mode="aspectFit"></image>
               </block>
               <block wx:else>
                 <image class="avatar" src="/static/default/noimage.png" mode="aspectFit"></image>

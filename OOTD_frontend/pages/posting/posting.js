@@ -43,7 +43,7 @@ Page({
     const that = this
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/weather',
+      url: 'http://43.138.127.14:8000/api/user/weather',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -103,7 +103,7 @@ Page({
       return
     }
     wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/create_post/',
+      url: 'http://43.138.127.14:8000/api/posting/create_post/',
       method: 'POST',
       header: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -117,7 +117,7 @@ Page({
           wx.uploadFile({
             filePath: image,
             name: `image`,
-            url: `http://127.0.0.1:8000/api/posting/upload_image/${postId}/`,  // 使用新的URL，包含帖子的ID
+            url: `http://43.138.127.14:8000/api/posting/upload_image/${postId}/`,  // 使用新的URL，包含帖子的ID
             header: {
               'Authorization': app.globalData.jwt,
             },
@@ -136,7 +136,7 @@ Page({
   load_outfit: function (e) {
     const that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_outfit',
+      url: 'http://43.138.127.14:8000/api/closet/get_outfit',
       method: 'GET',
       header: {
         'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ Page({
           let img_num = Math.min(res.data.clothes.length, 9 - that.data.images.length)
           console.log(img_num)
           for (let i = 0; i < img_num; i++) {
-            that.data.images.push("http://127.0.0.1:8000/media/images/" + res.data.clothes[i].pictureUrl)
+            that.data.images.push("http://43.138.127.14:8000/media/images/" + res.data.clothes[i].pictureUrl)
           }
           that.setData({
             outfitItems: res.data.clothes,

@@ -4,7 +4,7 @@
       <block wx:for="{{post.images}}" wx:key="*this">
         <swiper-item>
           <block wx:if="{{item}}">
-            <image class="post-image" src="http://127.0.0.1:8000{{item.image}}" mode="heightFix"></image>
+            <image class="post-image" src="http://43.138.127.14:8000{{item.image}}" mode="heightFix"></image>
           </block>
           <block wx:else>
             <image class="post-image" src="/static/default/noimage.png" mode="heightFix"></image>
@@ -15,7 +15,7 @@
     <view class="post-details">
       <view class="post-author">
         <block wx:if="{{post.user.avatar}}">
-          <image class="avatar" src="http://127.0.0.1:8000{{post.user.avatar}}" mode="heightFix"></image>
+          <image class="avatar" src="http://43.138.127.14:8000{{post.user.avatar}}" mode="heightFix"></image>
         </block>
         <block wx:else>
           <image class="avatar" src="/static/default/noimage.png" mode="heightFix"></image>
@@ -62,7 +62,7 @@
         <block wx:for="{{comment}}" wx:key="*this">
           <view class="comment-item">
             <block wx:if="{{item.user.avatar}}">
-              <image class="comment-avatar" src="http://127.0.0.1:8000{{item.user.avatar}}" mode="aspectFit"></image>
+              <image class="comment-avatar" src="http://43.138.127.14:8000{{item.user.avatar}}" mode="aspectFit"></image>
             </block>
             <block wx:else>
               <image class="comment-avatar" src="/static/default/noimage.png" mode="aspectFit"></image>

@@ -28,7 +28,7 @@ Page({
     // 在这里调用后端 API 获取用户信息
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/user',
+      url: 'http://43.138.127.14:8000/api/user/user',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -111,7 +111,7 @@ Page({
       if (this.data.avatarUrl_changed==true) {
         avatarUrl = this.data.avatarUrl;
         wx.uploadFile({
-          url: 'http://127.0.0.1:8000/api/user/avatar', // 上传接口地址
+          url: 'http://43.138.127.14:8000/api/user/avatar', // 上传接口地址
           filePath: avatarUrl, // 要上传的文件路径
           name: 'file', // 后端接收文件的字段名
           header: {
@@ -141,7 +141,7 @@ Page({
       return new Promise((resolve, reject) => {
         wx.request({
           method: 'PATCH', // 假设这里是用 POST 请求保存数据
-          url: 'http://127.0.0.1:8000/api/user/edit_info',
+          url: 'http://43.138.127.14:8000/api/user/edit_info',
           header: {
             'Content-Type': 'application/json',
             'Authorization': app.globalData.jwt, // 添加 JWT Token

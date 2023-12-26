@@ -1,0 +1,56 @@
+# TODO: 补充docker compose配置文件
+version: "3"
+services:
+  app:
+    restart: always
+    build: .
+    command: >
+      bash -c
+      "python3 manage.py makemigrations login OOTD_closet posting&&
+      python3 manage.py migrate&&
+      DJANGO_SETTINGS_MODULE=app.settings_prod gunicorn -w4 -b 0.0.0.0:8000 --log-level=debug app.wsgi"
+    volumes:
+      - /home/ubuntu/server/:/code
+    expose:
+      - "8000"
+    depends_on:
+      - db
+    networks:
+      - web_network
+      - db_network
+    container_name: app
+  db:
+    image: mysql:8.1
+    volumes:
+      - "/home/ubuntu/mysql/:/var/lib/mysql"
+    expose:
+      - "3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=2021011824
+      - MYSQL_DATABASE=thss
+      - TZ=Asia/Shanghai
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    networks:
+      - db_network
+    container_name: mysql
+  nginx:
+    restart: always
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - /home/ubuntu/server/nginx/app.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+    networks:
+      - web_network
+    container_name: nginx
+
+networks:
+  web_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+
+
