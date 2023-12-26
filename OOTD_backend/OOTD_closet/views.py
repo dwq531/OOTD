@@ -9,15 +9,18 @@ import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotAllowed
-#import logging
-
-#logger = logging.getLogger(__name__)
+from rest_framework import serializers
+import random
 
 class ClothesForm(forms.ModelForm):
     class Meta:
         model = Clothes
         fields = ['clothes_name', 'clothes_main_type', 'clothes_detail_type']
         
+class ClothesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Clothes
+        fields = "__all__"
 
 @login_required
 def add_clothes(request):
@@ -26,7 +29,7 @@ def add_clothes(request):
     """
     if request.method == "POST":
         form = ClothesForm(request.POST)
-        # print(form)
+        print(form)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=402)
@@ -73,19 +76,22 @@ def edit_clothes(request,clothes_id):
     """
     if request.method == "POST":
         form = ClothesForm(request.POST)
-        # print(form.modified_data)
         if not form.is_valid():
             print("Invalid arguments")
-            return JsonResponse({"message": "Invalid arguments"}, status=402)
+            return JsonResponse({"message": "Invalid arguments"}, status=400)
         
         clothes = get_object_or_404(Clothes, pk=clothes_id)
         clothes.clothes_name = form.cleaned_data['clothes_name']
         clothes.clothes_main_type = form.cleaned_data['clothes_main_type']
         clothes.clothes_detail_type = form.cleaned_data['clothes_detail_type']
-        uploaded_file = request.FILES['file'] 
-        clothes.clothes_picture.delete(save=False)
-        clothes.clothes_picture_url = 'clothes/' + f'{clothes.clothesid}_clothes.jpg'
-        clothes.clothes_picture.save(clothes.clothes_picture_url, uploaded_file)
+        try:
+            uploaded_file = request.FILES['file'] 
+            clothes.clothes_picture.delete(save=False)
+            randomParam = random.random()
+            clothes.clothes_picture_url = 'clothes/' + f'{clothes.pk}_clothes{randomParam}.jpg'
+            clothes.clothes_picture.save(clothes.clothes_picture_url, uploaded_file)
+        except:
+            pass
         clothes.save()
         return JsonResponse({"message": "Clothes edited successfully"}, status=200)
     

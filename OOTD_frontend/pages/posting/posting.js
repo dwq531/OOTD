@@ -1,26 +1,37 @@
 const app = getApp()
 Page({
-  data:{
-    weatherCode:100,
-    weatherChar:"晴",
-    temprature:18,
-    score:98,
-    outfitItems: [],
-    images:[],
+  data: {
+    weatherCode: 100,
+    weatherChar: "晴",
+    temprature: 18,
+    score: 98,
+    outfitItems: [
+      { "name": "搭配1", "category": 1 },
+      { "name": "搭配2", "category": 2 },
+      { "name": "搭配3", "category": 3 },
+      { "name": "搭配4", "category": 4 },],
+    images: [
+      "/static/default/noimage.png",
+      "/static/default/noimage.png",
+      "/static/default/noimage.png",
+      "/static/default/noimage.png"
+    ],
+    title: '',
+    content: ''
   },
-  addImage:function(e){
-    const that=this
+  addImage: function (e) {
+    const that = this
     wx.chooseMedia({
-      count:9-that.data.images.length,
-      mediaType:['image'],
-      sourceType:['album','camera'],
-      sizeType:['original','compressed'],
-      camera:'back',
-      success(res){
-        for(let i=0;i<res.tempFiles.length;i++)
+      count: 9 - that.data.images.length,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      sizeType: ['original', 'compressed'],
+      camera: 'back',
+      success(res) {
+        for (let i = 0; i < res.tempFiles.length; i++)
           that.data.images.push(res.tempFiles[i].tempFilePath)
         that.setData({
-          images:that.data.images
+          images: that.data.images
         })
       }
     })
@@ -56,36 +67,96 @@ Page({
         console.error('Failed to request weather:', err);
       },
     })
+  },
+  deleteImage: function (e) {
+    const index = e.currentTarget.dataset.id;
+    this.data.images.splice(index, 1);
+    this.setData({
+      images: this.data.images
+    })
+  },
+  titleChange: function (e) {
+    this.setData({
+      title: e.detail.value
+    })
+  },
+  contentChange: function (e) {
+    this.setData({
+      content: e.detail.value
+    })
+  },
+  send: function (e) {
+    console.log(e.detail.value)
+    const formData = e.detail.value;
+    if (formData.title === "") {
+      wx.showModal({
+        title: '错误',
+        content: '标题不能为空',
+      })
+      return
+    }
+    else if (this.data.images.length === 0) {
+      wx.showModal({
+        title: '错误',
+        content: '至少上传一张图片',
+      })
+      return
+    }
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_outfit',
-      method:'GET',
+      url: 'http://127.0.0.1:8000/api/posting/create_post/',
+      method: 'POST',
       header: {
-        'Content-Type': 'application/json' ,
-        'Authorization':app.globalData.jwt
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': app.globalData.jwt
       },
-      success:function(res){
+      data: formData,
+      success: (res) => {
         console.log(res)
-        if(res.statusCode==200)
-        {
-          that.data.images = []
-          for(let i=0;i<res.data.clothes.length;i++)
-          {
-            that.data.images.push("http://127.0.0.1:8000/media/images/"+res.data.clothes[i].pictureUrl)
-          }
-          that.setData({
-            outfitItems:res.data.clothes,
-            score:res.data.rate,
-            images:that.data.images
+        const postId = res.data.id;  // 获取新创建的帖子的ID
+        this.data.images.forEach((image, index) => {
+          wx.uploadFile({
+            filePath: image,
+            name: `image`,
+            url: `http://127.0.0.1:8000/api/posting/upload_image/${postId}/`,  // 使用新的URL，包含帖子的ID
+            header: {
+              'Authorization': app.globalData.jwt,
+            },
+            success: function (res) {
+              console.log(res)
+            }
           })
-        }
+        });
+        // 跳转到帖子页面
+        wx.switchTab({
+          url: '/pages/society/society',
+        })
       }
     })
   },
-  deleteImage:function(e){
-    const index = e.currentTarget.dataset.id;
-    this.data.images.splice(index,1);
-    this.setData({
-      images:this.data.images
+  load_outfit: function (e) {
+    const that = this
+    wx.request({
+      url: 'http://127.0.0.1:8000/api/closet/get_outfit',
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': app.globalData.jwt
+      },
+      success: function (res) {
+        console.log(res)
+        if (res.statusCode == 200) {
+          let img_num = Math.min(res.data.clothes.length, 9 - that.data.images.length)
+          console.log(img_num)
+          for (let i = 0; i < img_num; i++) {
+            that.data.images.push("http://127.0.0.1:8000/media/images/" + res.data.clothes[i].pictureUrl)
+          }
+          that.setData({
+            outfitItems: res.data.clothes,
+            score: res.data.rate,
+            images: that.data.images
+          })
+        }
+      }
     })
   }
 })

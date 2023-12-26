@@ -35,7 +35,7 @@ Page({
         'Authorization':app.globalData.jwt
       },
       success:function(res){
-        console.log(res)
+        //console.log(res)
         that.setData({
           clothes:res.data.clothes
         })
@@ -48,6 +48,7 @@ Page({
         'Authorization':app.globalData.jwt
       },
       success:function(res){
+        //console.log(res.data)
         that.setData({
           outfitItems:res.data.clothes,
           score:res.data.rate
