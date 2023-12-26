@@ -16,7 +16,7 @@ Page({
     period: ['最近一周', '最近两周', '最近一月'],
     selectedMonthIndex: 0,
     selectedMonth: '最近一周',
-    canvasWidth: 300,
+    canvasWidth: 380,
     canvasHeight: 170,
   },
 
@@ -124,6 +124,7 @@ Page({
         selectedMonth: selectedMonth,
         selectedMonthIndex: selectedMonthIndex
       });
+      this.getWeeklyRatings();
     } else {
       console.error("Invalid picker event:", e);
     }
@@ -177,7 +178,8 @@ Page({
       // 设置坐标系原点
       const originX = 30;
       const originY = 130;
-
+      const destY=20;
+      const destX=300;
       // 计算评分的最小值和最大值
       const minScore = Math.min(...scores);
       const maxScore = Math.max(...scores);
@@ -185,43 +187,85 @@ Page({
       // 设置纵轴的最小值和最大值的边距
       const margin = 5;
       const yMinValue = Math.floor(minScore - margin);
-      const yMaxValue = Math.ceil(maxScore + margin);
+      let yMaxValue = Math.ceil(maxScore + margin);
+      if(yMaxValue>100)yMaxValue=100;
 
       // 计算横、纵坐标轴的单位高度
-      const xUnitHeight = (this.data.canvasWidth - originX * 2) / (dates.length - 1);
+      const xUnitHeight = (destX - originX * 2) / (dates.length - 1);
       const yUnitHeight = Math.floor((yMaxValue - yMinValue) / 5);
 
       // 绘制横坐标轴
       ctx.moveTo(originX, originY);
-      ctx.lineTo(this.data.canvasWidth - originX, originY);
+      ctx.lineTo(destX - originX+10, originY);
       ctx.stroke();
 
       // 绘制纵坐标轴
       ctx.moveTo(originX, originY);
-      ctx.lineTo(originX, 20);
+      ctx.lineTo(originX, destY);
       ctx.stroke();
 
-      // 绘制折线
+      // 箭头
       ctx.beginPath();
-      ctx.moveTo(originX, (originY - (scores[0] - yMinValue)));
+      ctx.lineWidth=2;
+      ctx.moveTo(destX - originX+10, originY);
+      ctx.lineTo(destX - originX-8+10, originY+6);
+      ctx.stroke();
+      ctx.moveTo(destX - originX+10, originY);
+      ctx.lineTo(destX - originX-8+10, originY-6);
+      ctx.stroke();
+      ctx.moveTo(originX, destY);
+      ctx.lineTo(originX-6, destY+8);
+      ctx.stroke();
+      ctx.moveTo(originX, destY);
+      ctx.lineTo(originX+6, destY+8);
+      ctx.stroke();
+      
+      // 轴名称
+      ctx.textAlign="center";
+      ctx.fillStyle = "black";
+      ctx.font = "11px Microsoft YaHei";
+      ctx.fillText("时间",destX-20,originY-10);
+      ctx.fillText("分数",originX,destY-10);
+
+      const score_per_height=(yMaxValue - yMinValue)/(originY-20);
+      // const score_per_unit=(yMaxValue - yMinValue)/5;
+      // 绘制折线
+      ctx.font = "9px Microsoft YaHei";
+      ctx.beginPath();
+      ctx.moveTo(originX, (originY - (scores[0] - yMinValue)/score_per_height));
       for (let i = 1; i < dates.length; i++) {
-        ctx.lineTo(originX + i * xUnitHeight,(originY - (scores[i] - yMinValue)));
+        ctx.lineTo(originX + i * xUnitHeight,(originY - (scores[i] - yMinValue)/score_per_height));
       }
       ctx.stroke();
-      //ctx.closePath(); 闭合曲线
 
       // 绘制横坐标刻度
       for (let i = 0; i < dates.length; i++) {
-        ctx.fillText(dates[i], originX + i * xUnitHeight - 10, originY + 20);
+        ctx.fillText(dates[i], originX + i * xUnitHeight - 10, originY + 15);
       }
 
       // 绘制纵坐标刻度
       let value = yMinValue;
-      for (let i = 0 ; i < 5 || value <= 100; i++,value+=yUnitHeight) {
-        ctx.fillText(value, originX - 25, originY-yUnitHeight*i);
+      for (let i = 0 ; i <= 5 && value <= 100; i++,value+=yUnitHeight) {
+        if(value==100)ctx.fillText(value, originX - 23, originY-(originY-destY)/5*i);
+        else ctx.fillText(value, originX - 20, originY-(originY-destY)/5*i);
       }
-      // ctx.fillText(100, originX - 25, 20);
+      
+      // 画点
+    ctx.beginPath();
+    
+    for(let i = 0; i < dates.length; i++){
+      let x = originX+i*xUnitHeight;
+      let y = originY - (scores[i] - yMinValue)/score_per_height;
+      ctx.fillStyle = "#000000";
+      // 圆
+      ctx.beginPath();
+      ctx.arc(x,y,3,0,2*Math.PI);
+      ctx.fill();
+    }
+
+
       console.log('draw done');
+      
     })
   },
 });
