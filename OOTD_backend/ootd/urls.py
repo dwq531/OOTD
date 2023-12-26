@@ -15,14 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path(r"", include("login.urls")),
-    path(r"api/closet/",include("OOTD_closet.urls"))
+    path(r"api/closet/", include("OOTD_closet.urls")),
+    path(r"api/posting/", include("posting.urls")),
 ]
 
 # 开发环境，在生产环境中应将 MEDIA_ROOT 映射到 MEDIA_URL
