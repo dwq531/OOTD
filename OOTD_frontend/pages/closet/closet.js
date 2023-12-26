@@ -8,11 +8,11 @@ Page({
       weatherChar: "晴",
       weatherCode:100,
       temprature:15,
-      score:0,
+      score:-1,
       dialogShow:true,
       // 长按拖拽
       movingImg: '',
-      movingUrl:"none",
+      movingUrl:null,
       hidden: true,
       flag: false,
       x: 0,
@@ -95,7 +95,7 @@ Page({
   longtap: function(e){
     const url = e.currentTarget.dataset.url;
     const img = url.pictureUrl
-    console.log(url)
+    //console.log(url)
     if(img)
     {
       this.setData({
@@ -110,6 +110,7 @@ Page({
         scrollable:false,
         movingUrl:url
       })
+      console.log(this.data.movingUrl)
   },
   touchs: function(e) {
     this.setData({
@@ -128,20 +129,23 @@ Page({
     }
   },
   touchend: function(e){
+
     const that = this
     const x = e.changedTouches[0].pageX
     const y = e.changedTouches[0].pageY
     //console.log(x,y)
-    this.setData({
+    that.setData({
       scrollable:true,
       hidden:true
     })
-    const query = wx.createSelectorQuery().in(this);
+    if(this.data.movingUrl==null)return
+    const query = wx.createSelectorQuery().in(that);
     query.select('.outfit').boundingClientRect(rect=>{
       if(x>rect.left && x<rect.right && y>rect.top && y<rect.bottom)
-      {
-        //console.log("add")
-        var new_outfit = this.data.movingUrl;
+      { 
+        // console.log("add")
+        // console.log("print:", that.data.movingUrl);
+        var new_outfit = that.data.movingUrl;
         var flag=false;
         // 连接后端
         wx.request({
@@ -152,17 +156,18 @@ Page({
             'Authorization':app.globalData.jwt
           },
           data:{
-            "id":this.data.movingUrl.id
+            "id":that.data.movingUrl.id
           },
           success:function(res){
-            console.log(res)
+            //console.log(res)
             that.setData({
               outfitItems:res.data.clothes
             })
           }
         })
         this.setData({
-          outfitItems:this.data.outfitItems
+          outfitItems:that.data.outfitItems,
+          movingUrl:null
         })
         
       }
@@ -217,17 +222,28 @@ Page({
       },
       success:function(res){
         console.log(res.data)
-        if(res.data.have_better)
+        if(res.statusCode == 200)
         {
+          if(res.data.have_better)
+          {
+            that.setData({
+              dialogShow:false,
+              replace_clothes:res.data.replace,
+              best_score:res.data.best_score
+            })
+          }
           that.setData({
-            dialogShow:false,
-            replace_clothes:res.data.replace,
-            best_score:res.data.best_score
+            score:res.data.rate
           })
         }
-        that.setData({
-          score:res.data.rate
-        })
+        else
+        {
+          wx.showModal({
+            title: '错误',
+            content: '穿搭至少包含1件上衣和1件下装',
+          })
+        }
+        
       }
     })
     
@@ -269,10 +285,20 @@ Page({
       },
       success:function(res){
         console.log(res.data)
-        that.setData({
-          outfitItems:res.data.clothes,
-          score:res.data.rate
-        })
+        if(res.statusCode==200)
+        {
+          that.setData({
+            outfitItems:res.data.clothes,
+            score:res.data.rate
+          })
+        }
+        else
+        {
+          wx.showModal({
+            title: '错误',
+            content: '衣柜中当季衣服太少，无法给出搭配推荐',
+          })
+        }
       }
     })
   }

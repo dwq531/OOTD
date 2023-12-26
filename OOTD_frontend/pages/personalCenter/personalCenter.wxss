@@ -48,7 +48,7 @@ page{
   width: 70px;
   height: 25px;
   margin-left: 20px;
-  background-color:  rgb(245, 205, 206);
+  
 }
 .infoSet{
   margin-top: 30px;
@@ -57,7 +57,6 @@ page{
   white-space: nowrap;
 }
 .gender{
-  background-color:  rgb(245, 205, 206);
   margin-left: 5px;
   padding-left: 5px;
   margin-top: 5px;
@@ -66,7 +65,6 @@ page{
   display: inline-block;
 }
 .age{
-  background-color:  rgb(245, 205, 206);
   padding-left: 5px;
   margin-left: 5px;
   width:20px;
@@ -74,7 +72,6 @@ page{
   display: inline-block;
 }
 .addr{
-  background-color:  rgb(245, 205, 206);
   padding-left: 5px;
   margin-left: 5px;
   width:40px;
@@ -126,7 +123,7 @@ page{
   width: 100%;
   display: flex;
   padding-left: 10%;
-  margin-top: -10%;
+  margin-top: 0;
   justify-content: flex-start; /* 从左侧开始排列 */
   align-items: center; /* 元素垂直居中 */
 }
@@ -143,4 +140,12 @@ page{
 .line {
   width: 90%;
   border-top: 1px solid rgb(56, 55, 55); /* 创建一根1像素宽的黑色线 */
+}
+.chart{
+  width:300px;
+  height: 170px;
+}
+#lineCanvas{
+  width: 300px;
+  height: 170px;
 }

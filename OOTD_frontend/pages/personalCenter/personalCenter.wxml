@@ -3,8 +3,13 @@
   <view class="headbar">
     <view class="gradientRect"></view>
     <view class="userinfo">
-      <view class="container1">    
-        <image class="avatar" src="http://127.0.0.1:8000/media/images/{{avatarUrl}}" mode="aspectFill"></image>
+      <view class="container1">   
+        <block wx:if="{{avatarUrl}}">
+          <image class="avatar" src="http://127.0.0.1:8000/media/images/{{avatarUrl}}" mode="aspectFill"></image>
+        </block>
+        <block wx:else>
+          <image class="avatar" src="/static/default/noimage.png" mode="aspectFill"></image>
+        </block>
           <view class="nickname"><text >{{nickname}}</text></view>
           <view class="infoSet">
             <view class="gender"><text>{{gender}}</text></view>
@@ -37,14 +42,14 @@
   </view>
   
   <view class="user_frequency">
-      <picker mode="selector" range="{{months}}" 
+      <picker mode="selector" range="{{period}}" 
       value="{{0}}"bindchange="onPickerChange">
       <view class="picker">{{selectedMonth}}</view>
       </picker>
-    <text class="outfitTitle">穿搭频次统计</text>
+    <text class="outfitTitle">穿搭评分</text>
   </view>
   <view class="chart">
-  <text class="title">统计图统计图统计图</text>
+    <canvas id="lineCanvas" type="2d"></canvas>
   </view>
   <view class="line"></view>
   <view class="user_wordle">

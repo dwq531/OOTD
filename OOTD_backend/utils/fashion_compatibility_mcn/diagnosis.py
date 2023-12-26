@@ -16,7 +16,7 @@ plt.rc('font',family='Times New Roman')
 all_path = {
     'upper':["up/up1.jpg","up/up2.jpg","up/dress.jpg","up/fengyi.jpg"],
     'bottom':["bottom/bottom1.jpg","bottom/bottom2.jpg","bottom/blackpants.jpg"],
-    'shoe':["shoes/shoes1.jpg","shoes/shoes2.jpg","shoes/nike.jpg","shoes/highheel.jpg"],
+    'shoes':["shoes/shoes1.jpg","shoes/shoes2.jpg","shoes/nike.jpg","shoes/highheel.jpg"],
     'bag':["bag/bag1.jpg","bag/bag2.jpg"],
     'accessory':["accessory/hat1.jpg","accessory/hat2.jpg"]
 }
@@ -105,7 +105,7 @@ def show_rela_diagnosis(relation, select, cmap=plt.cm.Blues):
     mats = vec2mat(relation , select)
         
     fig = plt.figure(figsize=(20, 5))
-    all_names = {0:'Top', 1:'Bottom', 2:'Shoe', 3:'Bag', 4:'Accssory'}
+    all_names = {0:'top', 1:'bottom', 2:'shoes', 3:'bag', 4:'accessory'}
     node_names = {i:all_names[s] for i, s in enumerate(select)}
     
     edge_vmax = max(m.max() for m in mats)
@@ -182,7 +182,7 @@ def item_diagnosis(relation, select):
     mats = vec2mat(relation, select)
     for m in mats:
         mask = torch.eye(*m.shape).byte()
-        m.masked_fill_(mask, 0)
+        m.masked_fill_(mask.bool(), 0)#
     result = torch.cat(mats).sum(dim=0)
     order = [i for i, j in sorted(enumerate(result), key=lambda x:x[1], reverse=True)]
     return result, order

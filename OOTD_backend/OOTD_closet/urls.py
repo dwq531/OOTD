@@ -12,4 +12,5 @@ urlpatterns = [
     path('score', views.score, name='score'),
     path('generate', views.generate, name='generate'),
     path('replace', views.replace, name='replace'),
+    path('get_score', views.get_score, name='get_score'),
 ]
