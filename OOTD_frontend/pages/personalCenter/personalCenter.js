@@ -119,7 +119,7 @@ Page({
   onPickerChange: function (e) {
     const selectedMonthIndex = e.detail && e.detail.value; // 添加安全性检查
     if (selectedMonthIndex !== undefined) {
-      const selectedMonth = this.data.months[selectedMonthIndex];
+      const selectedMonth = this.data.period[selectedMonthIndex];
       this.setData({
         selectedMonth: selectedMonth,
         selectedMonthIndex: selectedMonthIndex
@@ -253,19 +253,18 @@ Page({
       // 画点
     ctx.beginPath();
     
-    for(let i = 0; i < dates.length; i++){
+    for(let i = 0; i < dates.length+1; i++){
+      //if(i==dates.length)continue;
       let x = originX+i*xUnitHeight;
       let y = originY - (scores[i] - yMinValue)/score_per_height;
       ctx.fillStyle = "#000000";
       // 圆
       ctx.beginPath();
-      ctx.arc(x,y,3,0,2*Math.PI);
+      ctx.arc(x,y,2,0,2*Math.PI);
       ctx.fill();
+      ctx.stroke();
     }
-
-
-      console.log('draw done');
-      
+    //console.log('draw done');
     })
   },
 });
