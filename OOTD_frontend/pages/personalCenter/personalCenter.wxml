@@ -1,4 +1,5 @@
 <!--pages/personalCenter.wxml-->
+
 <view class="container">
   <view class="headbar">
     <view class="gradientRect"></view>
@@ -46,14 +47,13 @@
       value="{{0}}"bindchange="onPickerChange">
       <view class="picker">{{selectedMonth}}</view>
       </picker>
-    <text class="outfitTitle">穿搭评分</text>
   </view>
-  <view class="chart">
-    <canvas id="lineCanvas" type="2d"></canvas>
+  <view class="chart" id="line">
+    <ec-canvas id="mychart-line" canvas-id="mylinechart-dom-line" ec="{{ ecLine }}" style="width: 100%; height: 180px; top: {{ ec.scrolltop }}px;"></ec-canvas>
   </view>
   <view class="line"></view>
-  <view class="user_wordle">
-    <text class="title">词云图词云图词云图</text>
+  <view class="chart" id="pie">
+    <ec-canvas id="pieChart" canvas-id="pieCanvas" ec="{{ecPie}}" style="width: 80%; height: 140px; top: {{ ec.scrolltop }}px;"></ec-canvas>
   </view>
   <view class="bottom_bar"></view>
 </view>
