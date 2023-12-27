@@ -12,6 +12,8 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name="liked_posts", blank=True)
     favorites = models.ManyToManyField(User, related_name="favorite_posts", blank=True)
+    show_rate = models.BooleanField(default=False)
+    show_weather = models.BooleanField(default=False)
 
 
 class Image(models.Model):
