@@ -13,4 +13,5 @@ urlpatterns = [
     path('generate', views.generate, name='generate'),
     path('replace', views.replace, name='replace'),
     path('get_score', views.get_score, name='get_score'),
+    path('get_favorite_clothes', views.get_favorite_clothes, name='get_favorite_clothes'),
 ]
