@@ -29,7 +29,7 @@ Page({
     // console.log("nickname:",this.data.nickname);
     const that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_clothes',
+      url: 'http://43.138.127.14:8000/api/closet/get_clothes',
       header: {
         'Content-Type': 'application/json' ,
         'Authorization':app.globalData.jwt
@@ -42,7 +42,7 @@ Page({
       }
     })
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_outfit',
+      url: 'http://43.138.127.14:8000/api/closet/get_outfit',
       header: {
         'Content-Type': 'application/json' ,
         'Authorization':app.globalData.jwt
@@ -57,7 +57,7 @@ Page({
     })
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/weather',
+      url: 'http://43.138.127.14:8000/api/user/weather',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -149,7 +149,7 @@ Page({
         var flag=false;
         // 连接后端
         wx.request({
-          url: 'http://127.0.0.1:8000/api/closet/add_outfit',
+          url: 'http://43.138.127.14:8000/api/closet/add_outfit',
           method:'POST',
           header: {
             'Content-Type': 'application/json' ,
@@ -161,7 +161,8 @@ Page({
           success:function(res){
             //console.log(res)
             that.setData({
-              outfitItems:res.data.clothes
+              outfitItems:res.data.clothes,
+              score:0
             })
           }
         })
@@ -184,7 +185,7 @@ Page({
     const url = e.currentTarget.dataset.url;
     const that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/remove_outfit',
+      url: 'http://43.138.127.14:8000/api/closet/remove_outfit',
       method:'POST',
       header: {
         'Content-Type': 'application/json' ,
@@ -195,7 +196,8 @@ Page({
       },
       success:function(res){
         that.setData({
-          outfitItems:res.data.clothes
+          outfitItems:res.data.clothes,
+          score:0
         })
       }
     })
@@ -213,15 +215,19 @@ Page({
   },
   evaluate:function(e){
     const that = this
+    wx.showLoading({
+      title: '评分中',
+    })
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/score',
+      url: 'http://43.138.127.14:8000/api/closet/score',
       method:'POST',
       header: {
         'Content-Type': 'application/json' ,
         'Authorization':app.globalData.jwt
       },
       success:function(res){
-        console.log(res.data)
+        //console.log(res.data)
+        wx.hideLoading()
         if(res.statusCode == 200)
         {
           if(res.data.have_better)
@@ -244,6 +250,9 @@ Page({
           })
         }
         
+      },
+      fail:function(e){
+        wx.hideLoading()
       }
     })
     
@@ -251,7 +260,7 @@ Page({
   changeOutfit:function(e){
     const that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/replace',
+      url: 'http://43.138.127.14:8000/api/closet/replace',
       method:'POST',
       header: {
         'Content-Type': 'application/json' ,
@@ -276,15 +285,19 @@ Page({
   },
   recommend:function(e){
     const that = this
+    wx.showLoading({
+      title: '生成中',
+    })
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/generate',
+      url: 'http://43.138.127.14:8000/api/closet/generate',
       method:'POST',
       header: {
         'Content-Type': 'application/json' ,
         'Authorization':app.globalData.jwt
       },
       success:function(res){
-        console.log(res.data)
+        //console.log(res.data)
+        wx.hideLoading()
         if(res.statusCode==200)
         {
           that.setData({
@@ -299,6 +312,9 @@ Page({
             content: '衣柜中当季衣服太少，无法给出搭配推荐',
           })
         }
+      },
+      fail:function(e){
+        wx.hideLoading()
       }
     })
   }

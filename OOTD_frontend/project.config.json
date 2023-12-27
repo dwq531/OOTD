@@ -47,5 +47,10 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
+  },
+  "plugins": {
+    "weapp-plugin-echarts": {
+      "version": "latest"
+    }
   }
 }

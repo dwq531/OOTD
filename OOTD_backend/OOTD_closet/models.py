@@ -61,7 +61,7 @@ class ReplaceOutfit(models.Model):
 # 每类衣服的推荐温度范围
 clothing_suggestions = {
     "upper": {
-        "T恤": (20, 30),
+        "T恤": (20, 40),
         "衬衫": (15, 25),
         "卫衣": (-10, 25),
         "毛衣": (-10, 20),

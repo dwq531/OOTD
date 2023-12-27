@@ -26,7 +26,7 @@ Page({
     const that = this
     const url_name = ['all','created','favorite']
     wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/user_posts/'+url_name[that.data.curIndex], 
+      url: 'http://43.138.127.14:8000/api/posting/user_posts/'+url_name[that.data.curIndex], 
       method: 'GET',
       header: {
         'content-type': 'application/json',
@@ -52,7 +52,7 @@ Page({
     const url_name = ['all','created','favorite']
     const that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/posting/user_posts/'+url_name[index], 
+      url: 'http://43.138.127.14:8000/api/posting/user_posts/'+url_name[index], 
       method: 'GET',
       header: {
         'content-type': 'application/json',
