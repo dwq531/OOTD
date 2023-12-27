@@ -8,9 +8,9 @@ services:
       bash -c
       "python3 manage.py makemigrations login OOTD_closet posting&&
       python3 manage.py migrate&&
-      DJANGO_SETTINGS_MODULE=app.settings_prod gunicorn -w4 -b 0.0.0.0:8000 --log-level=debug app.wsgi"
+      DJANGO_SETTINGS_MODULE=ootd.settings gunicorn -w4 -b 0.0.0.0:8000 --log-level=debug ootd.wsgi"
     volumes:
-      - /home/ubuntu/server/:/code
+      - /home/ubuntu/OOTD/OOTD_backend/:/code
     expose:
       - "8000"
     depends_on:
@@ -40,7 +40,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /home/ubuntu/server/nginx/app.conf:/etc/nginx/nginx.conf
+      - /home/ubuntu/OOTD/OOTD_backend/nginx/app.conf:/etc/nginx/nginx.conf
     depends_on:
       - app
     networks:

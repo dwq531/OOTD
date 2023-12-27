@@ -10,7 +10,7 @@ import random
 warnings.filterwarnings('ignore')
 plt.rc('font',family='Times New Roman')
 from utils.fashion_compatibility_mcn.model import CompatModel
-
+os.environ['TORCH_HOME'] = '/code/utils/fashion_compatibility_mcn'
 def retrieve_sub(x, select, order, all_path, model):
     """ Retrieve the datset to substitute the worst item for the best choice.
     """
@@ -106,10 +106,16 @@ def evaluate(path,model,all_path):
 
 
 def preprocess():
+    import os
+    current_directory = os.getcwd()
+    print("Current Directory:", current_directory)
+
     model = CompatModel(embed_size=1000, need_rep=True, vocabulary=2757).to(device)
-    model.load_state_dict(torch.load('utils/fashion_compatibility_mcn/model_train_relation_vse_type_cond_scales.pth',map_location=torch.device('cpu')))
+    
+    model.load_state_dict(torch.load('/code/utils/fashion_compatibility_mcn/model_train_relation_vse_type_cond_scales.pth',map_location=torch.device('cpu')))
     model.eval()
     return model
+    
 
 if __name__ == "__main__":
     # Load model weights
