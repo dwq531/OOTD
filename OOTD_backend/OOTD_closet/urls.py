@@ -13,5 +13,6 @@ urlpatterns = [
     path('generate', views.generate, name='generate'),
     path('replace', views.replace, name='replace'),
     path('get_score', views.get_score, name='get_score'),
+    path('get_favorite_clothes', views.get_favorite_clothes, name='get_favorite_clothes'),
     path('get_clothes_count', views.get_clothes_count, name='get_clothes_count'),
 ]

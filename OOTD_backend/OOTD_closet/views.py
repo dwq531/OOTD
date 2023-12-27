@@ -414,6 +414,52 @@ def get_score(request):
         return JsonResponse({"message": "Invalid arguments"}, status=402)
     except DailyOutfit.DoesNotExist:
         return JsonResponse({"message": "Outfit not found"}, status=404)
+
+
+@login_required
+def get_favorite_clothes(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    index = request.GET.get("index")
+
+    if index is None:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+    try:
+        index = int(index)
+        if index == 0:
+            days = 7
+        elif index == 1:
+            days = 14
+        elif index == 2:
+            days = 30
+        else:
+            return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+        # 获取最近days天的所有衣服的穿搭次数
+        # print(days)
+        dailyoutfit = DailyOutfit.objects.filter(user=user, date_worn__gte=datetime.date.today() - datetime.timedelta(days))
+        clothes_list=[]
+        count_list=[]
+        for outfit in dailyoutfit.iterator():
+            for cloth in outfit.clothes.iterator():
+                if cloth.clothes_name not in clothes_list:
+                    clothes_list.append(cloth.clothes_name)
+                    count_list.append(1)
+                else:
+                    count_list[clothes_list.index(cloth.clothes_name)]+=1
+        print(clothes_list)
+        print(count_list)
+        return JsonResponse({"clothes_list": clothes_list, "count_list": count_list, "message": "ok"}, status=200)
+    except ValueError:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+    except DailyOutfit.DoesNotExist:
+        return JsonResponse({"message": "Outfit not found"}, status=404)
+
+
+
     
 # 统计衣服数量
 @login_required
