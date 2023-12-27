@@ -345,10 +345,12 @@ def generate(request):
         if sug is None or sug[0] <= temp <= sug[1]:
             path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
             clist[clothit.get_clothes_main_type_display()].append(clothit)
-    if len(path['upper']) == 0:
-        return JsonResponse({"message": "No upper clothes found"}, status=400)
+    if len(path['upper']) == 0 or len(path["bottom"]) == 0:
+        return JsonResponse({"message": "No upper or bottom clothes found"}, status=400)
     model = preprocess()
     best_score, best_img_path, img_idx = generate_outfit(path, model)
+    if best_score <= 0:
+        return JsonResponse({"message": "No outfit generated"}, status=400)
     response = []
     dailyoutfit.clothes.clear()
     dailyoutfit.rate = int(best_score*100)
