@@ -22,20 +22,20 @@
       </view>
       <view class="container2">
         <view class='likes'>
-          <text class="label">收藏</text>
-          <text class="info">{{ likes }}</text>
+          <text class="label">衣服</text>
+          <text class="info">{{ clothes }}</text>
         </view>
         <view class='following'>
-          <text class="label">关注</text>
-          <text class="info">{{ following }}</text>
+          <text class="label">收藏</text>
+          <text class="info">{{ favorites }}</text>
         </view>
         <view class="posts">
           <text class="label">帖子</text>
           <text class="info">{{ posts }}</text>
         </view>
         <view class='followers'>
-          <text class="label">粉丝</text>
-          <text class="info">{{ followers }}</text>
+          <text class="label">获赞</text>
+          <text class="info">{{ likes }}</text>
         </view>
       </view>
     </view>

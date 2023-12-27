@@ -403,3 +403,17 @@ def get_score(request):
         return JsonResponse({"message": "Invalid arguments"}, status=402)
     except DailyOutfit.DoesNotExist:
         return JsonResponse({"message": "Outfit not found"}, status=404)
+    
+# 统计衣服数量
+@login_required
+def get_clothes_count(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    try:
+        clothes = Clothes.objects.filter(user=user)
+        clothes_count = clothes.count()
+        return JsonResponse({"clothes_count": clothes_count, "message": "ok"}, status=200)
+    except Clothes.DoesNotExist:
+        return JsonResponse({"message": "Clothes not found"}, status=404)

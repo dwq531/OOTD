@@ -28,6 +28,7 @@ class User(models.Model):
     intro=models.TextField(max_length=255,default='none',verbose_name="个人简介")
     updated=models.DateTimeField(auto_now=True, verbose_name="更新时间")
     weather = models.OneToOneField(Weather, on_delete=models.SET_NULL, verbose_name="天气", null=True)
+    likes = models.IntegerField(default=0, verbose_name="点赞数")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

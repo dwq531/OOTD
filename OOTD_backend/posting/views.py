@@ -106,9 +106,11 @@ def like_post(request, post_id):
 
     if user in post.likes.all():
         post.likes.remove(user)
+        post.user.likes -= 1
     else:
         post.likes.add(user)
-
+        post.user.likes += 1
+    post.user.save()
     return JsonResponse({"message": "Success"}, status=200)
 
 
@@ -157,3 +159,20 @@ def user_posts(request, post_type):
     serializer = PostSerializer(posts, many=True)
 
     return JsonResponse({"posts": serializer.data, "post_type": post_type}, status=200)
+
+
+# 获取收藏、发帖、获赞数量
+@login_required
+def user_post_info(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    return JsonResponse(
+        {
+            "favorites": user.favorite_posts.count(),
+            "posts": Post.objects.filter(user=user).count(),
+            "likes": user.likes,
+        },
+        status=200,
+    )

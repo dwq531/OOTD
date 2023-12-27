@@ -5,17 +5,8 @@ Page({
     weatherChar: "晴",
     temprature: 18,
     score: 98,
-    outfitItems: [
-      { "name": "搭配1", "category": 1 },
-      { "name": "搭配2", "category": 2 },
-      { "name": "搭配3", "category": 3 },
-      { "name": "搭配4", "category": 4 },],
-    images: [
-      "/static/default/noimage.png",
-      "/static/default/noimage.png",
-      "/static/default/noimage.png",
-      "/static/default/noimage.png"
-    ],
+    outfitItems: [],
+    images: [],
     title: '',
     content: ''
   },
