@@ -21,7 +21,11 @@ def create_post(request):
 
         post = form.save(commit=False)
         post.user = request.user
-        post.weather = request.user.weather if post.show_weather else ""
+        post.weather = (
+            request.user.weather.text + " " + request.user.weather.temperature
+            if post.show_weather
+            else ""
+        )
         outfit = DailyOutfit.objects.filter(user=request.user).last()
         if outfit:
             post.rate = outfit.rate if post.show_rate else 0
