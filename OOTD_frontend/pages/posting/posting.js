@@ -117,7 +117,7 @@ Page({
       data: formData,
       success: (res) => {
         console.log(res)
-        const postId = res.data.id;  // 获取新创建的帖子的ID
+        const postId = res.data.post.id;  // 获取新创建的帖子的ID
         this.data.images.forEach((image, index) => {
           wx.uploadFile({
             filePath: image,
