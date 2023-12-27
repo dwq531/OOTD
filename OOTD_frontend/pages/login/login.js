@@ -14,8 +14,35 @@ Page({
   },
   // 事件处理函数
   bindViewTap() {
-    wx.switchTab({
-      url: '/pages/closet/closet'
+    wx.getUserProfile({
+      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      success: (res) => {
+        app.globalData.nickname = res.userInfo.nickName
+        app.globalData.avatarUrl = res.userInfo.avatarUrl
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true,
+          canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
+        })
+        wx.request({
+          url: 'http://43.138.127.14:8000/api/user/edit_info',
+          method: 'PATCH',
+          header: {
+            'Authorization':app.globalData.jwt,
+            'Content-Type': 'application/json' // 设置请求头为JSON格式
+          },
+          data: {
+            'avatarUrl' : app.globalData.avatarUrl,
+            'nickname':app.globalData.nickname
+          },
+          success:(res)=>{
+            app.globalData.avatarUrl = res.data.avatarUrl
+          }
+        })
+        wx.switchTab({
+          url: '/pages/closet/closet'
+        })
+      }
     })
   },
   onLoad() {
@@ -28,60 +55,74 @@ Page({
     }
   },
   getUserProfile(e) {
-    if(!app.globalData.login)
-    {
-      return;
-    }
-    else if( app.globalData.isNewUser)
-    {// 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-      wx.getUserProfile({
-        desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-        success: (res) => {
-          app.globalData.nickname = res.userInfo.nickName
-          app.globalData.avatarUrl = res.userInfo.avatarUrl
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true,
-            canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
-          })
-          wx.request({
-            url: 'http://43.138.127.14:8000/api/user/edit_info',
-            method: 'PATCH',
-            header: {
-              'Authorization':app.globalData.jwt,
-              'Content-Type': 'application/json' // 设置请求头为JSON格式
-            },
-            data: {
-              'avatarUrl' : app.globalData.avatarUrl,
-              'nickname':app.globalData.nickname
-            },
-            success:(res)=>{
-              app.globalData.avatarUrl = res.data.avatarUrl
+    const that = this
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        wx.request({
+          url: 'http://43.138.127.14:8000/api/user/login',
+          method: 'PATCH',
+          header: {
+            'Content-Type': 'application/json' // 设置请求头为JSON格式
+          },
+          data: {
+            code : res.code
+          },
+          success:function(res){
+            console.log(res)
+            // 如果请求成功
+            if(res.statusCode === 200){
+              console.log('后端返回: ',res.data);
+              // TODO
+              // 处理后端返回的数据
+              const isNewUser = res.data.new;
+              app.globalData.isNewUser = isNewUser;
+              const jwt = res.data.jwt;
+              app.globalData.jwt = jwt;
+              const nickname = res.data.nickname;
+              app.globalData.nickname = nickname;
+              const age = res.data.age;
+              app.globalData.age = age;
+              const addr = res.data.addr;
+              app.globalData.addr = addr;
+              const gender = res.data.gender;
+              app.globalData.gender = gender;
+              const phone = res.data.phone;
+              app.globalData.phone = phone;
+              const intro = res.data.intro;
+              app.globalData.intro = intro;
+              const avatarUrl = res.data.avatarUrl;
+              app.globalData.avatarUrl = avatarUrl;
+              const updated = res.data.updated;
+              app.globalData.updated = updated;
+              app.globalData.login = true;
+              if(!isNewUser)
+              {
+                 wx.switchTab({
+                  url: '/pages/closet/closet'
+                })
+              }
+              else
+              {
+                that.setData({
+                  hasUserInfo:true
+                })
+              }
             }
-          })
-          wx.switchTab({
-            url: '/pages/closet/closet'
-          })
-        }
-      })
-    }
-    else
-    {
-      wx.switchTab({
-        url: '/pages/closet/closet'
-      })
-    }
+            else{
+              console.error('请求失败，错误状态码：', res.statusCode);
+            }
+          },
+          fail:function(res){
+            // 如果请求失败
+            console.error('请求失败，无法连接到后端服务器');
+          },
+        })
+      },
+      fail:function(res){
+        console.log(res)
+      }
+    })
   },
-  getUserInfo(e) {
-    // 不推荐使用getUserInfo获取用户信息，预计自2021年4月13日起，getUserInfo将不再弹出弹窗，并直接返回匿名的用户个人信息
-    console.log(e)
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true,
-      canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName'),
-    })
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  }
+  
 })
