@@ -26,7 +26,7 @@ def retrieve_sub(x, select, order, all_path, model):
         problem_part = all_names[problem_part_idx]
         outfit_idx = 0
         for outfit in all_path[problem_part]:
-            #print("outfit:",outfit)
+            print("outfit:",outfit)
             if best_score > 0.9:
                 break
             img_path = os.path.join("media/images/", outfit)
@@ -38,17 +38,17 @@ def retrieve_sub(x, select, order, all_path, model):
                 best_score = score.item()
                 best_img_path[problem_part] = img_path
                 img_idx[problem_part] = outfit_idx
-                #print("best:",best_img_path)
+                print("best:",best_img_path)
             outfit_idx+=1
         x[0][problem_part_idx] = transform(Image.open(best_img_path[problem_part]).convert('RGB')).to(device)
         #print('problem_part: {}'.format(problem_part))
         #print('best substitution: {}'.format(best_img_path[problem_part]))
-        print('After substitution the score is {:.4f}'.format(best_score))
+        #print('After substitution the score is {:.4f}'.format(best_score))
         # plt.imshow(plt.imread(best_img_path[problem_part]))
         # plt.gca().axis('off')
         # plt.show()
     
-    after = show_imgs(x[0], select, "revised_outfit.png")
+    #after = show_imgs(x[0], select, "revised_outfit.png")
     return best_score, best_img_path,img_idx
 
 def generate_outfit(path,model):
@@ -86,18 +86,18 @@ def generate_outfit(path,model):
             x[0][idx] = transform(Image.open("utils/data/"+name+".png").convert('RGB')).to(device)
             best_img_path.setdefault(name, "utils/data/"+name+".png")  # 设置默认值
 
-    show_imgs(x[0], select, "generated_outfit.png")
-    print('score is {:.4f}'.format(best_score))
-    print(img_path_idx)
+    #show_imgs(x[0], select, "generated_outfit.png")
+    #print('score is {:.4f}'.format(best_score))
+    #print(img_path_idx)
     return best_score,best_img_path,img_path_idx
 
 def evaluate(path,model,all_path):
     x = loadimg_from_path(path).to(device)
     select = [i for i, l in enumerate(path) if 'mean' not in l]
-    before = show_imgs(x[0], select)
+    #before = show_imgs(x[0], select)
     relation, rate = defect_detect(x, model)
     relation = relation.squeeze().cpu().data
-    show_rela_diagnosis(relation, select, cmap=plt.cm.Blues)
+    #show_rela_diagnosis(relation, select, cmap=plt.cm.Blues)
     result, order = item_diagnosis(relation, select)
     best_score, best_img_path,img_idx = retrieve_sub(x, select, order,all_path, model)
     replace = (best_score != rate)
@@ -106,10 +106,6 @@ def evaluate(path,model,all_path):
 
 
 def preprocess():
-    import os
-    current_directory = os.getcwd()
-    print("Current Directory:", current_directory)
-
     model = CompatModel(embed_size=1000, need_rep=True, vocabulary=2757).to(device)
     
     model.load_state_dict(torch.load('/code/utils/fashion_compatibility_mcn/model_train_relation_vse_type_cond_scales.pth',map_location=torch.device('cpu')))

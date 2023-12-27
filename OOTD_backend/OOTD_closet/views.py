@@ -244,7 +244,7 @@ def score(request):
                     'shoes': 'shoes_mean', 'bag': 'bag_mean', 'accessory': 'accessory_mean'}
     for clothit in dailyoutfit.clothes.iterator():
         path[clothit.get_clothes_main_type_display()]=clothit.clothes_picture_url
-    if len(path['upper']) == 0 or len(path["bottom"]) == 0:
+    if path['upper']=='upper_mean' or path['bottom'] == 'bottom_mean':
         return JsonResponse({"message": "No upper or bottom clothes found"}, status=400)
     path_values = list(path.values())
     all_list = {'upper': [], 'bottom': [],
@@ -275,19 +275,26 @@ def score(request):
         if replace_outfit.clothes is not None:
             replace_outfit.clothes.clear()
         else:
-            replace_outfit.clothes = Clothes.objects.none()
+            replace_outfit = ReplaceOutfit.objects.create(user=user)
+        # 把dailyoutfit中的衣服加入到replace_outfit中
+        for clothit in dailyoutfit.clothes.iterator():
+            replace_outfit.clothes.add(clothit)
         replace_outfit.rate = int(best_score*100)
-        print(img_idx)
+        mapping = {'upper': '上衣', 'bottom': '下装', 'shoes': '鞋子', 'bag': '包', 'accessory': '饰品'}
         # 遍历字典img_idx，把all_list中对应的衣服加入到replace_outfit中
         for key, value in img_idx.items():
+            # 找到主种类为key的衣服并替换
+            old = replace_outfit.clothes.get(clothes_main_type=mapping[key])
+            replace_outfit.clothes.remove(old)
             replace_outfit.clothes.add(all_list[key][value])
-            response.append({
-                "id": all_list[key][value].pk,
-                "name":all_list[key][value].clothes_name,
-                "Mtype": all_list[key][value].clothes_main_type,
-                "Dtype": all_list[key][value].clothes_detail_type,
-                "pictureUrl": all_list[key][value].clothes_picture_url})
         replace_outfit.save()
+        for outfit in replace_outfit.clothes.iterator():
+            response.append({
+                "id": outfit.pk,
+                "name":outfit.clothes_name,
+                "Mtype": outfit.clothes_main_type,
+                "Dtype":outfit.clothes_detail_type,
+                "pictureUrl": outfit.clothes_picture_url}) 
     return JsonResponse({"rate":  dailyoutfit.rate, "have_better": replace, "best_score": replace_outfit.rate, "replace": response, "message": "ok"}, status=200)
 
 
