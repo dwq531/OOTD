@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .models import Post
 from .forms import PostForm, ImageForm, CommentForm
 from .serializers import PostSerializer, CommentSerializer
+from OOTD_closet.models import DailyOutfit
 
 
 @login_required
@@ -20,9 +21,13 @@ def create_post(request):
 
         post = form.save(commit=False)
         post.user = request.user
+        post.weather = request.user.weather
+        outfit = DailyOutfit.objects.filter(user=request.user).last()
+        post.rate = outfit.rate if outfit.rate else 0
         post.save()
 
-        return JsonResponse({"id": post.pk}, status=201)  # 返回新创建的帖子的ID
+        serializer = PostSerializer(post)
+        return JsonResponse({"post": serializer.data}, status=200)
 
     elif request.method == "GET":  # 用户获取空表单
         form = PostForm()
