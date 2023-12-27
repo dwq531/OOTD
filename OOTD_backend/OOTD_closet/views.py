@@ -384,6 +384,8 @@ def get_score(request):
             days = 14
         elif index == 2:
             days = 30
+        elif index == -1:
+            return JsonResponse({"rate": DailyOutfit.objects.get(user=user,date_worn=datetime.date.today()).rate, "message": "ok"}, status=200)
         else:
             return JsonResponse({"message": "Invalid arguments"}, status=402)
 

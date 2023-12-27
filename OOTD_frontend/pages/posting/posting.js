@@ -58,6 +58,23 @@ Page({
         console.error('Failed to request weather:', err);
       },
     })
+    wx.request({
+      url: 'http://43.138.127.14:8000/api/closet/get_score',
+      header: {
+        'Authorization': app.globalData.jwt, // 添加 JWT Token
+      },
+      data:{
+        index:-1
+      },
+      success:function(res){
+        if(res.statusCode==200)
+        {
+          that.setData({
+            score:res.data.rate
+          })
+        }
+      }
+    })
   },
   deleteImage: function (e) {
     const index = e.currentTarget.dataset.id;
