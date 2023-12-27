@@ -105,6 +105,7 @@ Page({
     const addr = this.data.addr;
     var avatarUrl = "";
     const age = this.data.age;
+    const gender = this.data.gender;
   
     // 定义上传头像的 Promise
     const uploadAvatar = new Promise((resolve, reject) => {
@@ -151,6 +152,7 @@ Page({
             phone: phone,
             addr:addr,
             age:age,
+            gender:gender
           },
           success: (res) => {
             if (res.statusCode === 200) {
@@ -158,6 +160,10 @@ Page({
               // 这里可以根据后端返回的数据进行相应的处理
               resolve();
             } else {
+              wx.showModal({
+                title: '格式错误',
+                content: res.data.message,
+              })
               console.error('保存用户信息失败:', res.data);
               reject(res);
             }
