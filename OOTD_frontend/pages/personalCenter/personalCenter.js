@@ -35,7 +35,7 @@ Page({
   getWeeklyRatings: function(){
     var that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_score', // 替换为实际的API地址和用户ID
+      url: 'http://43.138.127.14:8000/api/closet/get_score', // 替换为实际的API地址和用户ID
       method: 'GET',
       header: {
         'Content-Type': 'application/json' ,
@@ -60,7 +60,7 @@ Page({
   getFavoriteClothes:function(){
     var that = this
     wx.request({
-      url: 'http://127.0.0.1:8000/api/closet/get_favorite_clothes',
+      url: 'http://43.138.127.14:8000/api/closet/get_favorite_clothes',
       method: 'GET',
       header: {
         'Content-Type': 'application/json' ,
@@ -116,6 +116,36 @@ Page({
         console.error('Failed to request user info:', err);
       }
     });
+    wx.request({
+      url: 'http://43.138.127.14:8000/api/closet/get_clothes_count',
+      header: {
+        'Authorization': app.globalData.jwt, // 添加 JWT Token
+      },
+      success:function(res){
+        if(res.statusCode==200)
+        {
+          that.setData({
+            clothes:res.data.clothes_count
+          })
+        }
+      },
+    })
+    wx.request({
+      url: 'http://43.138.127.14:8000/api/posting/user_post_info',
+      header: {
+        'Authorization': app.globalData.jwt, 
+      },
+      success:function(res){
+        if(res.statusCode==200)
+        {
+          that.setData({
+            favorites:res.data.favorites,
+            posts:res.data.posts,
+            likes:res.data.likes
+          })
+        }
+      }
+    })
     // console.log("avatarUrl:",this.data.avatarUrl);
     this.getWeeklyRatings();
     this.getFavoriteClothes();
@@ -150,59 +180,6 @@ Page({
     this.setData({
       scrolltop: scrollTop,
     });
-  },
-  onHide: function() {
-    // 在页面离开时清理数据
-    this.setData({
-      // 重置数据为初始状态
-      avatarUrl:"",
-      nickname:"",
-      gender:"",
-      age:"",
-      addr:"",
-      likes:"",
-      following:"",
-      posts:"",
-      followers:"",
-    });
-    //console.log("缓存已清理");
-  },
-  onShow: function () {
-    // 页面加载时的初始化操作，可以在这里处理数据加载等任务
-    //console.log("页面加载完成");
-    //console.log("nickname:",this.data.nickname);
-    wx.request({
-      url: 'http://43.138.127.14:8000/api/closet/get_clothes_count',
-      header: {
-        'Authorization': app.globalData.jwt, // 添加 JWT Token
-      },
-      success:function(res){
-        if(res.statusCode==200)
-        {
-          that.setData({
-            clothes:res.data.clothes_count
-          })
-        }
-      },
-    })
-    wx.request({
-      url: 'http://43.138.127.14:8000/api/posting/user_post_info',
-      header: {
-        'Authorization': app.globalData.jwt, 
-      },
-      success:function(res){
-        if(res.statusCode==200)
-        {
-          that.setData({
-            favorites:res.data.favorites,
-            posts:res.data.posts,
-            likes:res.data.likes
-          })
-        }
-      }
-    })
-    this.getWeeklyRatings();
-    this.getFavoriteClothes();
   },
   onPickerChange: function (e) {
     const selectedMonthIndex = e.detail && e.detail.value; // 添加安全性检查
