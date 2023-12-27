@@ -25,10 +25,10 @@
       <view class="post-title">{{post.title}}</view>
       <view class="post-content">{{post.content}}</view>
       <view class="optional-data">
-        <block wx:if="{{post.weather}}">
+        <block wx:if="{{post.show_weather}}">
           <text>{{post.weather}} {{post.temperature}}℃</text>
         </block>
-        <block wx:if="{{post.rate}}">
+        <block wx:if="{{post.show_rate}}">
           <text>AI评分:{{post.rate}}分</text>
         </block>
         <text>{{post.create_time}}</text>

@@ -95,7 +95,7 @@ Page({
   },
   send: function (e) {
     console.log(e.detail.value)
-    const formData = e.detail.value;
+    let formData = e.detail.value;
     if (formData.title === "") {
       wx.showModal({
         title: '错误',
@@ -110,6 +110,11 @@ Page({
       })
       return
     }
+    console.log(formData)
+    formData.show_weather = formData.checkbox.includes("weather");
+    formData.show_rate = formData.checkbox.includes("rate");
+    console.log(formData)
+
     wx.request({
       url: 'http://43.138.127.14:8000/api/posting/create_post/',
       method: 'POST',
@@ -120,7 +125,7 @@ Page({
       data: formData,
       success: (res) => {
         console.log(res)
-        const postId = res.data.id;  // 获取新创建的帖子的ID
+        const postId = res.data.post.id;  // 获取新创建的帖子的ID
         this.data.images.forEach((image, index) => {
           wx.uploadFile({
             filePath: image,
