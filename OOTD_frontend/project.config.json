@@ -41,11 +41,16 @@
   },
   "compileType": "miniprogram",
   "libVersion": "2.19.4",
-  "appid": "wxe695d8ed64cfbc63",
+  "appid": "wx50b4c53488a4d08b",
   "projectname": "miniprogram-92",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
+  },
+  "plugins": {
+    "weapp-plugin-echarts": {
+      "version": "latest"
+    }
   }
 }

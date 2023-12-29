@@ -32,7 +32,7 @@ Page({
         name:url.name,
         chosenCategory:url.Mtype,
         chosenDetail:url.Dtype,
-        imgPath:"http://127.0.0.1:8000/media/images/"+url.pictureUrl,
+        imgPath:"http://43.138.127.14:8000/media/images/"+url.pictureUrl,
         detail:this.data.detail,
       })
     }
@@ -90,7 +90,7 @@ Page({
           // 更新后端数据
           wx.request({
             method: 'POST',
-            url: 'http://127.0.0.1:8000/api/closet/delete_clothes',
+            url: 'http://43.138.127.14:8000/api/closet/delete_clothes',
             header: {
               'Content-Type': 'application/json' ,
               'Authorization':app.globalData.jwt
@@ -127,7 +127,7 @@ Page({
       wx.uploadFile({
         filePath: this.data.imgPath,
         name: 'file',
-        url: 'http://127.0.0.1:8000/api/closet/add_clothes',
+        url: 'http://43.138.127.14:8000/api/closet/add_clothes',
         header: {
           'Content-Type': 'application/x-www-form-urlencoded' ,
           'Authorization':app.globalData.jwt
@@ -147,7 +147,7 @@ Page({
         wx.uploadFile({
           filePath: that.data.imgPath,
           name: 'file',
-          url: `http://127.0.0.1:8000/api/closet/edit_clothes/${that.data.url.id}`,
+          url: `http://43.138.127.14:8000/api/closet/edit_clothes/${that.data.url.id}`,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded' ,
             'Authorization':app.globalData.jwt
@@ -167,7 +167,7 @@ Page({
       else
       {
         wx.request({
-          url:`http://127.0.0.1:8000/api/closet/edit_clothes/${this.data.url.id}`,
+          url:`http://43.138.127.14:8000/api/closet/edit_clothes/${this.data.url.id}`,
           header: {
             'Content-Type': 'application/x-www-form-urlencoded' ,
             'Authorization':app.globalData.jwt

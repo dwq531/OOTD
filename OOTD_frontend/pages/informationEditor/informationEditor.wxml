@@ -10,7 +10,7 @@
           <image mode="heightFix" src="{{avatarUrl}}" class='item_img'></image>
         </block>
         <block wx:else>
-          <image mode="heightFix" src="http://127.0.0.1:8000/media/images/{{avatarUrl}}" class='item_img'></image>
+          <image mode="heightFix" src="http://43.138.127.14:8000/media/images/{{avatarUrl}}" class='item_img'></image>
         </block>
       </block>
       <!-- 使用 wx:else 判断，如果 imgPath 不存在，则显示默认图片 -->

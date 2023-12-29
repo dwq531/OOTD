@@ -7,7 +7,8 @@ import torch.nn.functional as F
 import torch.nn.utils.rnn as rnn_utils
 import torchvision.models as models
 from utils.fashion_compatibility_mcn.resnet import resnet50
-
+import os
+os.environ['TORCH_HOME'] = '/code/utils/fashion_compatibility_mcn'
 class CompatModel(nn.Module):
     def __init__(
             self, 

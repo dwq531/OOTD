@@ -244,7 +244,7 @@ def score(request):
                     'shoes': 'shoes_mean', 'bag': 'bag_mean', 'accessory': 'accessory_mean'}
     for clothit in dailyoutfit.clothes.iterator():
         path[clothit.get_clothes_main_type_display()]=clothit.clothes_picture_url
-    if len(path['upper']) == 0 or len(path["bottom"]) == 0:
+    if path['upper']=='upper_mean' or path['bottom'] == 'bottom_mean':
         return JsonResponse({"message": "No upper or bottom clothes found"}, status=400)
     path_values = list(path.values())
     all_list = {'upper': [], 'bottom': [],
@@ -275,19 +275,26 @@ def score(request):
         if replace_outfit.clothes is not None:
             replace_outfit.clothes.clear()
         else:
-            replace_outfit.clothes = Clothes.objects.none()
+            replace_outfit = ReplaceOutfit.objects.create(user=user)
+        # 把dailyoutfit中的衣服加入到replace_outfit中
+        for clothit in dailyoutfit.clothes.iterator():
+            replace_outfit.clothes.add(clothit)
         replace_outfit.rate = int(best_score*100)
-        print(img_idx)
+        mapping = {'upper': '上衣', 'bottom': '下装', 'shoes': '鞋子', 'bag': '包', 'accessory': '饰品'}
         # 遍历字典img_idx，把all_list中对应的衣服加入到replace_outfit中
         for key, value in img_idx.items():
+            # 找到主种类为key的衣服并替换
+            old = replace_outfit.clothes.get(clothes_main_type=mapping[key])
+            replace_outfit.clothes.remove(old)
             replace_outfit.clothes.add(all_list[key][value])
-            response.append({
-                "id": all_list[key][value].pk,
-                "name":all_list[key][value].clothes_name,
-                "Mtype": all_list[key][value].clothes_main_type,
-                "Dtype": all_list[key][value].clothes_detail_type,
-                "pictureUrl": all_list[key][value].clothes_picture_url})
         replace_outfit.save()
+        for outfit in replace_outfit.clothes.iterator():
+            response.append({
+                "id": outfit.pk,
+                "name":outfit.clothes_name,
+                "Mtype": outfit.clothes_main_type,
+                "Dtype":outfit.clothes_detail_type,
+                "pictureUrl": outfit.clothes_picture_url}) 
     return JsonResponse({"rate":  dailyoutfit.rate, "have_better": replace, "best_score": replace_outfit.rate, "replace": response, "message": "ok"}, status=200)
 
 
@@ -345,10 +352,12 @@ def generate(request):
         if sug is None or sug[0] <= temp <= sug[1]:
             path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
             clist[clothit.get_clothes_main_type_display()].append(clothit)
-    if len(path['upper']) == 0:
-        return JsonResponse({"message": "No upper clothes found"}, status=400)
+    if len(path['upper']) == 0 or len(path["bottom"]) == 0:
+        return JsonResponse({"message": "No upper or bottom clothes found"}, status=400)
     model = preprocess()
     best_score, best_img_path, img_idx = generate_outfit(path, model)
+    if best_score <= 0:
+        return JsonResponse({"message": "No outfit generated"}, status=400)
     response = []
     dailyoutfit.clothes.clear()
     dailyoutfit.rate = int(best_score*100)
@@ -384,6 +393,8 @@ def get_score(request):
             days = 14
         elif index == 2:
             days = 30
+        elif index == -1:
+            return JsonResponse({"rate": DailyOutfit.objects.get(user=user,date_worn=datetime.date.today()).rate, "message": "ok"}, status=200)
         else:
             return JsonResponse({"message": "Invalid arguments"}, status=402)
 
@@ -403,3 +414,63 @@ def get_score(request):
         return JsonResponse({"message": "Invalid arguments"}, status=402)
     except DailyOutfit.DoesNotExist:
         return JsonResponse({"message": "Outfit not found"}, status=404)
+
+
+@login_required
+def get_favorite_clothes(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    index = request.GET.get("index")
+
+    if index is None:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+    try:
+        index = int(index)
+        if index == 0:
+            days = 7
+        elif index == 1:
+            days = 14
+        elif index == 2:
+            days = 30
+        else:
+            return JsonResponse({"message": "Invalid arguments"}, status=402)
+
+        # 获取最近days天的所有衣服的穿搭次数
+        # print(days)
+        dailyoutfit = DailyOutfit.objects.filter(user=user, date_worn__gte=datetime.date.today() - datetime.timedelta(days))
+        clothes_list=[]
+        count_list=[]
+        for outfit in dailyoutfit.iterator():
+            for cloth in outfit.clothes.iterator():
+                if cloth.clothes_name not in clothes_list:
+                    clothes_list.append(cloth.clothes_name)
+                    count_list.append(1)
+                else:
+                    count_list[clothes_list.index(cloth.clothes_name)]+=1
+        print(clothes_list)
+        print(count_list)
+        return JsonResponse({"clothes_list": clothes_list, "count_list": count_list, "message": "ok"}, status=200)
+    except ValueError:
+        return JsonResponse({"message": "Invalid arguments"}, status=402)
+    except DailyOutfit.DoesNotExist:
+        return JsonResponse({"message": "Outfit not found"}, status=404)
+
+
+
+    
+# 统计衣服数量
+@login_required
+def get_clothes_count(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    try:
+        clothes = Clothes.objects.filter(user=user)
+        clothes_count = clothes.count()
+        return JsonResponse({"clothes_count": clothes_count, "message": "ok"}, status=200)
+    except Clothes.DoesNotExist:
+        return JsonResponse({"message": "Clothes not found"}, status=404)

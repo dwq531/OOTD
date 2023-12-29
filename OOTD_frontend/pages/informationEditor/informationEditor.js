@@ -28,7 +28,7 @@ Page({
     // 在这里调用后端 API 获取用户信息
     wx.request({
       method: 'GET',
-      url: 'http://127.0.0.1:8000/api/user/user',
+      url: 'http://43.138.127.14:8000/api/user/user',
       header: {
         'Authorization': app.globalData.jwt, // 添加 JWT Token
       },
@@ -105,13 +105,14 @@ Page({
     const addr = this.data.addr;
     var avatarUrl = "";
     const age = this.data.age;
+    const gender = this.data.gender;
   
     // 定义上传头像的 Promise
     const uploadAvatar = new Promise((resolve, reject) => {
       if (this.data.avatarUrl_changed==true) {
         avatarUrl = this.data.avatarUrl;
         wx.uploadFile({
-          url: 'http://127.0.0.1:8000/api/user/avatar', // 上传接口地址
+          url: 'http://43.138.127.14:8000/api/user/avatar', // 上传接口地址
           filePath: avatarUrl, // 要上传的文件路径
           name: 'file', // 后端接收文件的字段名
           header: {
@@ -141,7 +142,7 @@ Page({
       return new Promise((resolve, reject) => {
         wx.request({
           method: 'PATCH', // 假设这里是用 POST 请求保存数据
-          url: 'http://127.0.0.1:8000/api/user/edit_info',
+          url: 'http://43.138.127.14:8000/api/user/edit_info',
           header: {
             'Content-Type': 'application/json',
             'Authorization': app.globalData.jwt, // 添加 JWT Token
@@ -151,6 +152,7 @@ Page({
             phone: phone,
             addr:addr,
             age:age,
+            gender:gender
           },
           success: (res) => {
             if (res.statusCode === 200) {
@@ -158,6 +160,10 @@ Page({
               // 这里可以根据后端返回的数据进行相应的处理
               resolve();
             } else {
+              wx.showModal({
+                title: '格式错误',
+                content: res.data.message,
+              })
               console.error('保存用户信息失败:', res.data);
               reject(res);
             }

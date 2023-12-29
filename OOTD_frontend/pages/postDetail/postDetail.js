@@ -46,7 +46,7 @@ Page({
   onShow:function(e){
     const that = this
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/post_detail/id=${that.data.id}`, 
+      url: `http://43.138.127.14:8000/api/posting/post_detail/id=${that.data.id}`, 
       method: 'GET',
       header: {
         'Authorization': app.globalData.jwt,
@@ -90,7 +90,7 @@ Page({
   like: function(e) {
     const that = this;
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/like_post/${that.data.id}/`, 
+      url: `http://43.138.127.14:8000/api/posting/like_post/${that.data.id}/`, 
       method: 'POST',
       header: {
         'Authorization': app.globalData.jwt,
@@ -115,7 +115,7 @@ Page({
   favorite: function(e) {
     const that = this;
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/favorite_post/${that.data.id}/`, 
+      url: `http://43.138.127.14:8000/api/posting/favorite_post/${that.data.id}/`, 
       method: 'POST',
       header: {
         'Authorization': app.globalData.jwt,
@@ -141,7 +141,7 @@ Page({
     const formData = e.detail.value
     console.log(formData)
     wx.request({
-      url: `http://127.0.0.1:8000/api/posting/comment_post/${that.data.id}/`, 
+      url: `http://43.138.127.14:8000/api/posting/comment_post/${that.data.id}/`, 
       method: 'POST',
       header: {
         'Authorization': app.globalData.jwt,

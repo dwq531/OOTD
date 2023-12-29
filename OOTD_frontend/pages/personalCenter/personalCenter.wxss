@@ -6,6 +6,7 @@ page{
   display: flex;
   flex-direction: column; /* 设置主轴方向为垂直 */
   padding-top: 0;
+  position: relative; /* 确保容器的位置是相对的 */
 }
 
 .headbar {
@@ -97,7 +98,7 @@ page{
 .likes,
 .following,
 .posts,
-.userinfo-followers  {
+.followers  {
   width: 25%;
   display: flex;
   align-items: center;
@@ -112,26 +113,40 @@ page{
   width: 100%; /* 使文本宽度占满父元素宽度 */
 }
 
-/* .userinfo text {
-  position: absolute;
-  left: 50%; /* 调整文本水平位置以居中显示 */
- /* transform: translate(-50%, -50%); /* 居中文本 */
- /* z-index: 3; /* 控制文本的层级，使其显示在 <canvas> 上方 */
-/*} */
-
 .user_frequency{
   width: 100%;
   display: flex;
-  padding-left: 10%;
+  padding-left: 15%;
   margin-top: 0;
   justify-content: flex-start; /* 从左侧开始排列 */
-  align-items: center; /* 元素垂直居中 */
 }
 .picker {
-  flex: 1; /* 占用可用空间 */
+  margin-top: 20px;
+  /* 设置边框样式 */
   border: 1px solid #ccc;
+  /* 设置背景颜色 */
   background-color: #f5f5f5;
+  /* 设置文本水平居中对齐 */
   text-align: center;
+  /* 设置字体颜色 */
+  color: #333;
+  /* 设置字体大小 */
+  font-size: 16px;
+  /* 设置内边距 */
+  padding: 5px;
+  /* 设置圆角边框 */
+  border-radius: 5px;
+  /* 设置阴影效果 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 添加过渡效果，使变化更平滑 */
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* 当鼠标悬停在 Picker 上时的样式 */
+.picker:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+  color: #000;
 }
 
 .outfitTitle{
@@ -141,11 +156,40 @@ page{
   width: 90%;
   border-top: 1px solid rgb(56, 55, 55); /* 创建一根1像素宽的黑色线 */
 }
-.chart{
-  width:300px;
-  height: 170px;
+.chart {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  position: relative;
+  /* 设置背景颜色 */
+  background-color: white;
+  /* 设置圆角 */
+  border-radius: 8px;
+  /* 设置阴影效果 */
+  box-shadow: 0 2px 4px rgba(170, 196, 233, 1);
+  /* 添加过渡效果，使变化更平滑 */
+  transition: background-color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center; /* 在交叉轴上居中 */
+  justify-content: center; /* 在主轴上居中 */
+  overflow: hidden;
 }
-#lineCanvas{
-  width: 300px;
-  height: 170px;
+#line{
+  /* 设置宽度和高度 */
+  width: 88%;
+  height: 150px;
+  /* 设置边框样式 */
+ /* border: 1px solid #e74c3c; /* 使用深红色边框 */
+}
+#pie{
+  width: 88%;
+  height: 180px;
+}
+
+#mychart-line {
+  width: 100%;
+  height: 100%;
+}
+#pieChart{
+  width: 80%;
+  height: 100%;
 }
