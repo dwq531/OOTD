@@ -1,14 +1,53 @@
 {
   "pages":[
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/login/login",
+    "pages/logs/logs",
+    "pages/closet/closet",
+    "pages/editClothes/editClothes",
+    "pages/personalCenter/personalCenter",
+    "pages/informationEditor/informationEditor",
+    "pages/posting/posting",
+    "pages/society/society",
+    "pages/postDetail/postDetail"
   ],
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "Outfit Of ToDay",
     "navigationBarTextStyle":"black"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "tabBar": {
+    "color": "#707070", 
+    "selectedColor": "#3f81c1",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/closet/closet",
+        "iconPath": "/static/navBar/closet.png",
+        "selectedIconPath": "/static/navBar/closet-active.png",
+        "text": "我的衣柜"
+      },
+      {
+        "pagePath": "pages/personalCenter/personalCenter",
+        "iconPath": "/static/navBar/myinfo.png",
+        "selectedIconPath": "/static/navBar/myinfo-active.png",
+        "text": "个人中心"
+      },
+      {
+        "pagePath": "pages/posting/posting",
+        "iconPath": "/static/navBar/send.png",
+        "selectedIconPath": "/static/navBar/send-active.png",
+        "text": "发帖"
+      },
+      {
+        "pagePath": "pages/society/society",
+        "iconPath": "/static/navBar/society.png",
+        "selectedIconPath": "/static/navBar/society-active.png",
+        "text": "社区"
+      }
+    ]
+  }
+
 }

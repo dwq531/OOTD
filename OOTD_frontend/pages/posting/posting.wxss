@@ -1,0 +1,128 @@
+page {
+  height: 100%;
+  width:100%;
+  background: #f5f5f5;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  color: #939393;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding:0;
+}
+.top {
+  padding: 10px;
+  height: 50px;
+  width: 100%;
+  background: linear-gradient(to right, rgb(170, 196, 233), rgb(245, 205, 206));
+  flex-shrink: 0;
+}
+.top image {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 50px;
+  height: 50px;
+}
+.top text {
+  position: absolute;
+  transform: translate(0, -50%);
+  margin: 10px;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+}
+.weatherText{
+  top: 25px;
+  left: 60px;
+}
+.scoreText{
+  top: 25px;
+  right: 20px;
+}
+.image{
+  padding: 10px;
+  height:auto;
+  width:100%;
+  border-bottom: #ebebeb solid 1px;
+  display:flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+#deleteBut{
+  background-color: rgb(255, 119, 119);
+  position: relative;
+  left:40%;
+  top:0px;
+  width: 25px;
+  height: 20px;
+  font-size: 15px;
+  color:white;
+  padding: 0;
+}
+.imageItem{
+  margin-left:2%;
+  margin-bottom:10px;
+  height: 100px;
+  width: 30%;
+}
+image , .addimage{
+  position: absolute;
+  height: 100px;
+  width: 30%;
+}
+.addimage {
+  font-size: 80px;
+  color:#a7a7a7;
+  text-align: center;
+  background-color: white;
+  border:solid 1px #e2e2e2;
+  line-height: 100%;
+  font-weight: lighter;
+}
+.title{
+  width:100%;
+  height:50px;
+  flex-shrink: 0;
+}
+.title input{
+  padding:10px;
+}
+.content{
+  flex-shrink: 0;
+  height:150px;
+  width:100%;
+}
+.content textarea{
+  width:100%;
+  height:130px;
+  padding:10px;
+  border-top: rgb(226, 226, 226) solid 1px;
+}
+checkbox-group {
+  width:100%;
+  height:30px;
+  margin-top:10px;
+}
+checkbox{
+  margin-left: 10px;
+}
+#post{
+  margin-top: 10px;
+  width:90%;
+  color:white;
+  background-color: rgb(170, 196, 233);
+}
+scroll-view{
+  background-color: white;
+}
+#load_outfit{
+  margin-top: 10px;
+  width:90%;
+  color:white;
+  background-color: rgb(170, 196, 233);
+}

@@ -1,0 +1,95 @@
+/* pages/informationEditor/informationEditor.wxss */
+Page {
+  height:100%;
+  width:100%;
+  background-color: #f5f5f5;
+}
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar,.nickname,.tel,.addr,.age,.gender{
+  width:100%;
+  margin-top: 13px;
+  margin-bottom: 13px;
+  display: flex;
+  justify-content: space-between; /* 使子元素沿着主轴方向（水平方向）均匀分布 */
+  background-color: white;
+  height:50px;
+}
+.label {
+  order: -1;
+  margin-left: 30px;
+}
+.image {
+  position: absolute;
+  top:110px;
+  left: 60%;
+  width:60px;
+  height:60px;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* 子元素在交叉轴上居中显示 */
+}
+.image image{
+  width:100%;
+  height:100%;
+}
+#addImgBut{
+  width:50px;
+  height:50px;
+  margin-top: 15px;
+  margin-right: 15px;
+  background-color: white;
+  right:10px;
+  padding-left:10px;
+}
+#addImg{
+  margin-top: -7px;
+  margin-left: -7px;
+  width: 43px;
+  height: 43px;
+}
+
+#nickname_input,
+#tel_input,
+#addr_input,
+#age_input{
+  width:180px;
+  height:30px;
+  border:rgb(209, 209, 209) solid 1px;
+  right:10px;
+  margin-right: 15px;
+  padding-left:10px;
+}
+#gender_input {
+  width:180px;
+  height:30px;
+  border:rgb(209, 209, 209) solid 1px;
+  right:10px;
+  margin-right: 15px;
+  padding-left:10px;
+}
+text, input , picker{
+  margin-top:10px;
+}
+#saveBut {
+  position:absolute;
+  bottom:30px;
+  width:90%;
+  color:white;
+  background-color: rgb(170, 196, 233);
+}
+
+.avatar {
+  height:100px;
+}
+.avatar text{
+  margin-top:30px;
+}
+.avatar view{
+  margin-top:25px;
+}

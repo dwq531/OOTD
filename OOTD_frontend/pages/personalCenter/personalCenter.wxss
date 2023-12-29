@@ -1,0 +1,195 @@
+page{
+  height:100%;
+  width:100%;
+}
+.container {
+  display: flex;
+  flex-direction: column; /* 设置主轴方向为垂直 */
+  padding-top: 0;
+  position: relative; /* 确保容器的位置是相对的 */
+}
+
+.headbar {
+  position: relative; /* 使 .headbar 成为 .userinfo 的相对定位参考 */
+  width:100%;
+  height:150px;
+  margin-bottom: 0;
+}
+
+.gradientRect {
+  width: 100%; /* 设置矩形的宽度 */
+  height: 100%; /* 设置矩形的高度 */
+  background: linear-gradient(to right, rgb(245, 205, 206),rgb(170, 196, 233)); /* 使用线性渐变设置背景 */
+  z-index:1;
+}
+.userinfo {
+  position: absolute; /* 设置 .userinfo 为绝对定位 */
+  z-index: 2; /* 控制 .userinfo 的层级，使其叠加在 <canvas> 上 */
+  top: 10%;
+  left: 6%;
+  width: 88%; /* 使 .userinfo 的宽度与 .headbar 相同 */
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.85); /* 透明背景以便查看 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5); /* 添加阴影 */
+}
+.container1{
+  height:45%;
+  white-space: nowrap;
+  display: flex;
+  padding: 20px;
+  padding-bottom: 0;
+}
+.avatar{
+  height: 65px;
+  width: 65px;
+  background-color: grey;
+}
+.nickname{
+  display: block; 
+  width: 70px;
+  height: 25px;
+  margin-left: 20px;
+  
+}
+.infoSet{
+  margin-top: 30px;
+  margin-left: -75px;
+  width: 130px;
+  white-space: nowrap;
+}
+.gender{
+  margin-left: 5px;
+  padding-left: 5px;
+  margin-top: 5px;
+  width:20px;
+  height: 25px;
+  display: inline-block;
+}
+.age{
+  padding-left: 5px;
+  margin-left: 5px;
+  width:20px;
+  height: 25px;
+  display: inline-block;
+}
+.addr{
+  padding-left: 5px;
+  margin-left: 5px;
+  width:40px;
+  height: 25px;
+  display: inline-block;
+}
+#editProfileButton{
+  width: 80px;
+  padding-left: 0;
+  padding-right: 0;
+  display: flex;
+  padding-top: 0;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+.container2 {
+  top:15px;
+  margin-top: 2%;
+  margin-left:5%;
+  margin-right: 5%;
+  display: flex;
+}
+.likes,
+.following,
+.posts,
+.followers  {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  flex-direction: column; /* 设置为纵向排列 */
+}
+
+.label,
+.info {
+  display: block; /* 每个文字独占一行 */
+  margin-bottom: 0px; /* 调整行之间的垂直距离 */
+  text-align: center; /* 文本居中对齐，确保在纵向排列时也居中 */
+  width: 100%; /* 使文本宽度占满父元素宽度 */
+}
+
+.user_frequency{
+  width: 100%;
+  display: flex;
+  padding-left: 15%;
+  margin-top: 0;
+  justify-content: flex-start; /* 从左侧开始排列 */
+}
+.picker {
+  margin-top: 20px;
+  /* 设置边框样式 */
+  border: 1px solid #ccc;
+  /* 设置背景颜色 */
+  background-color: #f5f5f5;
+  /* 设置文本水平居中对齐 */
+  text-align: center;
+  /* 设置字体颜色 */
+  color: #333;
+  /* 设置字体大小 */
+  font-size: 16px;
+  /* 设置内边距 */
+  padding: 5px;
+  /* 设置圆角边框 */
+  border-radius: 5px;
+  /* 设置阴影效果 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 添加过渡效果，使变化更平滑 */
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* 当鼠标悬停在 Picker 上时的样式 */
+.picker:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+  color: #000;
+}
+
+.outfitTitle{
+  margin-left:3%; /* 设置标题和选择器之间的间距 */
+}
+.line {
+  width: 90%;
+  border-top: 1px solid rgb(56, 55, 55); /* 创建一根1像素宽的黑色线 */
+}
+.chart {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  position: relative;
+  /* 设置背景颜色 */
+  background-color: white;
+  /* 设置圆角 */
+  border-radius: 8px;
+  /* 设置阴影效果 */
+  box-shadow: 0 2px 4px rgba(170, 196, 233, 1);
+  /* 添加过渡效果，使变化更平滑 */
+  transition: background-color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center; /* 在交叉轴上居中 */
+  justify-content: center; /* 在主轴上居中 */
+  overflow: hidden;
+}
+#line{
+  /* 设置宽度和高度 */
+  width: 88%;
+  height: 150px;
+  /* 设置边框样式 */
+ /* border: 1px solid #e74c3c; /* 使用深红色边框 */
+}
+#pie{
+  width: 88%;
+  height: 180px;
+}
+
+#mychart-line {
+  width: 100%;
+  height: 100%;
+}
+#pieChart{
+  width: 80%;
+  height: 100%;
+}

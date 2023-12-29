@@ -1,0 +1,59 @@
+<!--pages/personalCenter.wxml-->
+
+<view class="container">
+  <view class="headbar">
+    <view class="gradientRect"></view>
+    <view class="userinfo">
+      <view class="container1">   
+        <block wx:if="{{avatarUrl}}">
+          <image class="avatar" src="http://43.138.127.14:8000/media/images/{{avatarUrl}}" mode="aspectFill"></image>
+        </block>
+        <block wx:else>
+          <image class="avatar" src="/static/default/noimage.png" mode="aspectFill"></image>
+        </block>
+          <view class="nickname"><text >{{nickname}}</text></view>
+          <view class="infoSet">
+            <view class="gender"><text>{{gender}}</text></view>
+            <view class="age"><text>{{age}}</text></view>
+            <view class="addr"><text>{{addr}}</text></view>
+          </view>
+          <button id="editProfileButton" bindtap="editProfile">
+            <text class="butText">编辑资料</text>
+          </button>
+      </view>
+      <view class="container2">
+        <view class='likes'>
+          <text class="label">衣服</text>
+          <text class="info">{{ clothes }}</text>
+        </view>
+        <view class='following'>
+          <text class="label">收藏</text>
+          <text class="info">{{ favorites }}</text>
+        </view>
+        <view class="posts">
+          <text class="label">帖子</text>
+          <text class="info">{{ posts }}</text>
+        </view>
+        <view class='followers'>
+          <text class="label">获赞</text>
+          <text class="info">{{ likes }}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="user_frequency">
+      <picker mode="selector" range="{{period}}" 
+      value="{{0}}"bindchange="onPickerChange">
+      <view class="picker">{{selectedMonth}}</view>
+      </picker>
+  </view>
+  <view class="chart" id="line">
+    <ec-canvas id="mychart-line" canvas-id="mylinechart-dom-line" ec="{{ ecLine }}" style="width: 100%; height: 180px; top: {{ ec.scrolltop }}px;"></ec-canvas>
+  </view>
+  <view class="line"></view>
+  <view class="chart" id="pie">
+    <ec-canvas id="pieChart" canvas-id="pieCanvas" ec="{{ecPie}}" style="width: 80%; height: 140px; top: {{ ec.scrolltop }}px;"></ec-canvas>
+  </view>
+  <view class="bottom_bar"></view>
+</view>
