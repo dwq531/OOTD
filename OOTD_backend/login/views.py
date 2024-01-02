@@ -209,7 +209,8 @@ def get_weather(request):
         return JsonResponse({
             'icon':user.weather.icon,
             'text':user.weather.text,
-            'temperature':user.weather.temperature
+            'temperature':user.weather.temperature,
+            'message': 'ok'
         }, status=200)
     except Exception as e:
         print(f"发生异常：{str(e)}")
