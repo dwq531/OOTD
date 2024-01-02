@@ -274,3 +274,8 @@ movable-view image{
   left:10px;
   width:45%;
 }
+.tips{
+  text-align: center;
+  margin-top: 35px;
+  color:#dadada;
+}

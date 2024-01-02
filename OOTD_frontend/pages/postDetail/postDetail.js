@@ -55,34 +55,17 @@ Page({
       success: function(res) {
         console.log(res.data); 
         var post = res.data.post
-        for(let i=0;i<post.likes.length;i++)
-        {
-          if(post.likes[i]==post.user.id)
-          {
-            that.data.is_liked=true
-            break
-          }
-        }
-        for(let i=0;i<post.favorites.length;i++)
-        {
-          if(post.favorites[i]==post.user.id)
-          {
-            that.data.is_favorite=true
-            break
-          }
-        }
         post.create_time = that.getTime(post.create_time)
         var comment = res.data.comments
         for(let i = 0;i<comment.length;i++)
           comment[i].create_time = that.getTime(comment[i].create_time)
-        console.log(comment)
         that.setData({
           post:post,
           comment:comment,
           like_num:res.data.post.likes.length,
           fav_num:res.data.post.favorites.length,
-          is_liked:that.data.is_liked,
-          is_favorite:that.data.is_favorite
+          is_liked:res.data.is_liked,
+          is_favorite:res.data.is_fav
         })
       }
     });
