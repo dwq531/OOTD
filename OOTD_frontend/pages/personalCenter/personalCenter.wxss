@@ -98,7 +98,7 @@ page{
 .likes,
 .following,
 .posts,
-.userinfo-followers  {
+.followers  {
   width: 25%;
   display: flex;
   align-items: center;

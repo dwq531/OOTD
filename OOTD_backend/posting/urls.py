@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import create_post, post_detail, user_posts, upload_image,like_post,favorite_post,comment_post
+from .views import create_post, post_detail, user_posts, upload_image,like_post,favorite_post,comment_post,user_post_info
 
 urlpatterns = [
     # 贴文创建
@@ -16,5 +16,6 @@ urlpatterns = [
     path("favorite_post/<int:post_id>/", favorite_post, name="favorite_post"),
     # 评论
     path("comment_post/<int:post_id>/", comment_post, name="comment_post"),
-
+    # 统计信息
+    path("user_post_info",user_post_info,name="user_post_info")
 ]

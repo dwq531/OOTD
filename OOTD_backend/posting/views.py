@@ -76,9 +76,17 @@ def post_detail(request, post_id):
 
     comments = post.comments.all()
     comments_serializer = CommentSerializer(comments, many=True)
+    if request.user in post.likes.all():
+        is_liked = True
+    else:
+        is_liked = False
+    if request.user in post.favorites.all():
+        is_fav = True
+    else:
+        is_fav = False
 
     return JsonResponse(
-        {"post": post_serializer.data, "comments": comments_serializer.data}, status=200
+        {"post": post_serializer.data, "comments": comments_serializer.data,"is_liked":is_liked,"is_fav":is_fav}, status=200
     )
 
 
@@ -118,9 +126,11 @@ def like_post(request, post_id):
 
     if user in post.likes.all():
         post.likes.remove(user)
+        post.user.likes -= 1
     else:
         post.likes.add(user)
-
+        post.user.likes += 1
+    post.user.save()
     return JsonResponse({"message": "Success"}, status=200)
 
 
@@ -169,3 +179,20 @@ def user_posts(request, post_type):
     serializer = PostSerializer(posts, many=True)
 
     return JsonResponse({"posts": serializer.data, "post_type": post_type}, status=200)
+
+
+# 获取收藏、发帖、获赞数量
+@login_required
+def user_post_info(request):
+    if request.method != "GET":
+        return JsonResponse({"message": "Method not allowed"}, status=405)
+
+    user = request.user
+    return JsonResponse(
+        {
+            "favorites": user.favorite_posts.count(),
+            "posts": Post.objects.filter(user=user).count(),
+            "likes": user.likes,
+        },
+        status=200,
+    )

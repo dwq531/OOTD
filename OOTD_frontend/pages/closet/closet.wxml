@@ -12,7 +12,7 @@
     <movable-view x="{{x}}" y="{{y}}" direction="all" damping="{{5000}}" friction="{{1}}" hidden="{{hidden}}">
       <view class="item-move" hidden="{{hidden}}">
         <block wx:if="{{movingImg}}">
-          <image src="http://127.0.0.1:8000/media/images/{{movingImg}}" class='item_img' mode = "widthFix"></image>
+          <image src="http://43.138.127.14:8000/media/images/{{movingImg}}" class='item_img' mode = "widthFix"></image>
         </block>
         <block wx:else>
           <image mode="widthFix" src="/static/default/noimage.png"></image>
@@ -22,11 +22,11 @@
     <view class="outfit">
       <text id="outfit_text">今日穿搭</text>
       <scroll-view scroll-x>
-        <block wx:if="{{outfitItems}}">
+        <block wx:if="{{outfitItems[0]}}">
           <block wx:for="{{outfitItems}}" id="oufit_{{index}}" wx:key="id">
             <view class="outfit_item">
               <block wx:if="{{item.pictureUrl}}">
-                <image src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
+                <image src="http://43.138.127.14:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
                 </image>
               </block>
               <block wx:else>
@@ -36,6 +36,11 @@
               <button id="deleteBut" bindtap="deleteOutfit" data-id="{{index}}" data-url="{{item}}">-</button>
             </view>
           </block>
+        </block>
+        <block wx:else>
+          <view class="tips">
+            <text>长按衣服并拖拽到此处来添加搭配</text>
+          </view>  
         </block>
       </scroll-view>
 
@@ -54,7 +59,7 @@
           <block wx:if="{{item.Mtype==category[curIndex]}}">
             <view class="nav_right_items" data-index="{{index}}" data-url="{{item}}" bindlongpress="longtap" bindtouchstart='touchs' bindtouchend='touchend' bindtouchmove='touchm' bindtap="shorttap">
               <block wx:if="{{item.pictureUrl}}">
-                <image src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
+                <image src="http://43.138.127.14:8000/media/images/{{item.pictureUrl}}" mode="aspectFit">
                 </image>
               </block>
               <block wx:else>
@@ -71,13 +76,13 @@
     <text>当前评分：{{score}}</text>
     <view class="before">
       <block wx:for="{{outfitItems}}" wx:key="id">
-        <image mode="widthFix" src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" />
+        <image mode="widthFix" src="http://43.138.127.14:8000/media/images/{{item.pictureUrl}}" />
       </block>
     </view>
     <view class="after">
       <text>搭配建议如下，更换后评分：{{best_score}}</text>
       <block wx:for="{{replace_clothes}}" wx:key="id">
-        <image mode="widthFix" src="http://127.0.0.1:8000/media/images/{{item.pictureUrl}}" />
+        <image mode="widthFix" src="http://43.138.127.14:8000/media/images/{{item.pictureUrl}}" />
         <button id="change" bindtap="changeOutfit">替换</button>
         <button id="cancel" bindtap="cancel">取消</button>
       </block>

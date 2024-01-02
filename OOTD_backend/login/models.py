@@ -21,6 +21,7 @@ class User(models.Model):
     nickname=models.CharField(max_length=32,default="anonymous",verbose_name="用户昵称")
     age=models.IntegerField(default=18,verbose_name="年龄")
     addr=models.CharField(max_length=127,default='北京',verbose_name="所处地")
+    addr_code=models.CharField(max_length=127,default='101010100',verbose_name="所处地代码")
     gender=models.CharField(max_length=1,choices=Gender.choices,default=Gender.FEMALE,verbose_name="性别")
     avatarUrl=models.CharField(max_length=255,default='/',verbose_name="头像url")   # 在服务器上的 url
     avatar=models.ImageField(upload_to='images/')   # 指定头像储存的目录
@@ -28,6 +29,7 @@ class User(models.Model):
     intro=models.TextField(max_length=255,default='none',verbose_name="个人简介")
     updated=models.DateTimeField(auto_now=True, verbose_name="更新时间")
     weather = models.OneToOneField(Weather, on_delete=models.SET_NULL, verbose_name="天气", null=True)
+    likes = models.IntegerField(default=0, verbose_name="点赞数")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
