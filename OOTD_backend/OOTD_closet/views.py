@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotAllowed
 from rest_framework import serializers
 import random
+import ast
 
 class ClothesForm(forms.ModelForm):
     class Meta:
@@ -76,9 +77,23 @@ def edit_clothes(request,clothes_id):
     """
     if request.method == "POST":
         form = ClothesForm(request.POST)
+        #print(form.data)
+        # Assuming form.data is a QueryDict
+        form_data_querydict = form.data.copy()
+
+        # Extract the string value from QueryDict
+        form_data_string = form_data_querydict.popitem()[0]
+
+        # Convert the string to a dictionary using ast.literal_eval
+        form_data_dict = ast.literal_eval(form_data_string)
+        form = ClothesForm(form_data_dict)
+        # print(form_data_dict)
+        # return JsonResponse({"message": form.data}, status=400)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=400)
+            # 返回错误信息
+            #return JsonResponse({"message":form.errors.as_json()}, status=400)
         
         clothes = get_object_or_404(Clothes, pk=clothes_id)
         clothes.clothes_name = form.cleaned_data['clothes_name']

@@ -4,11 +4,6 @@ from django.test import Client,TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-
-# import sys
-# import os
-# sys.path.append('.')
-
 from login import views as login_views
 from login.models import *
 from login import controllers
@@ -113,6 +108,26 @@ class APITestCase(TestCase):
             )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["message"], "Invalid phone")
+
+        # 数据错误：地点不存在
+        data = {
+            "nickname": "test_nickname111",
+            "age": 19,
+            "addr":"紫荆公寓九号楼",
+            "gender":"女",
+            "avatarUrl":'',
+            "phone":'18811511919', 
+            "intro":"test_intro111"
+        }
+        response = self.client.patch(
+            reverse(login_views.edit_info), 
+            headers={'Authorization':  jwt.generate_jwt({"openid": self.user.openid})},
+            data=data,
+            content_type="application/json"
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "Invalid addr")
+
 
     # 测试获取用户信息
     def test_user(self):

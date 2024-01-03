@@ -133,7 +133,7 @@ def edit_info(request):
                     data = json.loads(decompressed_data.decode('utf-8'))
                 else:
                     data = response.json()
-                print(data)
+                #print(data)
                 if data.get("location"):
                     user.addr_code = data["location"][0]["id"]
                 else:
