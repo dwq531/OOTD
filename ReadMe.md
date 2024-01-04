@@ -3,5 +3,33 @@
 合并需要进行pull request，不能直接push
 ## dev
 开发分支，自己写的功能需要在dev上新建自己的分支，写完进行pull request合并在dev分支上，dev分支功能达到能发布的程度后合并到main分支上
-## 碎碎念
-这次尽量避免拧麻花，给助教整个好看点的）
+# 目录结构说明
+## 后端/OOTD_backend
+- config：小程序APPID和密钥设置
+- ootd：主应用
+- login：用户模块
+- OOTD_closet：衣柜模块
+- posting：社区模块
+- nginx：nginx配置文件
+- utils
+  - jwt.py：生成校验jwt
+  - fashion_compatibility_mcn：穿搭评分模型相关文件
+  - data：穿搭评分模型占位图
+- docker-compose.yml：docker配置文件
+- Dockerfile：app镜像配置文件
+- manage.py：Django管理程序
+- requirements.txt：环境配置文件
+## 前端/OOTD_frontend
+- pages：前端页面
+  - login：登录页面
+  - closet：衣柜页面
+  - editClothes：编辑衣服页面
+  - personalCenter：个人中心页面
+  - informationEditor：个人中心编辑信息页面
+  - posting：发帖页面
+  - society：社区页面
+  - postDetail：帖子详情页面
+- static：静态图标
+  - default：图标和默认图片
+  - navBar：导航栏图标
+  - weather：天气图标

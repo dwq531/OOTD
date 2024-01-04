@@ -27,8 +27,8 @@ SECRET_KEY = "django-insecure-yq3)e=)vfk&kt+@=e5(z$qqrrehj!=!fndqzgl10vdjg^lnv(8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['app']
-
+ALLOWED_HOSTS = ['app','http://43.138.127.14:8000']
+CSRF_TRUSTED_ORIGINS = ['http://43.138.127.14:8000']
 
 # Application definition
 
@@ -142,3 +142,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 设置为 5 MB
+
+STATIC_ROOT=os.path.join(BASE_DIR,'static')
