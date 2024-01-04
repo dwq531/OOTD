@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseNotAllowed
 from rest_framework import serializers
 import random
+import ast
 
 class ClothesForm(forms.ModelForm):
     class Meta:
@@ -79,6 +80,8 @@ def edit_clothes(request,clothes_id):
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=400)
+            # 返回错误信息
+            #return JsonResponse({"message":form.errors.as_json()}, status=400)
         
         clothes = get_object_or_404(Clothes, pk=clothes_id)
         clothes.clothes_name = form.cleaned_data['clothes_name']
@@ -170,6 +173,7 @@ def add_outfit(request):
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
             "pictureUrl": clothit.clothes_picture_url})
+    #print("response:",response)
     return JsonResponse({"clothes": response, "message": "ok"}, status=200)
 
 
@@ -346,9 +350,11 @@ def generate(request):
     clist = {'upper': [], 'bottom': [],
             'shoes': [], 'bag': [], 'accessory': []}
     temp = int(user.weather.temperature)
+    #print("temp:",temp)
     for clothit in clothes.iterator():
         # 根据天气筛选衣服种类
         sug = clothing_suggestions[clothit.get_clothes_main_type_display()][clothit.clothes_detail_type]
+        #print("sug:",sug)
         if sug is None or sug[0] <= temp <= sug[1]:
             path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
             clist[clothit.get_clothes_main_type_display()].append(clothit)
