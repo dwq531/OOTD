@@ -76,9 +76,17 @@ def post_detail(request, post_id):
 
     comments = post.comments.all()
     comments_serializer = CommentSerializer(comments, many=True)
+    if request.user in post.likes.all():
+        is_liked = True
+    else:
+        is_liked = False
+    if request.user in post.favorites.all():
+        is_fav = True
+    else:
+        is_fav = False
 
     return JsonResponse(
-        {"post": post_serializer.data, "comments": comments_serializer.data}, status=200
+        {"post": post_serializer.data, "comments": comments_serializer.data,"is_liked":is_liked,"is_fav":is_fav}, status=200
     )
 
 

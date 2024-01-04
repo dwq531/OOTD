@@ -133,7 +133,7 @@ def edit_info(request):
                     data = json.loads(decompressed_data.decode('utf-8'))
                 else:
                     data = response.json()
-                print(data)
+                #print(data)
                 if data.get("location"):
                     user.addr_code = data["location"][0]["id"]
                 else:
@@ -204,7 +204,8 @@ def get_weather(request):
             return JsonResponse({
             'icon':user.weather.icon,
             'text':user.weather.text,
-            'temperature':user.weather.temperature
+            'temperature':user.weather.temperature,
+            'message': 'ok'
             }, status=200)
         else:
             return JsonResponse({"message": "fail to get weather"}, status=400)

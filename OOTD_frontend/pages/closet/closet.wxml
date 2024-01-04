@@ -22,7 +22,7 @@
     <view class="outfit">
       <text id="outfit_text">今日穿搭</text>
       <scroll-view scroll-x>
-        <block wx:if="{{outfitItems}}">
+        <block wx:if="{{outfitItems[0]}}">
           <block wx:for="{{outfitItems}}" id="oufit_{{index}}" wx:key="id">
             <view class="outfit_item">
               <block wx:if="{{item.pictureUrl}}">
@@ -36,6 +36,11 @@
               <button id="deleteBut" bindtap="deleteOutfit" data-id="{{index}}" data-url="{{item}}">-</button>
             </view>
           </block>
+        </block>
+        <block wx:else>
+          <view class="tips">
+            <text>长按衣服并拖拽到此处来添加搭配</text>
+          </view>  
         </block>
       </scroll-view>
 
