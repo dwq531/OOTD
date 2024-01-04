@@ -40,6 +40,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - /home/ubuntu/OOTD/OOTD_backend/static:/etc/nginx/static
       - /home/ubuntu/OOTD/OOTD_backend/nginx/app.conf:/etc/nginx/nginx.conf
     depends_on:
       - app
