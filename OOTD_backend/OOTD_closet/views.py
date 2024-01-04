@@ -77,18 +77,6 @@ def edit_clothes(request,clothes_id):
     """
     if request.method == "POST":
         form = ClothesForm(request.POST)
-        #print(form.data)
-        # Assuming form.data is a QueryDict
-        form_data_querydict = form.data.copy()
-
-        # Extract the string value from QueryDict
-        form_data_string = form_data_querydict.popitem()[0]
-
-        # Convert the string to a dictionary using ast.literal_eval
-        form_data_dict = ast.literal_eval(form_data_string)
-        form = ClothesForm(form_data_dict)
-        # print(form_data_dict)
-        # return JsonResponse({"message": form.data}, status=400)
         if not form.is_valid():
             print("Invalid arguments")
             return JsonResponse({"message": "Invalid arguments"}, status=400)
@@ -185,6 +173,7 @@ def add_outfit(request):
             "Mtype": clothit.clothes_main_type,
             "Dtype": clothit.clothes_detail_type,
             "pictureUrl": clothit.clothes_picture_url})
+    #print("response:",response)
     return JsonResponse({"clothes": response, "message": "ok"}, status=200)
 
 
@@ -361,9 +350,11 @@ def generate(request):
     clist = {'upper': [], 'bottom': [],
             'shoes': [], 'bag': [], 'accessory': []}
     temp = int(user.weather.temperature)
+    #print("temp:",temp)
     for clothit in clothes.iterator():
         # 根据天气筛选衣服种类
         sug = clothing_suggestions[clothit.get_clothes_main_type_display()][clothit.clothes_detail_type]
+        #print("sug:",sug)
         if sug is None or sug[0] <= temp <= sug[1]:
             path[clothit.get_clothes_main_type_display()].append(clothit.clothes_picture_url)
             clist[clothit.get_clothes_main_type_display()].append(clothit)
